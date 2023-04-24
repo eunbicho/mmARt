@@ -1,5 +1,6 @@
 package com.ssafy.mmart.controller
 
+import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.user.User
 import com.ssafy.mmart.domain.user.dto.CreateUserReq
 import com.ssafy.mmart.repository.UserRepository
@@ -15,8 +16,8 @@ class UserController @Autowired constructor(
     private val userRepository: UserRepository
 ) {
     @GetMapping
-    fun getUsers(): List<User> {
-        return userRepository.findAll()
+    fun getUsers(): ResultResponse<List<User>> {
+        return ResultResponse.success(userRepository.findAll())
     }
 
     @GetMapping("/{userId}")
