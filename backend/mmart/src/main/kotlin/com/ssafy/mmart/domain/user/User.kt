@@ -1,5 +1,6 @@
 package com.ssafy.mmart.domain.user
 
+import com.ssafy.mmart.domain.Base
 import org.hibernate.annotations.ColumnDefault
 import javax.persistence.*
 
@@ -22,4 +23,4 @@ data class User(
     @Column(name = "point")
     @ColumnDefault("0")
     var point: Int? = 0,
-)
+):Base()

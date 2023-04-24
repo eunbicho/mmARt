@@ -1,5 +1,6 @@
 package com.ssafy.mmart.domain.productCoupon
 
+import com.ssafy.mmart.domain.Base
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -18,4 +19,4 @@ data class ProductCoupon (
 
     @Column(name = "couponExpired")
     var couponExpired: LocalDateTime,
-)
+): Base()

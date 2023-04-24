@@ -1,5 +1,6 @@
 package com.ssafy.mmart.domain.paymentDetail
 
+import com.ssafy.mmart.domain.Base
 import com.ssafy.mmart.domain.payment.Payment
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -30,4 +31,4 @@ data class PaymentDetail (
 //    @OnDelete(action= OnDeleteAction.CASCADE)
 //    @JoinColumn(name="productIdx")
 //    var product: Product,
-)
+): Base()
