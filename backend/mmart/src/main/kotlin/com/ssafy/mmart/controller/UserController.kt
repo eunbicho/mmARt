@@ -6,7 +6,6 @@ import com.ssafy.mmart.domain.user.dto.CreateUserReq
 import com.ssafy.mmart.repository.UserRepository
 import com.ssafy.mmart.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -20,15 +19,15 @@ class UserController @Autowired constructor(
         return ResultResponse.success(userRepository.findAll())
     }
 
-    @GetMapping("/{userId}")
-    fun getUser(@PathVariable userId: Int): ResponseEntity<Any> {
-        val user = userService.getUser(userId)
-        return ResponseEntity.ok().body(user)
+    @GetMapping("/{userIdx}")
+    fun getUser(@PathVariable userIdx: Int): ResultResponse<User?> {
+        return ResultResponse.success(userService.getUser(userIdx))
     }
 
     @PostMapping
-    fun saveUser(@RequestBody createUserReq: CreateUserReq): ResponseEntity<Any> {
-        val newUser = userService.saveUser(createUserReq)
-        return ResponseEntity.ok().body(newUser)
+    fun saveUser(@RequestBody createUserReq: CreateUserReq): ResultResponse<User?> {
+//        val newUser = userService.saveUser(createUserReq)
+        return ResultResponse.success(userService.saveUser(createUserReq))
+//        return ResponseEntity.ok().body(newUser)
     }
 }
