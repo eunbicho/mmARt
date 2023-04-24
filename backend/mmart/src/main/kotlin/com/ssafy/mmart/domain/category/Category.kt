@@ -1,5 +1,6 @@
 package com.ssafy.mmart.domain.category
 
+import com.ssafy.mmart.domain.Base
 import javax.persistence.*
 
 @Entity
@@ -14,4 +15,4 @@ data class Category (
 
     @Column(name = "placeInfo")
     var placeInfo : String,
-)
+): Base()

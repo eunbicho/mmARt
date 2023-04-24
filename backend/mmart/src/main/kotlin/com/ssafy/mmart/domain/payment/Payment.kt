@@ -1,5 +1,6 @@
 package com.ssafy.mmart.domain.payment
 
+import com.ssafy.mmart.domain.Base
 import com.ssafy.mmart.domain.user.User
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -29,4 +30,4 @@ data class Payment(
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="userIdx")
     var user: User,
-)
+): Base()
