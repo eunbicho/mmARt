@@ -1,5 +1,6 @@
 package com.ssafy.mmart.domain.productProductCoupon
 
+import com.ssafy.mmart.domain.Base
 import com.ssafy.mmart.domain.productCoupon.ProductCoupon
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -20,5 +21,5 @@ class ProductProductCoupon (
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="productCouponIdx")
-    var productCouponIdx: ProductCoupon,
-)
+    var productCoupon: ProductCoupon,
+): Base()
