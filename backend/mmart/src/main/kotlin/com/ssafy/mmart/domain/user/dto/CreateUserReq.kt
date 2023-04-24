@@ -10,7 +10,7 @@ data class CreateUserReq (
     var point: Int? = 0
 ) {
     fun toEntity(): User = User(
-        user_idx = user_idx,
+        userIdx = user_idx,
         email = email,
         password = password,
         name = name,
