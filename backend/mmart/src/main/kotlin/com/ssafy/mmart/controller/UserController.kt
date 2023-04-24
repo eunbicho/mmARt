@@ -26,7 +26,7 @@ class UserController @Autowired constructor(
     }
 
     @PostMapping
-    fun saveUser(createUserReq: CreateUserReq): ResponseEntity<Any> {
+    fun saveUser(@RequestBody createUserReq: CreateUserReq): ResponseEntity<Any> {
         val newUser = userService.saveUser(createUserReq)
         return ResponseEntity.ok().body(newUser)
     }
