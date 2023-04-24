@@ -7,8 +7,8 @@ import javax.persistence.*
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_idx")
-    var user_idx: Int? = null,
+    @Column(name = "userIdx")
+    var userIdx: Int? = null,
 
     @Column(name = "email")
     var email: String,
