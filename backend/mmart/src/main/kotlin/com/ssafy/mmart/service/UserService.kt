@@ -9,18 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-class UserService
-//@Autowired constructor
-    (
-//    val userRepository : UserRepository,
-){
-    @Autowired
-    private lateinit var userRepository: UserRepository
-
-    @Autowired
-    private lateinit var jpaQueryFactory: JPAQueryFactory
+class UserService @Autowired constructor(
+    val userRepository : UserRepository,
+    val jpaQueryFactory: JPAQueryFactory,
+) {
     fun getUser(userId: Int): User? {
-//        return userRepository.findById(userId).get()
         return jpaQueryFactory
             .selectFrom(user)
             .where(user.userIdx.eq(userId))
