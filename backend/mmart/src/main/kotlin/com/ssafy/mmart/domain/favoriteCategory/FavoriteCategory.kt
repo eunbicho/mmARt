@@ -1,5 +1,6 @@
 package com.ssafy.mmart.domain.favoriteCategory
 
+import com.ssafy.mmart.domain.Base
 import com.ssafy.mmart.domain.category.Category
 import com.ssafy.mmart.domain.user.User
 import org.hibernate.annotations.OnDelete
@@ -22,4 +23,4 @@ data class FavoriteCategory (
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="categoryIdx")
     var category: Category,
-)
+): Base()
