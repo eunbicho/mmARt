@@ -11,8 +11,6 @@ pipeline {
   stages {
     stage('Checkout Source') {
       steps {
-        sh 'gradle --version'
-        sh 'javac --version'
         git 'https://lab.ssafy.com/s08-ai-image-sub2/S08P22A401.git'
       }
     }
