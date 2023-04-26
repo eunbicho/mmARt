@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ProductRepository : JpaRepository<Item, Int>
+interface ItemRepository : JpaRepository<Item, Int>
 
 //@Repositorys
 //class UserRepositorySupport(
