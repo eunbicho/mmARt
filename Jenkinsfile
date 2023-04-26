@@ -4,6 +4,11 @@ pipeline {
     dockerImage = ""
   }
   agent any
+  tools {
+    gradle "7.6.1"
+    dockerTool "myDocker"
+    jdk "jdk"
+  }
   stages {
     stage('Build image') {
       steps{
