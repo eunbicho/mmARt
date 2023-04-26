@@ -12,19 +12,19 @@ data class ItemDetailImage (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "itemDetailImageIdx")
-    var itemDetailImageIdx: Int? = null,
+    val itemDetailImageIdx: Int? = null,
 
     @Column(name = "image")
-    var image : String,
+    val image : String,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="itemDetailIdx")
-    var itemDetail: ItemDetail,
+    val itemDetail: ItemDetail,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="itemIdx")
-    var item: Item,
+    val item: Item,
 
     ): Base()

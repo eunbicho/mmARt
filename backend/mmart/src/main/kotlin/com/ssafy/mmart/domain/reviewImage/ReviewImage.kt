@@ -13,24 +13,24 @@ data class ReviewImage (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reviewImageIdx")
-    var reviewImageIdx: Int? = null,
+    val reviewImageIdx: Int? = null,
 
     @Column(name = "image")
-    var image : String?="",
+    val image : String?="",
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="reviewIdx")
-    var review: Review,
+    val review: Review,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="itemIdx")
-    var item : Item,
+    val item : Item,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="userIdx")
-    var user : User,
+    val user : User,
 
     ): Base()

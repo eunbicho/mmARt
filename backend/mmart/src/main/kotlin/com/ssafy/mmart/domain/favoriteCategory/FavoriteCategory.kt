@@ -12,15 +12,15 @@ data class FavoriteCategory (
     @Id
     @Column(name = "favoriteCategoryIdx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var favoriteCategoryIdx : Int? = null,
+    val favoriteCategoryIdx : Int? = null,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="userIdx")
-    var user: User,
+    val user: User,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="categoryIdx")
-    var category: Category,
+    val category: Category,
 ): Base()
