@@ -5,7 +5,7 @@ pipeline {
   }
   agent any
   tools {
-    gradle '7.6.1'
+    gradle 'gradle-7.6.1'
   }
   stages {
     stage('Checkout Source') {
