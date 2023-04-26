@@ -12,15 +12,15 @@ data class User(
     val userIdx: Int? = null,
 
     @Column(name = "email")
-    val email: String,
+    var email: String,
 
     @Column(name = "password")
-    val password: String,
+    var password: String,
 
     @Column(name = "name")
-    val name: String,
+    var name: String,
 
     @Column(name = "point")
     @ColumnDefault("0")
-    val point: Int? = 0,
+    var point: Int? = 0,
 ):Base()

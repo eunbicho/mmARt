@@ -2,7 +2,7 @@ package com.ssafy.mmart.controller
 
 import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.user.User
-import com.ssafy.mmart.domain.user.dto.CreateUserReq
+import com.ssafy.mmart.domain.user.dto.UserReq
 import com.ssafy.mmart.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -18,7 +18,7 @@ class UserController @Autowired constructor(
     }
 
     @PostMapping
-    fun createUser(@RequestBody userReq: CreateUserReq): ResultResponse<User?> {
+    fun createUser(@RequestBody userReq: UserReq): ResultResponse<User?> {
         return ResultResponse.success(userService.createUser(userReq))
     }
 
