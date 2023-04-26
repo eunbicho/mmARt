@@ -11,28 +11,28 @@ data class Item (
     @Id
     @Column(name = "itemIdx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var itemIdx : Int? = null,
+    val itemIdx : Int? = null,
 
     @Column(name = "itemName")
-    var itemName : String,
+    val itemName : String,
 
     @Column(name = "price")
-    var price : Int,
+    val price : Int,
 
     @Column(name = "inventory")
-    var inventory : Int,
+    val inventory : Int,
 
     @Column(name = "barcode")
-    var barcode : String,
+    val barcode : String,
 
     @Column(name = "thumbnail")
-    var thumbnail : String? = "",
+    val thumbnail : String? = "",
 
     @Column(name = "placeInfo")
-    var placeInfo : String,
+    val placeInfo : String,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="categoryIdx")
-    var category : Category,
+    val category : Category,
 ): Base()

@@ -9,14 +9,14 @@ data class ItemCoupon (
     @Id
     @Column(name = "itemCouponIdx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var itemCouponIdx : Int? = null,
+    val itemCouponIdx : Int? = null,
 
     @Column(name = "couponName")
-    var couponName: String,
+    val couponName: String,
 
     @Column(name = "couponCost")
-    var couponCost: Int,
+    val couponCost: Int,
 
     @Column(name = "couponExpired")
-    var couponExpired: LocalDateTime,
+    val couponExpired: LocalDateTime,
 ): Base()

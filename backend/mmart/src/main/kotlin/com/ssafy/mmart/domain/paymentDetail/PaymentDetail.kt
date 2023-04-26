@@ -12,24 +12,24 @@ data class PaymentDetail (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "paymentDetailIdx")
-    var paymentDetailIdx: Int? = null,
+    val paymentDetailIdx: Int? = null,
 
     @Column(name = "amount")
-    var amount: Int,
+    val amount: Int,
 
     @Column(name = "discount")
-    var discount: Int,
+    val discount: Int,
 
     @Column(name = "costResult")
-    var costResult: Int,
+    val costResult: Int,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="paymentIdx")
-    var payment: Payment,
+    val payment: Payment,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="itemIdx")
-    var item: Item,
+    val item: Item,
 ): Base()

@@ -12,22 +12,22 @@ data class Payment(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "paymentIdx")
-    var paymentIdx: Int? = null,
+    val paymentIdx: Int? = null,
 
     @Column(name = "marketName")
-    var marketName: String,
+    val marketName: String,
 
     @Column(name = "date")
-    var date: LocalDateTime,
+    val date: LocalDateTime,
 
     @Column(name = "pointUse")
-    var pointUse: Int?,
+    val pointUse: Int?,
 
     @Column(name = "total")
-    var total: Int,
+    val total: Int,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="userIdx")
-    var user: User,
+    val user: User,
 ): Base()
