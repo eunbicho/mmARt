@@ -28,21 +28,6 @@ class UserService @Autowired constructor(
     }
 
     @Transactional
-    fun updateUser(userIdx: Int, userReq: UserReq): User? {
-        var user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-        var otherUser = userRepository.findByEmail(userReq.email)
-        if (otherUser == null) {
-            user.email = userReq.email
-        } else if (otherUser.userIdx != user.userIdx) {
-            throw EmailDuplicateException()
-        }
-        user.password = userReq.password
-        user.name = userReq.name
-        userRepository.save(user)
-        return user
-    }
-
-    @Transactional
     fun deleteUser(userIdx: Int): User? {
         var user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
         userRepository.deleteById(userIdx)
