@@ -3,9 +3,8 @@ package com.ssafy.mmart.controller
 import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.favorite.dto.CreateFavoriteReq
 import com.ssafy.mmart.domain.favoriteCategory.Favorite
-import com.ssafy.mmart.domain.product.Product
+import com.ssafy.mmart.domain.item.Item
 import com.ssafy.mmart.service.FavoriteService
-import com.ssafy.mmart.service.ProductService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -15,7 +14,7 @@ class FavoriteController @Autowired constructor(
     val favoriteService: FavoriteService,
 ) {
     @GetMapping("/{userIdx}")
-    fun getFavorites(@PathVariable userIdx: Int): ResultResponse<List<Product?>> {
+    fun getFavorites(@PathVariable userIdx: Int): ResultResponse<List<Item?>> {
         return ResultResponse.success(favoriteService.getFavorites(userIdx))
     }
 

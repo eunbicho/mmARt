@@ -2,7 +2,7 @@ package com.ssafy.mmart.domain.favoriteCategory
 
 import com.ssafy.mmart.domain.Base
 import com.ssafy.mmart.domain.category.Category
-import com.ssafy.mmart.domain.product.Product
+import com.ssafy.mmart.domain.item.Item
 import com.ssafy.mmart.domain.user.User
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -27,6 +27,6 @@ data class Favorite (
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
-    @JoinColumn(name="productIdx")
-    var product : Product,
+    @JoinColumn(name="itemIdx")
+    var item : Item,
 ): Base()
