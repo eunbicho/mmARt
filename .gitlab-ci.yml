@@ -5,7 +5,7 @@ stages:
 
 test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
-  image: openjdk:11
+  image: gradle:7.6.1-jdk11-alpine
   before_script:
     - cd backend/mmart
     - chmod +x gradlew
