@@ -4,7 +4,7 @@ pipeline {
     dockerImage = ""
   }
   agent {
-    Kubernetes {
+    kubernetes {
       yaml """
         apiVersion: v1
         kind: Pod
