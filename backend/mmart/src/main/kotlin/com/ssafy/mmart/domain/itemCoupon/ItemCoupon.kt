@@ -1,15 +1,15 @@
-package com.ssafy.mmart.domain.productCoupon
+package com.ssafy.mmart.domain.itemCoupon
 
 import com.ssafy.mmart.domain.Base
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-data class ProductCoupon (
+data class ItemCoupon (
     @Id
-    @Column(name = "productCouponIdx")
+    @Column(name = "itemCouponIdx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var productCouponIdx : Int? = null,
+    var itemCouponIdx : Int? = null,
 
     @Column(name = "couponName")
     var couponName: String,

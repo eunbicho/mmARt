@@ -1,23 +1,23 @@
-package com.ssafy.mmart.domain.productDetail
+package com.ssafy.mmart.domain.itemDetail
 
 import com.ssafy.mmart.domain.Base
-import com.ssafy.mmart.domain.product.Product
+import com.ssafy.mmart.domain.item.Item
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
-data class ProductDetail (
+data class ItemDetail (
     @Id
-    @Column(name = "productDetailIdx")
+    @Column(name = "itemDetailIdx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var productDetailIdx : Int? = null,
+    var itemDetailIdx : Int? = null,
 
     @Column(name = "content")
     var content : String? = "",
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
-    @JoinColumn(name="productIdx")
-    var product : Product,
+    @JoinColumn(name="itemIdx")
+    var item : Item,
 ): Base()
