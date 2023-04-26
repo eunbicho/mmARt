@@ -12,9 +12,10 @@ pipeline {
   stages {
     stage('Build image') {
         steps{
-            script {
-                dockerImage = docker.build dockerimagename
-        }
+          sh "cd /backend/mmart"
+          script {
+            dockerImage = docker.build dockerimagename
+          }
       }
     }
     stage('Push Image') {
