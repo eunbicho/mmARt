@@ -4,8 +4,9 @@ import com.ssafy.mmart.domain.ErrorResponse
 import com.ssafy.mmart.domain.ResultResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.RestControllerAdvice
 import javax.persistence.PersistenceException
-
+@RestControllerAdvice
 class GlobalExceptionHandler {
     @ExceptionHandler(AbstractAppException::class)
     fun abstractBaseExceptionHandler(e: AbstractAppException): ResponseEntity<ResultResponse<ErrorResponse>> {
