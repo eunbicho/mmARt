@@ -14,11 +14,12 @@ stages:
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
-  image: openjdk:11
+  image: gradle:7.6.1-jdk11-alpine
   before_script:
   - cd backend/mmart
+  - chmod +x gradlew
   script:
-    - gradle --version
+    - ./gradlew clean
     - ./gradlew build
 
 deploy-job:      # This job runs in the deploy stage.
