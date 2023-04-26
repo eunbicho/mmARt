@@ -6,7 +6,7 @@ pipeline {
   agent any
   tools {
     gradle '7.6.1'
-    dockerTool 'docker'
+    dockerTool 'myDocker'
   }
   stages {
     stage('Checkout Source') {
