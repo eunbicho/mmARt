@@ -1,12 +1,12 @@
-package com.ssafy.mmart.service;
+package com.ssafy.mmart.service
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.user.QUser.user
 import com.ssafy.mmart.domain.user.User
 import com.ssafy.mmart.domain.user.dto.CreateUserReq
-import com.ssafy.mmart.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.ssafy.mmart.repository.UserRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 
 @Service
 class UserService @Autowired constructor(
