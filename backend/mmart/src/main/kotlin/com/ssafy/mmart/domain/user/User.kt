@@ -9,7 +9,7 @@ data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userIdx")
-    var userIdx: Int? = null,
+    val userIdx: Int? = null,
 
     @Column(name = "email")
     var email: String,

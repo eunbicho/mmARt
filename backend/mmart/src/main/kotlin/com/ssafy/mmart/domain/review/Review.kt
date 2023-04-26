@@ -15,10 +15,10 @@ data class Review (
     val reviewIdx : Int? = null,
 
     @Column(name = "reviewContent")
-    val reviewContent : String? = "",
+    var reviewContent : String? = "",
 
     @Column(name = "star")
-    val star : Int,
+    var star : Int,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
