@@ -7,6 +7,7 @@ pipeline {
   tools {
     gradle '7.6.1'
     jdk 'jdk'
+    dockerTool 'myDocker'
   }
   stages {
     stage('Build image') {
