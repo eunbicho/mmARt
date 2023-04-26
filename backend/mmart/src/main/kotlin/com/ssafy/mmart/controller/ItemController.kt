@@ -12,8 +12,8 @@ class ItemController @Autowired constructor(
     val itemService: ItemService,
 ) {
     @GetMapping("/{itemIdx}")
-    fun getItem(@PathVariable itemIdx: Int): ResultResponse<Item?> {
-        return ResultResponse.success(itemService.getItem(itemIdx))
+    fun getItem(@PathVariable itemIdx: Int, @RequestParam userIdx: Int): ResultResponse<Item?> {
+        return ResultResponse.success(itemService.getItem(itemIdx, userIdx))
     }
 
     @GetMapping("/barcode")

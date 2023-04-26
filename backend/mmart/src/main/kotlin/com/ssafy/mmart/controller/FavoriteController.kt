@@ -14,7 +14,7 @@ class FavoriteController @Autowired constructor(
     val favoriteService: FavoriteService,
 ) {
     @GetMapping("/{userIdx}")
-    fun getFavorites(@PathVariable userIdx: Int): ResultResponse<List<Favorite>?> {
+    fun getFavorites(@PathVariable userIdx: Int): ResultResponse<List<Item?>> {
         return ResultResponse.success(favoriteService.getFavorites(userIdx))
     }
 

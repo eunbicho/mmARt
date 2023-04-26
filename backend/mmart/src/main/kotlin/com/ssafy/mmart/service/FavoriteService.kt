@@ -5,10 +5,6 @@ import com.ssafy.mmart.domain.favorite.dto.CreateFavoriteReq
 import com.ssafy.mmart.domain.favoriteCategory.Favorite
 import com.ssafy.mmart.domain.favoriteCategory.QFavorite.favorite
 import com.ssafy.mmart.domain.item.Item
-import com.ssafy.mmart.exception.bad_request.BadAccessException
-import com.ssafy.mmart.exception.conflict.FavoriteDuplicateException
-import com.ssafy.mmart.exception.not_found.FavoriteNotFoundException
-import com.ssafy.mmart.exception.not_found.UserNotFoundException
 import com.ssafy.mmart.repository.CategoryRepository
 import com.ssafy.mmart.repository.FavoriteRepository
 import com.ssafy.mmart.repository.ItemRepository
@@ -25,31 +21,34 @@ class FavoriteService @Autowired constructor(
     val categoryRepository: CategoryRepository,
     val jpaQueryFactory: JPAQueryFactory,
 ) {
-    fun getFavorites(userIdx: Int): List<Favorite>? {
-        //유저가 존재하는지 확인
-        userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
-        val favoriteList = favoriteRepository.findAllByUser_UserIdx(userIdx)
-        return favoriteList
+    fun getFavorites(userIdx: Int): List<Item?> {
+        val favoriteList = jpaQueryFactory.selectFrom(favorite)
+            .where(favorite.user.userIdx.eq(userIdx))
+            .fetch()
+        var resultList = mutableListOf<Item?>()
+        for(temp in favoriteList){
+            resultList.add(temp.item)
+        }
+        return resultList
     }
     @Transactional
     fun deleteFavorite(userIdx: Int, favoriteIdx:Int): Favorite? {
         //조건에 맞는 즐겨찾기가 있는지 확인
-        val fav = favoriteRepository.findById(favoriteIdx).orElseThrow(::FavoriteNotFoundException)
-        if(fav.user.userIdx == userIdx){
-            favoriteRepository.deleteById(favoriteIdx)
-            return fav
-        }else{
-            throw BadAccessException()
-        }
+        val result = jpaQueryFactory.selectFrom(favorite).where(favorite.favoriteIdx.eq(favoriteIdx).and(favorite.user.userIdx.eq(userIdx))).fetchOne()
+        jpaQueryFactory.delete(favorite).where(favorite.favoriteIdx.eq(userIdx).and(favorite.user.userIdx.eq(userIdx))).execute()
+        return result
     }
 
     @Transactional
     fun createFavorite(createFavoriteReq: CreateFavoriteReq): Favorite? {
-        //중복된 즐겨찾기가 있는지 확인
-        favoriteRepository.findByUser_UserIdxAndItem_ItemIdx(createFavoriteReq.userIdx,createFavoriteReq.itemIdx)?:throw FavoriteDuplicateException()
+        //조건에 맞는 즐겨찾기가 있는지 확인
+//        if(jpaQueryFactory.selectFrom(favorite).where(favorite.product.productIdx.eq(createFavoriteReq.productIdx).and(favorite.user.userIdx.eq(createFavoriteReq.userIdx)))){
+//
+//        }
         val result = Favorite(user = userRepository.findById(createFavoriteReq.userIdx).get(),
             category = categoryRepository.findById(createFavoriteReq.categoryIdx).get(),
             item = itemRepository.findById(createFavoriteReq.itemIdx).get())
+        print(result)
         return favoriteRepository.save(result)
     }
 }

@@ -5,10 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface FavoriteRepository : JpaRepository<Favorite, Int>{
-    fun findAllByUser_UserIdx(userIdx: Int): List<Favorite>?
-    fun findByUser_UserIdxAndItem_ItemIdx(userIdx: Int,itemIdx:Int): Favorite?
-}
+interface FavoriteRepository : JpaRepository<Favorite, Int>
 
 //@Repositorys
 //class UserRepositorySupport(

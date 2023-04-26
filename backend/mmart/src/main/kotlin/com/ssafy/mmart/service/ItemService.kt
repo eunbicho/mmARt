@@ -13,7 +13,7 @@ class ItemService @Autowired constructor(
     val jpaQueryFactory: JPAQueryFactory,
 ) {
     //유저의 구매내역에 따라 검색 부분 리스트는 수정해야함(부가)
-    fun getItem(itemIdx: Int): Item? {
+    fun getItem(itemIdx: Int, userIdx: Int): Item? {
         return jpaQueryFactory
             .selectFrom(item)
             .where(item.itemIdx.eq(itemIdx))
