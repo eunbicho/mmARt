@@ -6,12 +6,16 @@ stages:
 test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   image: openjdk:11
+  before_script:
+  - cd backend/mmart
   script:
     - ./gradlew test
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   image: gradle:7.6.1-jdk11-alpine
+  before_script:
+  - cd backend/mmart
   script:
     - gradle --version
     - echo "Compiling the code..."
