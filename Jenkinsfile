@@ -9,11 +9,6 @@ pipeline {
     jdk 'jdk'
   }
   stages {
-    stage('Checkout Source') {
-      steps {
-        git 'https://lab.ssafy.com/s08-ai-image-sub2/S08P22A401.git'
-      }
-    }
     stage('Build image') {
         steps{
             script {
