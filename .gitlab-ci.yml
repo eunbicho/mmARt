@@ -21,8 +21,8 @@ clean:
   image: $IMAGE_OPENJDK_GRADLE
   stage: clean
   before_script:
-    - cd $BACKEND_DIR
-    - chmod -x gradlew
+  - cd backend/mmart
+  - chmod +x gradlew
   script:
     - echo "Cleaning leftovers from previous builds"
     - ./gradlew clean
@@ -31,8 +31,8 @@ build:
   image: $IMAGE_OPENJDK_GRADLE
   stage: build
   before_script:
-    - cd $BACKEND_DIR
-    - chmod -x gradlew
+  - cd backend/mmart
+  - chmod +x gradlew
   script:
     - echo "Compiling the code..."
     - ./gradlew assemble
@@ -44,8 +44,8 @@ static-code-analysis:
   image: $IMAGE_OPENJDK_GRADLE
   stage: test
   before_script:
-    - cd $BACKEND_DIR
-    - chmod -x gradlew
+    - cd backend/mmart
+    - chmod +x gradlew
   script:
     - echo "Running Static Code Analysis..."
     - echo "Checking style..."
@@ -61,8 +61,8 @@ unit-test:
   image: $IMAGE_OPENJDK_GRADLE
   stage: test
   before_script:
-    - cd $BACKEND_DIR
-    - chmod -x gradlew
+    - cd backend/mmart
+    - chmod +x gradlew
   script:
     - echo "Running unit tests..."
     - ./gradlew test -Dspring.profiles.active=test
@@ -78,7 +78,7 @@ coverage-test:
 build-image:
   stage: build-image
   before_script:
-    - cd $BACKEND_DIR
+    - cd backend/mmart
   script:
     - echo "Building Docker Image..."
     - docker build -t teqteqteqteq/red-limo-backend:latest .
