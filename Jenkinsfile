@@ -14,7 +14,7 @@ pipeline {
       steps{
         dir('backend/mmart') {
           script {
-            sh "sudo systemctl start docker"
+            sh "docker --version"
             dockerImage = docker.build dockerimagename
           }
         }
