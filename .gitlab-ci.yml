@@ -20,16 +20,22 @@ stages:
 clean:
   image: $IMAGE_OPENJDK_GRADLE
   stage: clean
+  before_script:
+    - cd $BACKEND_DIR
+    - chmod -x gradlew
   script:
     - echo "Cleaning leftovers from previous builds"
-    - sh $BACKEND_DIR/gradlew clean
+    - ./gradlew clean
 
 build:
   image: $IMAGE_OPENJDK_GRADLE
   stage: build
+  before_script:
+    - cd $BACKEND_DIR
+    - chmod -x gradlew
   script:
     - echo "Compiling the code..."
-    - sh $BACKEND_DIR/gradlew assemble
+    - ./gradlew assemble
   artifacts:
     paths:
       - build/libs/*.jar
@@ -37,23 +43,29 @@ build:
 static-code-analysis:
   image: $IMAGE_OPENJDK_GRADLE
   stage: test
+  before_script:
+    - cd $BACKEND_DIR
+    - chmod -x gradlew
   script:
     - echo "Running Static Code Analysis..."
     - echo "Checking style..."
-    - sh $BACKEND_DIR/gradlew checkstyleMain
+    - ./gradlew checkstyleMain
     - echo "Checking duplicated code..."
-    - sh $BACKEND_DIR/gradlew cpdCheck
+    - ./gradlew cpdCheck
     - echo "Checking bugs..."
-    - sh $BACKEND_DIR/gradlew spotbugsMain
+    - ./gradlew spotbugsMain
     - echo "Checking code standard..."
-    - sh $BACKEND_DIR/gradlew pmdMain
+    - ./gradlew pmdMain
 
 unit-test:
   image: $IMAGE_OPENJDK_GRADLE
   stage: test
+  before_script:
+    - cd $BACKEND_DIR
+    - chmod -x gradlew
   script:
     - echo "Running unit tests..."
-    - sh $BACKEND_DIR/gradlew test -Dspring.profiles.active=test
+    - ./gradlew test -Dspring.profiles.active=test
 
 coverage-test:
   image: $IMAGE_OPENJDK_GRADLE
@@ -65,9 +77,11 @@ coverage-test:
 
 build-image:
   stage: build-image
+  before_script:
+    - cd $BACKEND_DIR
   script:
     - echo "Building Docker Image..."
-    - docker build -t teqteqteqteq/red-limo-backend:latest $BACKEND_DIR
+    - docker build -t teqteqteqteq/red-limo-backend:latest .
 
 publish-image:
   stage: publish-image
