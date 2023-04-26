@@ -5,10 +5,9 @@ import com.ssafy.mmart.domain.favorite.dto.CreateFavoriteReq
 import com.ssafy.mmart.domain.favoriteCategory.Favorite
 import com.ssafy.mmart.domain.favoriteCategory.QFavorite.favorite
 import com.ssafy.mmart.domain.item.Item
-import com.ssafy.mmart.domain.item.QProduct.product
 import com.ssafy.mmart.repository.CategoryRepository
 import com.ssafy.mmart.repository.FavoriteRepository
-import com.ssafy.mmart.repository.ProductRepository
+import com.ssafy.mmart.repository.ItemRepository
 import com.ssafy.mmart.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -18,7 +17,7 @@ import javax.transaction.Transactional
 class FavoriteService @Autowired constructor(
     val favoriteRepository: FavoriteRepository,
     val userRepository: UserRepository,
-    val productRepository: ProductRepository,
+    val itemRepository: ItemRepository,
     val categoryRepository: CategoryRepository,
     val jpaQueryFactory: JPAQueryFactory,
 ) {
@@ -28,7 +27,7 @@ class FavoriteService @Autowired constructor(
             .fetch()
         var resultList = mutableListOf<Item?>()
         for(temp in favoriteList){
-            resultList.add(temp.product)
+            resultList.add(temp.item)
         }
         return resultList
     }
@@ -48,7 +47,7 @@ class FavoriteService @Autowired constructor(
 //        }
         val result = Favorite(user = userRepository.findById(createFavoriteReq.userIdx).get(),
             category = categoryRepository.findById(createFavoriteReq.categoryIdx).get(),
-            item = productRepository.findById(createFavoriteReq.itemIdx).get())
+            item = itemRepository.findById(createFavoriteReq.itemIdx).get())
         print(result)
         return favoriteRepository.save(result)
     }
