@@ -12,9 +12,8 @@ test-job:   # This job runs in the test stage.
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   image: gradle:7.6.1-jdk11-alpine
-  before-script:
-    - gradle --version
   script:
+    - gradle --version
     - echo "Compiling the code..."
     - echo "Compile complete."
 
