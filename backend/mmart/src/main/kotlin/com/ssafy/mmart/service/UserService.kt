@@ -1,4 +1,4 @@
-package com.ssafy.mmart.service;
+package com.ssafy.mmart.service
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.user.QUser.user
