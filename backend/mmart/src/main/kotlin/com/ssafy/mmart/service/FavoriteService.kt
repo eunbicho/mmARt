@@ -6,7 +6,7 @@ import com.ssafy.mmart.domain.favoriteCategory.Favorite
 import com.ssafy.mmart.domain.favoriteCategory.QFavorite.favorite
 import com.ssafy.mmart.domain.product.Product
 import com.ssafy.mmart.domain.product.QProduct.product
-import com.ssafy.mmart.domain.user.dto.CreateUserReq
+import com.ssafy.mmart.domain.user.dto.UserReq
 import com.ssafy.mmart.repository.CategoryRepository
 import com.ssafy.mmart.repository.FavoriteRepository
 import com.ssafy.mmart.repository.ProductRepository

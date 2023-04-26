@@ -3,7 +3,6 @@ package com.ssafy.mmart.service
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.product.Product
 import com.ssafy.mmart.domain.product.QProduct.product
-import com.ssafy.mmart.domain.user.dto.CreateUserReq
 import com.ssafy.mmart.repository.ProductRepository
 import com.ssafy.mmart.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
