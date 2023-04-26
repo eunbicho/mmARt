@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage('Build image') {
       steps{
-        dir('mmart') {
+        dir('backend/mmart') {
           script {
             dockerImage = docker.build dockerimagename
           }
