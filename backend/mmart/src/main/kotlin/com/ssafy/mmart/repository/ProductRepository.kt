@@ -1,6 +1,7 @@
 package com.ssafy.mmart.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import com.ssafy.mmart.domain.product.Product
 import com.ssafy.mmart.domain.user.QUser
 import com.ssafy.mmart.domain.user.User
 import org.springframework.data.jpa.repository.JpaRepository
@@ -9,9 +10,9 @@ import org.springframework.stereotype.Repository
 import javax.annotation.Resource
 
 @Repository
-interface UserRepository : JpaRepository<User, Int>
+interface ProductRepository : JpaRepository<Product, Int>
 
-//@Repository
+//@Repositorys
 //class UserRepositorySupport(
 //    @Resource(name = "jpaQueryFactory")
 //    val query: JPAQueryFactory

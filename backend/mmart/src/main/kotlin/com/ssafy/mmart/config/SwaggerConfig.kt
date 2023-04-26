@@ -49,7 +49,7 @@ class SwaggerConfig {
         return java.util.List.of<SecurityReference>(SecurityReference("Authorization", authorizationScopes))
     }
 
-    private fun apiKey(): ApiKey? {
+    private fun apiKey(): ApiKey {
         return ApiKey("Authorization", "Authorization", "header")
     }
 }
