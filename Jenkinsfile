@@ -6,11 +6,13 @@ pipeline {
   agent any
   tools {
     gradle 'gradle-7.6.1'
+    docker 'docker'
   }
   stages {
     stage('Checkout Source') {
       steps {
         sh 'gradle --version'
+        sh 'docker --version'
         git 'https://lab.ssafy.com/s08-ai-image-sub2/S08P22A401.git'
       }
     }
