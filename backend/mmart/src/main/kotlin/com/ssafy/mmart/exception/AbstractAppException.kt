@@ -1,6 +1,6 @@
 package com.ssafy.mmart.exception
-abstract class AbstractAppException(var errorCode: ErrorCode):RuntimeException(errorCode.message) {
-
+open class AbstractAppException(errorCode: ErrorCode):RuntimeException(errorCode.message) {
+    public val errorCode:ErrorCode = errorCode
 //    open fun AbstractAppException(errorCode: ErrorCode) {
 //        super(errorCode.getMessage())
 //        this.errorCode = errorCode

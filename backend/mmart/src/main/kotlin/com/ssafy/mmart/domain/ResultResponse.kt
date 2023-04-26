@@ -1,32 +1,36 @@
 package com.ssafy.mmart.domain
 
 import com.ssafy.mmart.exception.AbstractAppException
+import com.ssafy.mmart.exception.ErrorCode
 
 class ResultResponse<T>(var resultCode:String?,var result:T?) {
-//    fun <T> success(result: T): ResultResponse<T>? {
-//        return ResultResponse<T>(SUCCESS, result)
-//    }
-//
-//    fun <T> error(errorResponse: ErrorResponse): ResultResponse<T>? {
-//        return ResultResponse<T>(ERROR, errorResponse)
-//    }
-//
-//    fun <T> error(e: AbstractAppException): ResultResponse<T>? {
-//        return ResultResponse<T>(ERROR, )
-//    }
+
 companion object {
+    val SUCCESS = "SUCCESS"
+    val ERROR = "ERROR"
     fun <T> success(result: T): ResultResponse<T> {
-        return ResultResponse("SUCCESS", result)
+        return ResultResponse(
+            SUCCESS,
+            result
+        )
     }
 
-    fun error(errorResponse: ErrorResponse?): ResultResponse<ErrorResponse> {
-        return ResultResponse("ERROR", errorResponse)
+    fun error(errorResponse: ErrorResponse): ResultResponse<ErrorResponse> {
+        return ResultResponse(
+            ERROR,
+            errorResponse
+        )
     }
+
 
     fun error(e: AbstractAppException): ResultResponse<ErrorResponse> {
-        return ResultResponse("ERROR", ErrorResponse.of(e.errorCode))
+        return ResultResponse(ERROR, ErrorResponse.of(e.errorCode))
     }
 }
+
+    override fun toString(): String {
+        return "ResultResponse(resultCode=$resultCode, result=$result)"
+    }
 }
 
 /*package com.ssafy.snapstory.domain;
