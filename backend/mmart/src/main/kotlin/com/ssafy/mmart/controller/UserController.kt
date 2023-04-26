@@ -2,7 +2,7 @@ package com.ssafy.mmart.controller
 
 import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.user.User
-import com.ssafy.mmart.domain.user.dto.CreateUserReq
+import com.ssafy.mmart.domain.user.dto.UserReq
 import com.ssafy.mmart.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -18,7 +18,17 @@ class UserController @Autowired constructor(
     }
 
     @PostMapping
-    fun saveUser(@RequestBody createUserReq: CreateUserReq): ResultResponse<User?> {
-        return ResultResponse.success(userService.saveUser(createUserReq))
+    fun createUser(@RequestBody userReq: UserReq): ResultResponse<User?> {
+        return ResultResponse.success(userService.createUser(userReq))
+    }
+
+    @PutMapping("/{userIdx}")
+    fun updateUser(@PathVariable userIdx: Int, @RequestBody userReq: UserReq): ResultResponse<User?> {
+        return ResultResponse.success(userService.updateUser(userIdx, userReq))
+    }
+
+    @DeleteMapping("/{userIdx}")
+    fun deleteUser(@PathVariable userIdx: Int): ResultResponse<Long?> {
+        return ResultResponse.success(userService.deleteUser(userIdx))
     }
 }
