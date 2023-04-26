@@ -1,7 +1,5 @@
-package com.ssafy.mmart.service;
+package com.ssafy.mmart.service
 
-import com.querydsl.jpa.impl.JPAQueryFactory
-import com.ssafy.mmart.domain.user.QUser.user
 import com.ssafy.mmart.domain.user.User
 import com.ssafy.mmart.domain.user.dto.UserReq
 import com.ssafy.mmart.exception.conflict.EmailDuplicateException
@@ -11,14 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
-import javax.persistence.EntityManager
 
 @Service
 class UserService @Autowired constructor(
     val userRepository: UserRepository,
-    val jpaQueryFactory: JPAQueryFactory,
-    val em: EntityManager,
 ) {
     fun getUser(userIdx: Int): User? {
         return userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
