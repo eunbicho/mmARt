@@ -28,7 +28,7 @@ class UserController @Autowired constructor(
     }
 
     @DeleteMapping("/{userIdx}")
-    fun deleteUser(@PathVariable userIdx: Int): ResultResponse<Long?> {
+    fun deleteUser(@PathVariable userIdx: Int): ResultResponse<User?> {
         return ResultResponse.success(userService.deleteUser(userIdx))
     }
 }
