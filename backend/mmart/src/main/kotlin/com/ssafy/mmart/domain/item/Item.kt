@@ -1,4 +1,4 @@
-package com.ssafy.mmart.domain.product
+package com.ssafy.mmart.domain.item
 
 import com.ssafy.mmart.domain.Base
 import com.ssafy.mmart.domain.category.Category
@@ -7,14 +7,14 @@ import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
-data class Product (
+data class Item (
     @Id
-    @Column(name = "productIdx")
+    @Column(name = "itemIdx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var productIdx : Int? = null,
+    var itemIdx : Int? = null,
 
-    @Column(name = "productName")
-    var productName : String,
+    @Column(name = "itemName")
+    var itemName : String,
 
     @Column(name = "price")
     var price : Int,

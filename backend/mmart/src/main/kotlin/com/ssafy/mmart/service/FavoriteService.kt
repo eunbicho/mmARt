@@ -4,9 +4,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.favorite.dto.CreateFavoriteReq
 import com.ssafy.mmart.domain.favoriteCategory.Favorite
 import com.ssafy.mmart.domain.favoriteCategory.QFavorite.favorite
-import com.ssafy.mmart.domain.product.Product
-import com.ssafy.mmart.domain.product.QProduct.product
-import com.ssafy.mmart.domain.user.dto.UserReq
+import com.ssafy.mmart.domain.item.Item
+import com.ssafy.mmart.domain.item.QProduct.product
 import com.ssafy.mmart.repository.CategoryRepository
 import com.ssafy.mmart.repository.FavoriteRepository
 import com.ssafy.mmart.repository.ProductRepository
@@ -23,11 +22,11 @@ class FavoriteService @Autowired constructor(
     val categoryRepository: CategoryRepository,
     val jpaQueryFactory: JPAQueryFactory,
 ) {
-    fun getFavorites(userIdx: Int): List<Product?> {
+    fun getFavorites(userIdx: Int): List<Item?> {
         val favoriteList = jpaQueryFactory.selectFrom(favorite)
             .where(favorite.user.userIdx.eq(userIdx))
             .fetch()
-        var resultList = mutableListOf<Product?>()
+        var resultList = mutableListOf<Item?>()
         for(temp in favoriteList){
             resultList.add(temp.product)
         }
@@ -49,7 +48,7 @@ class FavoriteService @Autowired constructor(
 //        }
         val result = Favorite(user = userRepository.findById(createFavoriteReq.userIdx).get(),
             category = categoryRepository.findById(createFavoriteReq.categoryIdx).get(),
-            product = productRepository.findById(createFavoriteReq.productIdx).get())
+            item = productRepository.findById(createFavoriteReq.itemIdx).get())
         print(result)
         return favoriteRepository.save(result)
     }
