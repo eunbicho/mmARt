@@ -14,8 +14,8 @@ pipeline {
             command:
             - cat
             tty: true
-          - name: busybox
-            image: busybox
+          - name: docker
+            image: docker
             command:
             - cat
             tty: true
@@ -29,8 +29,8 @@ pipeline {
         container('maven') {
           sh 'mvn -version'
         }
-        container('busybox') {
-          sh '/bin/busybox'
+        container('docker') {
+          sh 'docker ps'
         }
       }
     }
