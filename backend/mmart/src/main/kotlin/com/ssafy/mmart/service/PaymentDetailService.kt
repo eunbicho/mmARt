@@ -1,6 +1,7 @@
 package com.ssafy.mmart.service
 
 import com.ssafy.mmart.domain.paymentDetail.PaymentDetail
+import com.ssafy.mmart.exception.not_found.PaymentDetailNotFoundException
 import com.ssafy.mmart.repository.PaymentDetailRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -11,12 +12,12 @@ class PaymentDetailService @Autowired constructor(
     val paymentDetailRepository: PaymentDetailRepository,
 ) {
     fun getPaymentDetail(paymentIdx: Int, userIdx: Int): PaymentDetail? {
-        return paymentDetailRepository.findByPayment_PaymentIdxAndPayment_User_UserIdx(paymentIdx, userIdx) ?: throw Exception()
+        return paymentDetailRepository.findByPayment_PaymentIdxAndPayment_User_UserIdx(paymentIdx, userIdx) ?: throw PaymentDetailNotFoundException()
     }
 
     @Transactional
     fun deletePaymentDetail(paymentIdx: Int, userIdx: Int): PaymentDetail? {
-        var paymentDetail = paymentDetailRepository.findByPayment_PaymentIdxAndPayment_User_UserIdx(paymentIdx, userIdx) ?: throw Exception()
+        var paymentDetail = paymentDetailRepository.findByPayment_PaymentIdxAndPayment_User_UserIdx(paymentIdx, userIdx) ?: throw PaymentDetailNotFoundException()
         paymentDetailRepository.deleteById(paymentDetail.paymentDetailIdx!!)
         return paymentDetail
     }

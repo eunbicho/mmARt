@@ -9,18 +9,18 @@ data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userIdx")
-    var userIdx: Int? = null,
+    val userIdx: Int? = null,
 
     @Column(name = "email")
-    var email: String,
+    val email: String,
 
     @Column(name = "password")
-    var password: String,
+    val password: String,
 
     @Column(name = "name")
-    var name: String,
+    val name: String,
 
     @Column(name = "point")
     @ColumnDefault("0")
-    var point: Int? = 0,
+    val point: Int? = 0,
 ):Base()

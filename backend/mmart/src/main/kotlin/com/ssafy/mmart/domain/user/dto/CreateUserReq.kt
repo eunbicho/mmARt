@@ -2,7 +2,7 @@ package com.ssafy.mmart.domain.user.dto
 
 import com.ssafy.mmart.domain.user.User
 
-data class UserReq (
+data class CreateUserReq (
     var email: String,
     var password: String,
     var name: String,
