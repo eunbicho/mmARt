@@ -18,7 +18,7 @@ pipeline {
     stage('Run maven') {
       steps {
         container('docker') {
-          sh 'docker ps'
+          sh 'docker --version'
         }
       }
     }
