@@ -12,21 +12,21 @@ data class Review (
     @Id
     @Column(name = "reviewIdx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var reviewIdx : Int? = null,
+    val reviewIdx : Int? = null,
 
     @Column(name = "reviewContent")
-    var reviewContent : String? = "",
+    val reviewContent : String? = "",
 
     @Column(name = "star")
-    var star : Int,
+    val star : Int,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="itemIdx")
-    var item : Item,
+    val item : Item,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="userIdx")
-    var user : User,
+    val user : User,
 ): Base()

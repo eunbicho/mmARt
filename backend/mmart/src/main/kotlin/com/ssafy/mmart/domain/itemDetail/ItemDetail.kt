@@ -11,13 +11,13 @@ data class ItemDetail (
     @Id
     @Column(name = "itemDetailIdx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var itemDetailIdx : Int? = null,
+    val itemDetailIdx : Int? = null,
 
     @Column(name = "content")
-    var content : String? = "",
+    val content : String? = "",
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="itemIdx")
-    var item : Item,
+    val item : Item,
 ): Base()

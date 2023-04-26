@@ -8,11 +8,11 @@ data class Category (
     @Id
     @Column(name = "categoryIdx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var categoryIdx : Int? = null,
+    val categoryIdx : Int? = null,
 
     @Column(name = "categoryName")
-    var categoryName : String,
+    val categoryName : String,
 
     @Column(name = "placeInfo")
-    var placeInfo : String,
+    val placeInfo : String,
 ): Base()
