@@ -5,7 +5,7 @@ stages:
 
 test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
-  image: gradle:7.6.1-jdk11-alpine
+  image: openjdk:11-alpine
   script:
     - ./gradlew test
 
