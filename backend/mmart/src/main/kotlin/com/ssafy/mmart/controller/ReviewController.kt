@@ -35,13 +35,13 @@ class ReviewController @Autowired constructor(
     }
 
     @PostMapping
-    fun createReview(@RequestBody reviewReq: ReviewReq): ResultResponse<Review?> {
-        return ResultResponse.success(reviewService.createReview(reviewReq))
+    fun createReview(@RequestParam userIdx: Int, @RequestParam paymentDetailIdx: Int, @RequestBody reviewReq: ReviewReq): ResultResponse<Review?> {
+        return ResultResponse.success(reviewService.createReview(userIdx, paymentDetailIdx, reviewReq))
     }
 
     @PutMapping
-    fun updateReview(@RequestParam reviewIdx: Int, @RequestBody reviewReq: ReviewReq): ResultResponse<Review?> {
-        return ResultResponse.success(reviewService.updateReview(reviewIdx, reviewReq))
+    fun updateReview(@RequestParam userIdx: Int, @RequestParam reviewIdx: Int, @RequestBody reviewReq: ReviewReq): ResultResponse<Review?> {
+        return ResultResponse.success(reviewService.updateReview(userIdx, reviewIdx, reviewReq))
     }
 
     @DeleteMapping

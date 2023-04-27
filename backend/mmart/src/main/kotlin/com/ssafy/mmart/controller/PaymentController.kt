@@ -4,6 +4,7 @@ import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.payment.Payment
 import com.ssafy.mmart.service.PaymentService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -18,4 +19,9 @@ class PaymentController @Autowired constructor(
    fun getPayments(@RequestParam userIdx: Int): ResultResponse<List<Payment>?> {
        return ResultResponse.success(paymentService.getPayments(userIdx))
    }
+
+    @DeleteMapping
+    fun deletePayment(@RequestParam paymentIdx: Int, @RequestParam userIdx: Int): ResultResponse<Payment?> {
+        return ResultResponse.success(paymentService.deletePayment(paymentIdx, userIdx))
+    }
 }
