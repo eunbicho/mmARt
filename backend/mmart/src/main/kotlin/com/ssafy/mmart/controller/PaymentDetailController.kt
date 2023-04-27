@@ -12,12 +12,12 @@ class PaymentDetailController @Autowired constructor(
     val paymentDetailService: PaymentDetailService,
 ){
     @GetMapping
-    fun getPaymentDetail(@RequestParam paymentIdx: Int, @RequestParam userIdx: Int): ResultResponse<PaymentDetail?>{
-        return ResultResponse.success(paymentDetailService.getPaymentDetail(paymentIdx, userIdx))
+    fun getPaymentDetail(@RequestParam paymentIdx: Int, @RequestParam userIdx: Int): ResultResponse<List<PaymentDetail>?>{
+        return ResultResponse.success(paymentDetailService.getPaymentDetails(paymentIdx, userIdx))
     }
 
-    @DeleteMapping
-    fun deletePaymentDetail(@RequestParam paymentIdx: Int, @RequestParam userIdx: Int): ResultResponse<PaymentDetail?>{
-        return ResultResponse.success(paymentDetailService.deletePaymentDetail(paymentIdx, userIdx))
+    @GetMapping("/{paymentDetailIdx}")
+    fun getPaymentDetail(@PathVariable paymentDetailIdx: Int): ResultResponse<PaymentDetail?>{
+        return ResultResponse.success(paymentDetailService.getPaymentDetail(paymentDetailIdx))
     }
 }

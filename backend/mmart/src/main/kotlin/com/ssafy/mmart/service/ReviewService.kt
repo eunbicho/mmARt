@@ -4,13 +4,8 @@ import com.ssafy.mmart.domain.review.Review
 import com.ssafy.mmart.domain.review.dto.ReviewReq
 import com.ssafy.mmart.exception.bad_request.BadAccessException
 import com.ssafy.mmart.exception.conflict.ReviewDuplicateException
-import com.ssafy.mmart.exception.not_found.ItemNotFoundException
-import com.ssafy.mmart.exception.not_found.ReviewNotFoundException
-import com.ssafy.mmart.exception.not_found.ReviewsNotFoundException
-import com.ssafy.mmart.exception.not_found.UserNotFoundException
-import com.ssafy.mmart.repository.ItemRepository
-import com.ssafy.mmart.repository.ReviewRepository
-import com.ssafy.mmart.repository.UserRepository
+import com.ssafy.mmart.exception.not_found.*
+import com.ssafy.mmart.repository.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -20,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 class ReviewService @Autowired constructor(
     val reviewRepository: ReviewRepository,
     val userRepository: UserRepository,
-    val itemRepository: ItemRepository,
+    val paymentDetailRepository: PaymentDetailRepository,
 ){
     fun getReview(reviewIdx: Int): Review? {
         return reviewRepository.findByIdOrNull(reviewIdx) ?: throw ReviewNotFoundException()
@@ -45,26 +40,26 @@ class ReviewService @Autowired constructor(
         }
     }
 
-    fun createReview(reviewReq: ReviewReq): Review? {
-        var user = userRepository.findByIdOrNull(reviewReq.userIdx) ?: throw UserNotFoundException()
-        var item = itemRepository.findByIdOrNull(reviewReq.itemIdx) ?: throw ItemNotFoundException()
-        var oldReview = reviewRepository.findByUserAndItem(user, item)
+    fun createReview(userIdx: Int, paymentDetailIdx: Int, reviewReq: ReviewReq): Review? {
+        var user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
+        var paymentDetail = paymentDetailRepository.findByIdOrNull(paymentDetailIdx) ?: throw PaymentDetailNotFoundException()
+        if (paymentDetail.payment.user != user) throw BadAccessException()
+        var oldReview = reviewRepository.findByPaymentDetail(paymentDetail)
         return if (oldReview == null) {
-            reviewRepository.save(reviewReq.toEntity(item, user))
+            reviewRepository.save(reviewReq.toEntity(paymentDetail.item, paymentDetail, user))
         } else {
             throw ReviewDuplicateException()
         }
     }
 
     @Transactional
-    fun updateReview(reviewIdx: Int, reviewReq: ReviewReq): Review? {
+    fun updateReview(userIdx: Int, reviewIdx: Int, reviewReq: ReviewReq): Review? {
         var review = reviewRepository.findByIdOrNull(reviewIdx) ?: throw ReviewNotFoundException()
-        var user = userRepository.findByIdOrNull(reviewReq.userIdx) ?: throw UserNotFoundException()
-        var item = itemRepository.findByIdOrNull(reviewReq.itemIdx) ?: throw ItemNotFoundException()
-        return if (user == review.user && item == review.item) {
+        var user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
+        return if (user == review.user) {
             review.apply{
                 content = reviewReq.content
-                star = star
+                star = reviewReq.star
             }
         } else {
             throw BadAccessException()

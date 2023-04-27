@@ -15,16 +15,12 @@ class PaymentDetailService @Autowired constructor(
     val paymentDetailRepository: PaymentDetailRepository,
     val userRepository: UserRepository,
 ) {
-    fun getPaymentDetail(paymentIdx: Int, userIdx: Int): PaymentDetail? {
-        userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-        return paymentDetailRepository.findByPayment_PaymentIdxAndPayment_User_UserIdx(paymentIdx, userIdx) ?: throw PaymentDetailNotFoundException()
+    fun getPaymentDetails(paymentIdx: Int, userIdx: Int): List<PaymentDetail>? {
+        var user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
+        return paymentDetailRepository.findAllByPayment_PaymentIdxAndPayment_User(paymentIdx, user) ?: throw PaymentDetailNotFoundException()
     }
 
-    @Transactional
-    fun deletePaymentDetail(paymentIdx: Int, userIdx: Int): PaymentDetail? {
-        userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-        var paymentDetail = paymentDetailRepository.findByPayment_PaymentIdxAndPayment_User_UserIdx(paymentIdx, userIdx) ?: throw PaymentDetailNotFoundException()
-        paymentDetailRepository.deleteById(paymentDetail.paymentDetailIdx!!)
-        return paymentDetail
+    fun getPaymentDetail(paymentDetailIdx: Int): PaymentDetail? {
+        return paymentDetailRepository.findByIdOrNull(paymentDetailIdx)?: throw PaymentDetailNotFoundException()
     }
 }

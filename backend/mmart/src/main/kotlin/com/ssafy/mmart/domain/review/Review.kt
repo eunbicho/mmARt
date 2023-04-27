@@ -2,6 +2,7 @@ package com.ssafy.mmart.domain.review
 
 import com.ssafy.mmart.domain.Base
 import com.ssafy.mmart.domain.item.Item
+import com.ssafy.mmart.domain.paymentDetail.PaymentDetail
 import com.ssafy.mmart.domain.user.User
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -24,6 +25,11 @@ data class Review (
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="itemIdx")
     val item : Item,
+
+    @ManyToOne
+    @OnDelete(action= OnDeleteAction.CASCADE)
+    @JoinColumn(name="paymentDetailIdx")
+    val paymentDetail: PaymentDetail,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
