@@ -31,6 +31,8 @@ clean:
 build:
   image: $IMAGE_OPENJDK
   stage: build
+  needs:
+    - job: clean
   before_script:
   - cd backend/mmart
   - chmod +x gradlew
@@ -78,6 +80,9 @@ coverage-test:
 
 build-image:
   stage: build-image
+  needs:
+    - job: build
+    - job: test
   before_script:
     - cd backend/mmart
   script:
@@ -86,6 +91,8 @@ build-image:
 
 publish-image:
   stage: publish-image
+  needs:
+    - job: build-image
   script:
     - echo "Publishing Docker Image..."
     - docker login -u mjovanc -p $DOCKERHUB_PW
