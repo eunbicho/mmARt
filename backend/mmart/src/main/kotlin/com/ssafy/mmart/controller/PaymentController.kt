@@ -6,6 +6,7 @@ import com.ssafy.mmart.service.PaymentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -14,7 +15,7 @@ class PaymentController @Autowired constructor(
     val paymentService: PaymentService,
 ) {
    @GetMapping
-   fun getPayments(userIdx: Int): ResultResponse<List<Payment>?> {
+   fun getPayments(@RequestParam userIdx: Int): ResultResponse<List<Payment>?> {
        return ResultResponse.success(paymentService.getPayments(userIdx))
    }
 }
