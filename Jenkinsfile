@@ -26,5 +26,10 @@ pipeline {
         }
       }
     }
+    stage('deploy project') {
+      steps {
+        sh 'docker compose up -d .'
+      }
+    }
   }
 }
