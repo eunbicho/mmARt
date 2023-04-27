@@ -82,7 +82,6 @@ build-image:
   stage: build-image
   needs:
     - job: build
-    - job: test
   before_script:
     - cd backend/mmart
   script:
