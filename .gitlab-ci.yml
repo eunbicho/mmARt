@@ -79,7 +79,6 @@ build:
 #     - echo "Running coverage tests..."
 
 build-image:
-  image: docker
   stage: build-image
   needs:
     - job: build
@@ -87,13 +86,14 @@ build-image:
     - cd backend/mmart
   script:
     - echo "Building Docker Image..."
-    - docker build -t teqteqteqteq/red-limo-backend:latest
+    - docker build -t teqteqteqteq/red-limo-backend:latest .
 
 publish-image:
   stage: publish-image
   needs:
     - job: build-image
+  before_script:
+    - docker login -u teqteqteqteq -p Kty960626!
   script:
     - echo "Publishing Docker Image..."
-    - docker login -u mjovanc -p $DOCKERHUB_PW
     - docker push teqteqteqteq/red-limo-backend:latest
