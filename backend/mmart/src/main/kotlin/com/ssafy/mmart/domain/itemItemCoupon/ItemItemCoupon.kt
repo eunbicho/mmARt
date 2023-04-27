@@ -17,7 +17,7 @@ class ItemItemCoupon (
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="itemIdx")
-    var itemIdx: Item,
+    var item: Item,
 
 
     @ManyToOne
