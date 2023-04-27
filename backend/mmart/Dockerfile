@@ -21,7 +21,7 @@
 # COPY ${DEPENDENCY}/BOOT-INF/classes /app
 # ENTRYPOINT ["java","-cp","app:app/lib/*","com.ssafy.mmart.MmartApplication"]
 
-FROM gradle:7.5.1-jdk17-alpine AS builder
+FROM gradle:7.6.1-jdk17-alpine AS builder
 WORKDIR /builder/
 
 COPY build.gradle.kts settings.gradle.kts /builder/
@@ -32,7 +32,7 @@ COPY src /builder/src
 RUN gradle clean bootJar
 
 
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-alpine
 COPY --from=builder /builder/build/libs/*-SNAPSHOT.jar app/app.jar
 COPY --from=builder /builder/build/resources app/resources
 

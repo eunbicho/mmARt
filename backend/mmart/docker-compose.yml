@@ -10,21 +10,35 @@ services:
       TZ: "Asia/Seoul"
     restart: unless-stopped
     volumes:
-      - /red-limo-data:/var/lib/mysql
-      - /red-limo-data/initdb.d:/docker-entrypoint-initdb.d
+      - red-limo-data:/var/lib/mysql
+      - red-limo-data/initdb.d:/docker-entrypoint-initdb.d
     command:
       - --character-set-server=utf8 
       - --collation-server=utf8_general_ci
+
+  cache_database:
+    container_name: redis
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - red-limo-cache:/data
+    environment:
+      TZ: "Asia/Seoul"
+    
   backend:
     restart: on-failure
     ports:
       - 8090:8080
     depends_on:
       - database
+      - cache_database
     container_name: springboot
     image: red-limo-backend:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/red-limo-db?useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: red-limo
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
       TZ: "Asia/Seoul"
