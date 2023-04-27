@@ -19,8 +19,8 @@ class UserService @Autowired constructor(
     }
 
     fun createUser(userReq: UserReq): User? {
-        var otherUser = userRepository.findByEmail(userReq.email)
-        return if (otherUser == null) {
+        var oldUser = userRepository.findByEmail(userReq.email)
+        return if (oldUser == null) {
             userRepository.save(userReq.toEntity())
         } else {
             throw EmailDuplicateException()

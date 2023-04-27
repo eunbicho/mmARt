@@ -14,8 +14,8 @@ data class Review (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val reviewIdx : Int? = null,
 
-    @Column(name = "reviewContent")
-    var reviewContent : String? = "",
+    @Column(name = "content")
+    var content : String? = "",
 
     @Column(name = "star")
     var star : Int,
