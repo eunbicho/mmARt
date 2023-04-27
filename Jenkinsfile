@@ -20,7 +20,8 @@ pipeline {
     stage('dockerize project') {
       steps {
         dir('backend/mmart') {
-          sh 'mkdir -p target/dependency && (cd target/dependency; jar -xf ../*-SNAPSHOT.jar)'
+          sh 'mkdir -p target/dependency'
+          sh '(cd target/dependency; jar -xf ../*.jar)'
           sh 'docker build -t red-limo-backend:latest .'
         }
       }
