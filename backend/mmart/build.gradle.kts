@@ -38,6 +38,9 @@ dependencies {
 	implementation("com.querydsl:querydsl-jpa:5.0.0")
 	kapt("com.querydsl:querydsl-apt:5.0.0:jpa")
 	kapt("org.springframework.boot:spring-boot-configuration-processor")
+	// https://mvnrepository.com/artifact/com.google.zxing/core
+	implementation("com.google.zxing:core:3.5.1")
+
 }
 
 tasks.withType<KotlinCompile> {
