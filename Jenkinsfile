@@ -4,6 +4,7 @@ pipeline {
     stage('clean') {
       steps {
         dir('backend/mmart') {
+          sh 'chmod +x gradlew'
           sh './gradlew clean'
         }
       }
@@ -11,6 +12,7 @@ pipeline {
     stage('build') {
       steps {
         dir('backend/mmart') {
+          sh 'chmod +x gradlew'
           sh './gradlew build'
         }
       }
