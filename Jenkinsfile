@@ -1,7 +1,7 @@
 pipeline {
   agent any
   stages {
-    stage('clean project') {
+    stage('clean') {
       steps {
         dir('backend/mmart') {
           sh 'chmod +x gradlew'
@@ -9,7 +9,7 @@ pipeline {
         }
       }
     }
-    stage('build project') {
+    stage('build') {
       steps {
         dir('backend/mmart') {
           sh 'chmod +x gradlew'
@@ -17,7 +17,7 @@ pipeline {
         }
       }
     }
-    stage('dockerize project') {
+    stage('docker') {
       steps {
         dir('backend/mmart') {
           sh 'mkdir -p target/dependency'
@@ -26,7 +26,7 @@ pipeline {
         }
       }
     }
-    stage('deploy project') {
+    stage('deploy') {
       steps {
         dir('backend/mmart') {
           sh 'docker-compose up -d --build'
