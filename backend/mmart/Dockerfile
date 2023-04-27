@@ -16,7 +16,6 @@
 FROM openjdk:11
 VOLUME /tmp
 ARG DEPENDENCY=target/dependency
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY ${DEPENDENCY}/META-INF /app/META-INF
 COPY ${DEPENDENCY}/BOOT-INF/classes /app
