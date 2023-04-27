@@ -7,7 +7,8 @@ workflow:
     - if: $CI_COMMIT_BRANCH == 'master'
 
 variables:
-  IMAGE_OPENJDK_GRADLE: gradle:7.3.3-jdk17-alpine
+  IMAGE_OPENJDK_GRADLE: gradle:7.6.1-jdk17-alpine
+  IMAGE_OPENJDK: openjdk:17-alpine
 
 stages:
   - clean
@@ -28,7 +29,7 @@ clean:
     - ./gradlew clean
 
 build:
-  image: $IMAGE_OPENJDK_GRADLE
+  image: $IMAGE_OPENJDK
   stage: build
   before_script:
   - cd backend/mmart
@@ -38,7 +39,7 @@ build:
     - ./gradlew assemble
   artifacts:
     paths:
-      - build/libs/*.jar
+      - build/libs/*SNAPSHOT.jar
 
 static-code-analysis:
   image: $IMAGE_OPENJDK_GRADLE
@@ -81,7 +82,7 @@ build-image:
     - cd backend/mmart
   script:
     - echo "Building Docker Image..."
-    - docker build -t teqteqteqteq/red-limo-backend:latest .
+    - docker build -t teqteqteqteq/red-limo-backend:latest
 
 publish-image:
   stage: publish-image
@@ -89,39 +90,3 @@ publish-image:
     - echo "Publishing Docker Image..."
     - docker login -u mjovanc -p $DOCKERHUB_PW
     - docker push teqteqteqteq/red-limo-backend:latest
-
-# Alternative down stream pipeline to be triggered
-#deploy:
-#  stage: deploy
-#  trigger: mjovanc/blog-iac
-
-
-# stages:  
-#   # - test        # List of stages for jobs, and their order of execution
-#   - build
-#   - deploy
-
-# # test-job:   # This job runs in the test stage.
-# #   stage: test    # It only starts when the job in the build stage completes successfully.
-# #   image: gradle:7.6.1-jdk11-alpine
-# #   before_script:
-# #     - cd backend/mmart
-# #     - chmod +x gradlew
-# #   script:
-# #     - ./gradlew test
-
-# build-job:       # This job runs in the build stage, which runs first.
-#   stage: build
-#   image: gradle:7.6.1-jdk11-alpine
-#   before_script:
-#   - cd backend/mmart
-#   - chmod +x gradlew
-#   script:
-#     - ./gradlew clean build -x test
-
-# deploy-job:      # This job runs in the deploy stage.
-#   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-#   environment: production
-#   script:
-#     - echo "Deploying application..."
-#     - echo "Application successfully deployed."
