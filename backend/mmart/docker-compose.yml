@@ -10,8 +10,8 @@ services:
       TZ: "Asia/Seoul"
     restart: unless-stopped
     volumes:
-      - red-limo-data:/var/lib/mysql
-      - red-limo-data/initdb.d:/docker-entrypoint-initdb.d
+      - /red-limo-data:/var/lib/mysql
+      - /red-limo-data/initdb.d:/docker-entrypoint-initdb.d
     command:
       - --character-set-server=utf8 
       - --collation-server=utf8_general_ci
@@ -22,7 +22,7 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - red-limo-cache:/data
+      - /red-limo-cache:/data
     environment:
       TZ: "Asia/Seoul"
     
