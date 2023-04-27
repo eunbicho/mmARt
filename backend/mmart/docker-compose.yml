@@ -9,8 +9,8 @@ services:
       MYSQL_DATABASE: red-limo-db
       TZ: "Asia/Seoul"
     restart: unless-stopped
-    volumes:
-      - /red-limo-data:/var/lib/mysql
+    # volumes:
+    #   - /red-limo-data:/var/lib/mysql
     #   - /red-limo-data/initdb.d:/docker-entrypoint-initdb.d
     # command:
     #   - --character-set-server=utf8 
