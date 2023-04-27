@@ -21,7 +21,7 @@ pipeline {
       steps {
         dir('backend/mmart') {
           sh 'mkdir -p target/dependency'
-          sh '(cd target/dependency; jar -xf ../*.jar)'
+          sh '(cd target/dependency; jar -xf ../../build/libs/*-SNAPSHOT.jar)'
           sh 'docker build -t red-limo-backend:latest .'
         }
       }
