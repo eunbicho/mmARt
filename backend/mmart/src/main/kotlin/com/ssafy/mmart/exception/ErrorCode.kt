@@ -15,6 +15,7 @@ enum class ErrorCode(httpStatus: HttpStatus,message: String) {
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "결제 내역이 없습니다."),
     PAYMENT_DETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 결제 내역을 찾을 수 없습니다."),
     FAVORITE_DUPLICATE(HttpStatus.CONFLICT, "중복된 즐겨찾기입니다."),
+    GETCART_EMPTY(HttpStatus.CONFLICT, "장볼구니가 비어있습니다."),
     BAD_ACCESS(HttpStatus.BAD_REQUEST, "잘못된 접근입니다."),
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 에러");
 
