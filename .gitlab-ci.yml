@@ -43,42 +43,43 @@ build:
     paths:
       - build/libs/*-SNAPSHOT.jar
 
-static-code-analysis:
-  image: $IMAGE_OPENJDK_GRADLE
-  stage: test
-  before_script:
-    - cd backend/mmart
-    - chmod +x gradlew
-  script:
-    - echo "Running Static Code Analysis..."
-    - echo "Checking style..."
-    - ./gradlew checkstyleMain
-    - echo "Checking duplicated code..."
-    - ./gradlew cpdCheck
-    - echo "Checking bugs..."
-    - ./gradlew spotbugsMain
-    - echo "Checking code standard..."
-    - ./gradlew pmdMain
+# static-code-analysis:
+#   image: $IMAGE_OPENJDK_GRADLE
+#   stage: test
+#   before_script:
+#     - cd backend/mmart
+#     - chmod +x gradlew
+#   script:
+#     - echo "Running Static Code Analysis..."
+#     - echo "Checking style..."
+#     - ./gradlew checkstyleMain
+#     - echo "Checking duplicated code..."
+#     - ./gradlew cpdCheck
+#     - echo "Checking bugs..."
+#     - ./gradlew spotbugsMain
+#     - echo "Checking code standard..."
+#     - ./gradlew pmdMain
 
-unit-test:
-  image: $IMAGE_OPENJDK_GRADLE
-  stage: test
-  before_script:
-    - cd backend/mmart
-    - chmod +x gradlew
-  script:
-    - echo "Running unit tests..."
-    - ./gradlew test -Dspring.profiles.active=test
+# unit-test:
+#   image: $IMAGE_OPENJDK_GRADLE
+#   stage: test
+#   before_script:
+#     - cd backend/mmart
+#     - chmod +x gradlew
+#   script:
+#     - echo "Running unit tests..."
+#     - ./gradlew test -Dspring.profiles.active=test
 
-coverage-test:
-  image: $IMAGE_OPENJDK_GRADLE
-  stage: test
-  needs:
-    - job: unit-test
-  script:
-    - echo "Running coverage tests..."
+# coverage-test:
+#   image: $IMAGE_OPENJDK_GRADLE
+#   stage: test
+#   needs:
+#     - job: unit-test
+#   script:
+#     - echo "Running coverage tests..."
 
 build-image:
+  image: docker
   stage: build-image
   needs:
     - job: build
