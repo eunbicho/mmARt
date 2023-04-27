@@ -1,0 +1,127 @@
+# Adding workflow rules to avoid other branches to use the pipeline 
+# since we only want to use the master branch
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_COMMIT_BRANCH == 'master'
+
+variables:
+  IMAGE_OPENJDK_GRADLE: gradle:7.3.3-jdk17-alpine
+
+stages:
+  - clean
+  - build
+  - test
+  - build-image
+  - publish-image
+  - deploy
+
+clean:
+  image: $IMAGE_OPENJDK_GRADLE
+  stage: clean
+  before_script:
+  - cd backend/mmart
+  - chmod +x gradlew
+  script:
+    - echo "Cleaning leftovers from previous builds"
+    - ./gradlew clean
+
+build:
+  image: $IMAGE_OPENJDK_GRADLE
+  stage: build
+  before_script:
+  - cd backend/mmart
+  - chmod +x gradlew
+  script:
+    - echo "Compiling the code..."
+    - ./gradlew assemble
+  artifacts:
+    paths:
+      - build/libs/*.jar
+
+static-code-analysis:
+  image: $IMAGE_OPENJDK_GRADLE
+  stage: test
+  before_script:
+    - cd backend/mmart
+    - chmod +x gradlew
+  script:
+    - echo "Running Static Code Analysis..."
+    - echo "Checking style..."
+    - ./gradlew checkstyleMain
+    - echo "Checking duplicated code..."
+    - ./gradlew cpdCheck
+    - echo "Checking bugs..."
+    - ./gradlew spotbugsMain
+    - echo "Checking code standard..."
+    - ./gradlew pmdMain
+
+unit-test:
+  image: $IMAGE_OPENJDK_GRADLE
+  stage: test
+  before_script:
+    - cd backend/mmart
+    - chmod +x gradlew
+  script:
+    - echo "Running unit tests..."
+    - ./gradlew test -Dspring.profiles.active=test
+
+coverage-test:
+  image: $IMAGE_OPENJDK_GRADLE
+  stage: test
+  needs:
+    - job: unit-test
+  script:
+    - echo "Running coverage tests..."
+
+build-image:
+  stage: build-image
+  before_script:
+    - cd backend/mmart
+  script:
+    - echo "Building Docker Image..."
+    - docker build -t teqteqteqteq/red-limo-backend:latest .
+
+publish-image:
+  stage: publish-image
+  script:
+    - echo "Publishing Docker Image..."
+    - docker login -u mjovanc -p $DOCKERHUB_PW
+    - docker push teqteqteqteq/red-limo-backend:latest
+
+# Alternative down stream pipeline to be triggered
+#deploy:
+#  stage: deploy
+#  trigger: mjovanc/blog-iac
+
+
+# stages:  
+#   # - test        # List of stages for jobs, and their order of execution
+#   - build
+#   - deploy
+
+# # test-job:   # This job runs in the test stage.
+# #   stage: test    # It only starts when the job in the build stage completes successfully.
+# #   image: gradle:7.6.1-jdk11-alpine
+# #   before_script:
+# #     - cd backend/mmart
+# #     - chmod +x gradlew
+# #   script:
+# #     - ./gradlew test
+
+# build-job:       # This job runs in the build stage, which runs first.
+#   stage: build
+#   image: gradle:7.6.1-jdk11-alpine
+#   before_script:
+#   - cd backend/mmart
+#   - chmod +x gradlew
+#   script:
+#     - ./gradlew clean build -x test
+
+# deploy-job:      # This job runs in the deploy stage.
+#   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+#   environment: production
+#   script:
+#     - echo "Deploying application..."
+#     - echo "Application successfully deployed."

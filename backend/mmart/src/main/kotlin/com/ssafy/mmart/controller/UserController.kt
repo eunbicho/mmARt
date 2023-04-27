@@ -22,10 +22,6 @@ class UserController @Autowired constructor(
         return ResultResponse.success(userService.createUser(userReq))
     }
 
-    @PutMapping("/{userIdx}")
-    fun updateUser(@PathVariable userIdx: Int, @RequestBody userReq: UserReq): ResultResponse<User?> {
-        return ResultResponse.success(userService.updateUser(userIdx, userReq))
-    }
 
     @DeleteMapping("/{userIdx}")
     fun deleteUser(@PathVariable userIdx: Int): ResultResponse<User?> {
