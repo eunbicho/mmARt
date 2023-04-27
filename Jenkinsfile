@@ -28,7 +28,9 @@ pipeline {
     }
     stage('deploy project') {
       steps {
-        sh 'docker-compose up -d'
+        dir('backend/mmart') {
+          sh 'docker-compose up -d .'
+        }
       }
     }
   }
