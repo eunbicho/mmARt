@@ -1,24 +1,17 @@
 pipeline {
-  agent {
-    kubernetes {
-      yaml '''
-        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
-          - name: docker
-            image: docker
-            command:
-            - cat
-            tty: true
-        '''
-    }
-  }
+  agent any
   stages {
-    stage('Run maven') {
+    stage('clean') {
       steps {
-        container('docker') {
-          sh 'docker ps'
+        dir('backend/mmart') {
+          sh './gradlew clean'
+        }
+      }
+    }
+    stage('build') {
+      steps {
+        dir('backend/mmart') {
+          sh './gradlew build'
         }
       }
     }
