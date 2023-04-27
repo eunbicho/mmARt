@@ -36,10 +36,10 @@ build:
   - chmod +x gradlew
   script:
     - echo "Compiling the code..."
-    - ./gradlew assemble
+    - ./gradlew build -x test
   artifacts:
     paths:
-      - build/libs/*SNAPSHOT.jar
+      - build/libs/*-SNAPSHOT.jar
 
 static-code-analysis:
   image: $IMAGE_OPENJDK_GRADLE
