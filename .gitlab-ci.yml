@@ -35,7 +35,7 @@ build:
     - cd backend/mmart/src/main/resources
     - echo $SPRINGBOOT_PROPS
     - echo $SPRINGBOOT_PROPS >> "application.properties"
-    - cat application.properties
+    - ls -al
     - cd ../../../
     - chmod +x gradlew
   script:
