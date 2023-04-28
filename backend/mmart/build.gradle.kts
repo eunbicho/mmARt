@@ -38,8 +38,12 @@ dependencies {
 	implementation("com.querydsl:querydsl-jpa:5.0.0")
 	kapt("com.querydsl:querydsl-apt:5.0.0:jpa")
 	kapt("org.springframework.boot:spring-boot-configuration-processor")
-	// https://mvnrepository.com/artifact/com.google.zxing/core
-	implementation("com.google.zxing:core:3.5.1")
+// https://mvnrepository.com/artifact/com.google.zxing/javase
+	implementation("com.google.zxing:javase:3.5.1")
+
+
+	implementation ("com.github.downgoon:marvin:1.5.5")
+	implementation ("com.github.downgoon:MarvinPlugins:1.5.5")
 
 }
 
