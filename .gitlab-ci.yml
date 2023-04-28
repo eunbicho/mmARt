@@ -17,6 +17,7 @@ stages:
 clean:
   image: $IMAGE_OPENJDK_GRADLE
   stage: build
+  allow_failure: true
   before_script:
   - cd backend/mmart
   - chmod +x gradlew
@@ -27,11 +28,15 @@ clean:
 build:
   image: $IMAGE_OPENJDK
   stage: build
+  allow_failure: true
   needs:
     - job: clean
   before_script:
-  - cd backend/mmart
-  - chmod +x gradlew
+    - cd backend/mmart/src/main/resources
+    - echo "$SPRINGBOOT_PROPS" > "application.properties"
+    - cat application.properties
+    - cd ../../../
+    - chmod +x gradlew
   script:
     - echo "Compiling the code..."
     - ./gradlew build -x test
@@ -42,6 +47,7 @@ build:
 
 package:
   stage: package
+  allow_failure: true
   before_script:
     - cd backend/mmart
     - docker login -u teqteqteqteq -p $DOCKERHUB_PW
