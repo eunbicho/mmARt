@@ -46,27 +46,27 @@ check:
       # SCRIPT - Build
       ##################################################
   script:
-          - echo "################################################## - Load cached data to ${GRADLE_USER_HOME}"
-          - mkdir $GRADLE_USER_HOME
-          #Cache된 것이 없어서 Copy Error발생해도 무시
-          - cp -r /cache/wrapper /cache/caches $GRADLE_USER_HOME || true   
-          #작업환경이 Windows였는데 CI환경은 Unix시스템일 경우 Unix접근권한의 부재가 생긴다. 이를 방지한다. 
-          #또는 사전에 이 명령을 조치하면 script에서 신경 쓸 필요가 없어진다.
-          #==>  git update-index --chmod=+x ./gradlew.sh
-          - chmod +x gradlew  
-          #-g 옵션으로 Cache된 파일이 있는 Path를 알려주자
-          - ./gradlew clean build -g $GRADLE_USER_HOME
+    - echo "################################################## - Load cached data to ${GRADLE_USER_HOME}"
+    - mkdir $GRADLE_USER_HOME
+    #Cache된 것이 없어서 Copy Error발생해도 무시
+    - cp -r /cache/wrapper /cache/caches $GRADLE_USER_HOME || true   
+    #작업환경이 Windows였는데 CI환경은 Unix시스템일 경우 Unix접근권한의 부재가 생긴다. 이를 방지한다. 
+    #또는 사전에 이 명령을 조치하면 script에서 신경 쓸 필요가 없어진다.
+    #==>  git update-index --chmod=+x ./gradlew.sh
+    - chmod +x gradlew  
+    #-g 옵션으로 Cache된 파일이 있는 Path를 알려주자
+    - ./gradlew clean build -g $GRADLE_USER_HOME
 
       ##################################################
       # SCRIPT - Checking
       ##################################################
   after_script:
-          - echo '########## - Check cached files'
-          - ls -a "$GRADLE_USER_HOME" || true
-          - echo '########## - Check Artifacts files'
-          - ls -al ./build/libs/*
-          - echo '########## - Finish Check'
-          - echo 'OK ^^'
+    - echo '########## - Check cached files'
+    - ls -a "$GRADLE_USER_HOME" || true
+    - echo '########## - Check Artifacts files'
+    - ls -al ./build/libs/*
+    - echo '########## - Finish Check'
+    - echo 'OK ^^'
 
 
 # clean:
