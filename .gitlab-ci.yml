@@ -4,9 +4,17 @@ workflow:
       when: never
     - if: $CI_COMMIT_BRANCH == 'master'
 
-variables:
-  IMAGE_OPENJDK_GRADLE: gradle:7.6.1-jdk17-alpine
-  IMAGE_OPENJDK: openjdk:17-alpine
+# variables:
+#   IMAGE_OPENJDK_GRADLE: gradle:7.6.1-jdk17-alpine
+#   IMAGE_OPENJDK: openjdk:17-alpine
+
+image: gradle:7.6.1-jdk17-alpine
+
+cache:
+  key: gradle-dependency
+  path: 
+    - .gradle/wrapper
+    - .gradle/caches
 
 stages:
   - test
@@ -14,26 +22,57 @@ stages:
   - package
   - deploy
 
-clean:
-  image: $IMAGE_OPENJDK_GRADLE
-  stage: build
+check:
+  cache:
+    key: gradle-dependency
+    path: 
+      - .gradle/wrapper
+      - .gradle/caches
   allow_failure: true
   before_script:
-  - cd backend/mmart
-  - chmod +x gradlew
+    - echo '########## - Define my variables'
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - echo $GRADLE_USER_HOME
+
+    - echo '########## - Check Current Path'
+    - pwd
+    - ls -a ./
+
+    - echo '########## - Check cached data files'
+    - ls -a "$GRADLE_USER_HOME" || true
+    - ls -a /cache || true
+    - ls -a /cache/caches || true
+
+
+clean:
+  # image: $IMAGE_OPENJDK_GRADLE
+  stage: build
+  cache:
+    key: gradle-dependency
+    path: 
+      - .gradle/wrapper
+      - .gradle/caches
+  allow_failure: true
+  before_script:
+    - cd backend/mmart
+    - chmod +x gradlew
   script:
     - echo "Cleaning leftovers from previous builds"
     - ./gradlew clean
 
 build:
-  image: $IMAGE_OPENJDK
+  # image: $IMAGE_OPENJDK
   stage: build
+  cache:
+    key: gradle-dependency
+    path: 
+      - .gradle/wrapper
+      - .gradle/caches
   allow_failure: true
   needs:
     - job: clean
   before_script:
     - cd backend/mmart/src/main/resources
-    - echo $SPRINGBOOT_PROPS
     - echo $SPRINGBOOT_PROPS >> "application.properties"
     - ls -al
     - cd ../../../
@@ -45,9 +84,11 @@ build:
     name: app.jar
     paths:
       - backend/mmart/build/libs/mmart-0.0.1-SNAPSHOT.jar
+    expire_in: 1 week
 
 package:
   stage: package
+  cache: []
   allow_failure: true
   before_script:
     - cd backend/mmart
