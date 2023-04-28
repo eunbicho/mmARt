@@ -40,8 +40,9 @@ build:
     - echo "Compiling the code..."
     - ./gradlew build -x test
   artifacts:
+    name: app.jar
     paths:
-      - build/libs/*-SNAPSHOT.jar
+      - backend/mmart/build/libs/mmart-0.0.1-SNAPSHOT.jar
 
 # static-code-analysis:
 #   image: $IMAGE_OPENJDK_GRADLE
