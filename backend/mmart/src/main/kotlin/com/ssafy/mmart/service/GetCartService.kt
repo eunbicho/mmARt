@@ -109,7 +109,7 @@ class GetCartService @Autowired constructor(
         return getCartRes
     }
 
-    fun getGetCart(userIdx: Int): GetCartRes {
+    open fun getGetCart(userIdx: Int): GetCartRes {
         //유저가 존재하는지 확인
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
 
