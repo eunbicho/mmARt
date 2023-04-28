@@ -51,3 +51,10 @@ package:
   after_script:
     - echo "Publishing Docker Image..."
     - docker push teqteqteqteq/red-limo-backend:latest
+
+kubectl:
+  stage: deploy
+  allow_failure: true
+  script:
+    - echo "check if cluster is connected..."
+    - kubectl get nodes
