@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*
 class GotCartController @Autowired constructor(
     val gotCartService: GotCartService,
 ){
-    @GetMapping
-    fun getGotCarts(@RequestParam userIdx: Int): ResultResponse<GotCartRes> {
+    @GetMapping("/{userIdx}")
+    fun getGotCarts(@PathVariable userIdx: Int): ResultResponse<GotCartRes> {
         return ResultResponse.success(gotCartService.getGotCarts(userIdx))
     }
 
