@@ -80,7 +80,7 @@ build:
 #     - echo "Running coverage tests..."
 
 package:
-  stage: build-image
+  stage: package
   needs:
     - job: build
   before_script:
