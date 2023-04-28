@@ -12,7 +12,7 @@ image: gradle:7.6.1-jdk17-alpine
 
 cache:
   key: gradle-dependency
-  path: 
+  paths: 
     - .gradle/wrapper
     - .gradle/caches
 
@@ -25,7 +25,7 @@ stages:
 check:
   cache:
     key: gradle-dependency
-    path: 
+    paths: 
       - .gradle/wrapper
       - .gradle/caches
   allow_failure: true
@@ -42,68 +42,93 @@ check:
     - ls -a "$GRADLE_USER_HOME" || true
     - ls -a /cache || true
     - ls -a /cache/caches || true
-
-
-clean:
-  # image: $IMAGE_OPENJDK_GRADLE
-  stage: build
-  cache:
-    key: gradle-dependency
-    path: 
-      - .gradle/wrapper
-      - .gradle/caches
-  allow_failure: true
-  before_script:
-    - cd backend/mmart
-    - chmod +x gradlew
+  ##################################################
+      # SCRIPT - Build
+      ##################################################
   script:
-    - echo "Cleaning leftovers from previous builds"
-    - ./gradlew clean
+          - echo "################################################## - Load cached data to ${GRADLE_USER_HOME}"
+          - mkdir $GRADLE_USER_HOME
+          #Cache된 것이 없어서 Copy Error발생해도 무시
+          - cp -r /cache/wrapper /cache/caches $GRADLE_USER_HOME || true   
+          #작업환경이 Windows였는데 CI환경은 Unix시스템일 경우 Unix접근권한의 부재가 생긴다. 이를 방지한다. 
+          #또는 사전에 이 명령을 조치하면 script에서 신경 쓸 필요가 없어진다.
+          #==>  git update-index --chmod=+x ./gradlew.sh
+          - chmod +x gradlew  
+          #-g 옵션으로 Cache된 파일이 있는 Path를 알려주자
+          - ./gradlew clean build -g $GRADLE_USER_HOME
 
-build:
-  # image: $IMAGE_OPENJDK
-  stage: build
-  cache:
-    key: gradle-dependency
-    path: 
-      - .gradle/wrapper
-      - .gradle/caches
-  allow_failure: true
-  needs:
-    - job: clean
-  before_script:
-    - cd backend/mmart/src/main/resources
-    - echo $SPRINGBOOT_PROPS >> "application.properties"
-    - ls -al
-    - cd ../../../
-    - chmod +x gradlew
-  script:
-    - echo "Compiling the code..."
-    - ./gradlew build -x test
-  artifacts:
-    name: app.jar
-    paths:
-      - backend/mmart/build/libs/mmart-0.0.1-SNAPSHOT.jar
-    expire_in: 1 week
-
-package:
-  stage: package
-  cache: []
-  allow_failure: true
-  before_script:
-    - cd backend/mmart
-    - docker login -u teqteqteqteq -p $DOCKERHUB_PW
-  script:
-    - echo "Building Docker Image..."
-    - docker build -t teqteqteqteq/red-limo-backend:latest .
+      ##################################################
+      # SCRIPT - Checking
+      ##################################################
   after_script:
-    - echo "Publishing Docker Image..."
-    - docker push teqteqteqteq/red-limo-backend:latest
+          - echo '########## - Check cached files'
+          - ls -a "$GRADLE_USER_HOME" || true
+          - echo '########## - Check Artifacts files'
+          - ls -al ./build/libs/*
+          - echo '########## - Finish Check'
+          - echo 'OK ^^'
 
-kubectl:
-  image: bitnami/kubectl:latest
-  stage: deploy
-  allow_failure: true
-  script:
-    - echo "check if cluster is connected..."
-    - kubectl get all -n gitlab
+
+# clean:
+#   # image: $IMAGE_OPENJDK_GRADLE
+#   stage: build
+#   cache:
+#     key: gradle-dependency
+#     paths: 
+#       - .gradle/wrapper
+#       - .gradle/caches
+#   allow_failure: true
+#   before_script:
+#     - cd backend/mmart
+#     - chmod +x gradlew
+#   script:
+#     - echo "Cleaning leftovers from previous builds"
+#     - ./gradlew clean
+
+# build:
+#   # image: $IMAGE_OPENJDK
+#   stage: build
+#   cache:
+#     key: gradle-dependency
+#     paths: 
+#       - .gradle/wrapper
+#       - .gradle/caches
+#   allow_failure: true
+#   needs:
+#     - job: clean
+#   before_script:
+#     - cd backend/mmart/src/main/resources
+#     - echo $SPRINGBOOT_PROPS >> "application.properties"
+#     - ls -al
+#     - cd ../../../
+#     - chmod +x gradlew
+#   script:
+#     - echo "Compiling the code..."
+#     - ./gradlew build -x test
+#   artifacts:
+#     name: app.jar
+#     paths:
+#       - backend/mmart/build/libs/mmart-0.0.1-SNAPSHOT.jar
+#     expire_in: 1 week
+
+# package:
+#   stage: package
+#   cache: []
+#   allow_failure: true
+#   before_script:
+#     - cd backend/mmart
+#     - docker login -u teqteqteqteq -p $DOCKERHUB_PW
+#   script:
+#     - echo "Building Docker Image..."
+#     - docker build -t teqteqteqteq/red-limo-backend:latest .
+#   after_script:
+#     - echo "Publishing Docker Image..."
+#     - docker push teqteqteqteq/red-limo-backend:latest
+
+# kubectl:
+#   image: bitnami/kubectl:latest
+#   stage: deploy
+#   allow_failure: true
+#   script:
+#     - echo "check if cluster is connected..."
+#     - kubectl get all -n gitlab
