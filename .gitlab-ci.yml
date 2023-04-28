@@ -33,7 +33,7 @@ build:
     - job: clean
   before_script:
     - cd backend/mmart/src/main/resources
-    - echo "$SPRINGBOOT_PROPS" > "application.properties"
+    - echo $SPRINGBOOT_PROPS > "application.properties"
     - cat application.properties
     - cd ../../../
     - chmod +x gradlew
