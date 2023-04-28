@@ -65,4 +65,4 @@ kubectl:
   allow_failure: true
   script:
     - echo "check if cluster is connected..."
-    - kubectl get nodes
+    - kubectl get all -n gitlab
