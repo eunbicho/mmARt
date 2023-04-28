@@ -44,7 +44,7 @@ package:
   stage: package
   before_script:
     - cd backend/mmart
-    - docker login -u teqteqteqteq -p Kty960626!
+    - docker login -u teqteqteqteq -p $DOCKERHUB_PW
   script:
     - echo "Building Docker Image..."
     - docker build -t teqteqteqteq/red-limo-backend:latest .
