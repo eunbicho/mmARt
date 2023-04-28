@@ -60,6 +60,7 @@ package:
     - docker push teqteqteqteq/red-limo-backend:latest
 
 kubectl:
+  image: bitnami/kubectl:latest
   stage: deploy
   allow_failure: true
   script:
