@@ -13,10 +13,10 @@ variables:
 stages:
   - clean
   - build
-  - test
-  - build-image
-  - publish-image
-  - deploy
+  - package
+  # - build-image
+  # - publish-image
+  # - deploy
 
 clean:
   image: $IMAGE_OPENJDK_GRADLE
@@ -79,7 +79,7 @@ build:
 #   script:
 #     - echo "Running coverage tests..."
 
-build-image:
+package:
   stage: build-image
   needs:
     - job: build
@@ -88,13 +88,7 @@ build-image:
   script:
     - echo "Building Docker Image..."
     - docker build -t teqteqteqteq/red-limo-backend:latest .
-
-publish-image:
-  stage: publish-image
-  needs:
-    - job: build-image
-  before_script:
+  after_script:
     - docker login -u teqteqteqteq -p Kty960626!
-  script:
     - echo "Publishing Docker Image..."
     - docker push teqteqteqteq/red-limo-backend:latest
