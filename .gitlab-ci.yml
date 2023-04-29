@@ -125,10 +125,11 @@ stages:
 #     - echo "Publishing Docker Image..."
 #     - docker push teqteqteqteq/red-limo-backend:latest
 
-kubectl:
-  image: bitnami/kubectl:latest
-  stage: deploy
-  allow_failure: true
+deploy:
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
   script:
-    - echo "check if cluster is connected..."
     - kubectl config get-contexts
+    - kubectl config use-context path/to/agent/repository:agent-name
+    - kubectl get pods
