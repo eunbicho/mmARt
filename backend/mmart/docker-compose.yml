@@ -1,7 +1,7 @@
 services:
   database:
     container_name: mysql
-    image: mysql:8.0.30
+    image: mysql:8-oracle
     ports:
       - 4444:3306
     environment:
@@ -9,14 +9,18 @@ services:
       MYSQL_DATABASE: red-limo-db
       TZ: "Asia/Seoul"
     restart: unless-stopped
+    volumes:
+      - red-limo-data:/var/lib/mysql
 
   cache_database:
     container_name: redis
-    image: redis:alpine
+    image: redis:7-alpine
     ports:
       - 8888:6379
     environment:
       TZ: "Asia/Seoul"
+    volumes:
+      - red-limo-cache:/data
     
   backend:
     restart: on-failure
@@ -32,3 +36,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: red-limo
       TZ: "Asia/Seoul"
+
+volumes:
+  red-limo-data:
+  red-limo-cache:
