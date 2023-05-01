@@ -18,7 +18,7 @@ data class PaymentDetail (
     val amount: Int,
 
     @Column(name = "discount")
-    val discount: Int,
+    val discount: Int = 0,
 
     @Column(name = "costResult")
     val costResult: Int,
