@@ -1,11 +1,16 @@
 package com.ssafy.mmart.service
 
+import com.querydsl.core.Tuple
+import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.item.Item
 import com.ssafy.mmart.domain.item.QItem.item
+import com.ssafy.mmart.domain.payment.QPayment.payment
+import com.ssafy.mmart.domain.paymentDetail.QPaymentDetail.paymentDetail
 import com.ssafy.mmart.repository.ItemRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+
 
 @Service
 class ItemService @Autowired constructor(
@@ -27,10 +32,35 @@ class ItemService @Autowired constructor(
             .fetchOne()
     }
 
-    fun getItemByCategory(userIdx: Int, categoryIdx: Int): List<Item?> {
-        return jpaQueryFactory
-            .selectFrom(item)
-            .where(item.category.categoryIdx.eq(categoryIdx))
+    fun getItemByCategory(userIdx: Int, categoryIdx: Int): MutableList<Item>? {
+        var result = jpaQueryFactory.select(item)
+            .from(paymentDetail)
+            .join(paymentDetail.payment, payment)
+            .join(paymentDetail.item, item)
+            .where(payment.user.userIdx.eq(userIdx).and(item.category.categoryIdx.eq(categoryIdx)).and(item.inventory.gt(0)))
+            .groupBy(item.itemIdx)
+            .orderBy(item.itemIdx.count().desc(), payment.date.max().desc())
             .fetch()
+        //이제 재고 있는 전체 리스트 add
+        var temp = jpaQueryFactory
+            .selectFrom(item)
+            .where(
+                item.notIn(
+                    JPAExpressions.select(item)
+                        .from(paymentDetail)
+                        .join(paymentDetail.payment, payment)
+                        .join(paymentDetail.item, item)
+                        .where(payment.user.userIdx.eq(userIdx))
+                    ).and(item.category.categoryIdx.eq(categoryIdx)).and(item.inventory.gt(0))
+                )
+            .fetch()
+        result.addAll(temp)
+        var temp2 = jpaQueryFactory
+            .selectFrom(item)
+            .where(item.inventory.eq(0))
+            .fetch()
+        //한번도 안 산 재고 있는 상품 구해서 넣기
+        result.addAll(temp2)
+        return result
     }
 }

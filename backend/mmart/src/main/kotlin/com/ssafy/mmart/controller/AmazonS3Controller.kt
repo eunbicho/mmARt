@@ -26,4 +26,9 @@ class AmazonS3Controller @Autowired constructor(val amazonS3Service: AmazonS3Ser
         println("테스트")
         return ResultResponse.success(amazonS3Service.getQRCodeImage(userIdx))
     }
+
+    @PostMapping("/item")
+    fun uploadItemImage(@RequestParam url:String,itemIdx:Int): ResultResponse<String?> {
+        return ResultResponse.success(amazonS3Service.uploadItemImage(url,itemIdx))
+    }
 }
