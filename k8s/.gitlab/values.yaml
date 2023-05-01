@@ -1,0 +1,41 @@
+gitlabUrl: https://lab.ssafy.com/
+runnerRegistrationToken: GR1348941S3VVKyQxqjVXDKZsmVxz
+rbac:
+  create: true
+unregisterRunners: true
+concurrent: 30
+checkInterval: 20
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+runners:
+  config: |
+    [[runners]]
+      executor = "kubernetes"
+      serviceAccountName = "gitlab-runner"
+      environment = [
+        "FF_USE_LEGACY_KUBERNETES_EXECUTION_STRATEGY=false",
+        "DOCKER_HOST=tcp://localhost:2376",
+        "DOCKER_TLS_VERIFY=1",
+        "DOCKER_TLS_CERTDIR=/certs",
+        "DOCKER_CERT_PATH=$DOCKER_TLS_CERTDIR/client",
+        "DOCKER_BUILDKIT=1",
+        "DOCKER_CLI_EXPERIMENTAL=enabled"
+      ]
+      [runners.kubernetes]
+        image = "docker:stable-dind"
+        privileged = true
+        serviceAccountName = "gitlab-runner"
+        [[runners.kubernetes.services]]
+          name = "docker:stable-dind"
+          command = ["--experimental", "--registry-mirror", "https://mirror.gcr.io"]
+          alias = "docker"
+        [[runners.kubernetes.volumes.empty_dir]]
+          name = "docker-certs"
+          mount_path = "/certs/client"
+          medium = "Memory"
