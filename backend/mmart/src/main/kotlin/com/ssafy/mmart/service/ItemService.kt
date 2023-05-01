@@ -3,6 +3,8 @@ package com.ssafy.mmart.service
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.item.Item
 import com.ssafy.mmart.domain.item.QItem.item
+import com.ssafy.mmart.domain.payment.QPayment.payment
+import com.ssafy.mmart.domain.paymentDetail.QPaymentDetail.paymentDetail
 import com.ssafy.mmart.repository.ItemRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -32,5 +34,31 @@ class ItemService @Autowired constructor(
             .selectFrom(item)
             .where(item.category.categoryIdx.eq(categoryIdx))
             .fetch()
+    }
+
+    fun getItemsFrequent(userIdx: Int): List<Item?> {
+        return jpaQueryFactory
+            .select(item)
+            .from(paymentDetail)
+            .join(paymentDetail.item, item)
+            .join(paymentDetail.payment, payment)
+            .where(payment.user.userIdx.eq(userIdx), item.itemIdx.eq(paymentDetail.item.itemIdx))
+            .groupBy(item.itemIdx)
+            .orderBy(paymentDetail.count().desc(), payment.date.desc())
+            .limit(10)
+            .fetch()
+    }
+
+    fun getItemsRecent(userIdx: Int): List<Item?> {
+        return jpaQueryFactory
+            .select(item)
+            .from(paymentDetail)
+            .join(paymentDetail.item, item)
+            .join(paymentDetail.payment, payment)
+            .where(payment.user.userIdx.eq(userIdx), item.itemIdx.eq(paymentDetail.item.itemIdx))
+            .orderBy(payment.date.desc())
+            .fetch()
+            .distinctBy{ it.itemIdx }
+            .take(10)
     }
 }
