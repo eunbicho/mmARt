@@ -20,12 +20,13 @@ import org.springframework.stereotype.Service
 class GotCartService @Autowired constructor(
     var redisTemplate: RedisTemplate<String, Any>,
     val userRepository: UserRepository,
-    private val itemRepository: ItemRepository,
+    val itemRepository: ItemRepository,
+//    val getCartService: GetCartService,
 ){
     val GOTCART = "GOTCART"
     val gotCartOps: HashOperations<String, Int, MutableMap<Int, Int>> = redisTemplate.opsForHash()
 
-    fun getGotCart(userIdx: Int): GotCartRes {
+    fun getGotCarts(userIdx: Int): GotCartRes {
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
 
         var temp = gotCartOps.get(GOTCART, userIdx)
@@ -54,6 +55,8 @@ class GotCartService @Autowired constructor(
         var gotCartRes = GotCartRes(mutableListOf())
         temp!!.keys.forEach{ hashKey -> gotCartRes.itemList.add(GotCartItem(hashKey, temp[hashKey]!!)) }
 
+//        getCartService.deleteGetCart(gotCartReq.userIdx, gotCartReq.itemIdx)
+
         return gotCartRes
     }
 
@@ -76,6 +79,37 @@ class GotCartService @Autowired constructor(
         }
         var gotCartRes = GotCartRes(mutableListOf())
         temp!!.keys.forEach{ hashKey -> gotCartRes.itemList.add(GotCartItem(hashKey, temp[hashKey]!!)) }
+
+        return gotCartRes
+    }
+
+//    fun deleteGotCarts(userIdx: Int): GotCartRes {
+//        userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
+//        var gotCartRes = GotCartRes(mutableListOf())
+//        var temp = gotCartOps.get(GOTCART, userIdx)
+//        if (!temp.isNullOrEmpty()) {
+//            temp!!.keys.forEach{ hashKey -> gotCartRes.itemList.add(GotCartItem(hashKey, temp[hashKey]!!)) }
+//            temp.clear()
+//            gotCartOps.put(GOTCART, userIdx, temp)
+//        }
+//        return gotCartRes
+//    }
+
+    fun deleteGotCart(userIdx: Int, itemIdx: Int): GotCartRes {
+        userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
+        itemRepository.findByIdOrNull(itemIdx) ?: throw ItemNotFoundException()
+        var temp = gotCartOps.get(GOTCART, userIdx)
+        if (temp.isNullOrEmpty()) throw GotCartEmptyException()
+        if (temp.containsKey(itemIdx)) {
+            temp.remove(itemIdx)
+        } else {
+            throw GotCartNotFoundException()
+        }
+        gotCartOps.put(GOTCART, userIdx, temp)
+
+        var gotCartRes = GotCartRes(mutableListOf())
+        temp!!.keys.forEach{ hashKey -> gotCartRes.itemList.add(GotCartItem(hashKey, temp[hashKey]!!)) }
+
         return gotCartRes
     }
 }
