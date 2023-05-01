@@ -26,4 +26,13 @@ class ItemController @Autowired constructor(
         return ResultResponse.success(itemService.getItemByCategory(userIdx,categoryIdx))
     }
 
+    @GetMapping("/frequent")
+    fun getItemsFrequent(@RequestParam userIdx: Int): ResultResponse<List<Item?>> {
+        return ResultResponse.success(itemService.getItemsFrequent(userIdx))
+    }
+
+    @GetMapping("/recent")
+    fun getItemsRecent(@RequestParam userIdx: Int): ResultResponse<List<Item?>> {
+        return ResultResponse.success(itemService.getItemsRecent(userIdx))
+    }
 }

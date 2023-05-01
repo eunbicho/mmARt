@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ItemRepository : JpaRepository<Item, Int>
 
-//@Repositorys
+//@Repository
 //class UserRepositorySupport(
 //    @Resource(name = "jpaQueryFactory")
 //    val query: JPAQueryFactory
