@@ -31,6 +31,9 @@ data class Item (
     @Column(name = "placeInfo")
     val placeInfo : String,
 
+    @Column(name = "weight")
+    val weight : Int,
+
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="categoryIdx")
