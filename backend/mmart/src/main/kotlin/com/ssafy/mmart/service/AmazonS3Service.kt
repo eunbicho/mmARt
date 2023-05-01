@@ -7,8 +7,10 @@ import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.client.j2se.MatrixToImageWriter
-import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
+import com.ssafy.mmart.exception.not_found.ItemNotFoundException
+import com.ssafy.mmart.exception.not_found.PhotoNotFoundException
+import com.ssafy.mmart.repository.ItemRepository
 import marvin.image.MarvinImage
 import org.marvinproject.image.transform.scale.Scale
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
 import java.awt.image.BufferedImage
 import java.io.*
+import java.net.URL
 import java.util.*
 import javax.imageio.ImageIO
 
@@ -35,12 +38,13 @@ class AmazonS3Service @Autowired constructor(
     private val bucketUrl: String,
 
     val getCartService: GetCartService,
+    val itemRepository: ItemRepository,
 ) {
 
     // QR코드 이미지 생성
     fun getQRCodeImage(userIdx: Int): String? {
         val qrCodeWriter = QRCodeWriter()
-        var text = "http://k8a405.p.ssafy.io:8090/api/v1/gotcarts/$userIdx"
+        var text = "$userIdx"
         val bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 200, 200)
         val pngOutputStream = ByteArrayOutputStream()
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)
@@ -79,9 +83,9 @@ class AmazonS3Service @Autowired constructor(
 
     fun uploadImage(photo:MultipartFile): String? {
         //파일이 없는 경우
-//        if (url.length == 0) {
-//            throw PhotoNotFoundException()
-//        }
+        if (photo.isEmpty) {
+            throw PhotoNotFoundException()
+        }
 
         val fileName = "images/"+createFileName(photo.originalFilename!!);
         val fileFormat = photo.contentType!!.split("/")[1]
@@ -104,6 +108,52 @@ class AmazonS3Service @Autowired constructor(
         return fileName
     }
 
+    fun uploadItemImage(url:String,itemIdx:Int): String? {
+        //파일이 없는 경우
+        if (url.isEmpty()) {
+            throw PhotoNotFoundException()
+        }
+        var item = itemRepository.findById(itemIdx).orElseThrow(::ItemNotFoundException)
+
+        val imgURL = URL(url)
+        var itemName=item.barcode
+
+        val fileName = "images/$itemName.png"
+        val fileFormat = "png"
+        val image = ImageIO.read(imgURL)
+        //원본 먼저 저장하기
+        val photo = resizer(fileName, fileFormat, image, 1000)
+        val objectMetadata = ObjectMetadata()
+        objectMetadata.contentLength = photo.size
+        objectMetadata.contentType = photo.contentType
+        try {
+            amazonS3.putObject(
+                PutObjectRequest(bucket, fileName, photo.inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead)
+            )
+//            resizePhoto.inputStream.close()
+        } catch (e: IOException) {
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.")
+        }
+
+
+        //resizer 실횅
+        val resizePhoto = resizer(fileName, fileFormat, image, 100)
+//        val objectMetadata = ObjectMetadata()
+        objectMetadata.contentLength = resizePhoto.size
+        objectMetadata.contentType = resizePhoto.contentType
+        try {
+            amazonS3.putObject(
+                PutObjectRequest(bucket, "images/$itemName"+"_thumb.png", resizePhoto.inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead)
+            )
+//            resizePhoto.inputStream.close()
+        } catch (e: IOException) {
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.")
+        }
+        System.gc()
+        return fileName
+    }
     @Transactional
     fun resizer(fileName: String, fileFormat: String?, image: BufferedImage, width: Int): MultipartFile {
         return try {
