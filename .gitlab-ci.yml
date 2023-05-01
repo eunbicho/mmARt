@@ -8,14 +8,6 @@ variables:
   IMAGE_OPENJDK_GRADLE: gradle:7.6.1-jdk17-alpine
   IMAGE_OPENJDK: openjdk:17-alpine
 
-# image: gradle:7.6.1-jdk17-alpine
-
-# cache:
-#   key: gradle-dependency
-#   paths: 
-#     - .gradle/wrapper
-#     - .gradle/caches
-
 stages:
   - test
   - build
@@ -23,13 +15,8 @@ stages:
   - deploy
 
 clean:
-  # image: $IMAGE_OPENJDK_GRADLE
+  image: $IMAGE_OPENJDK_GRADLE
   stage: build
-  cache:
-    key: gradle-dependency
-    paths: 
-      - .gradle/wrapper
-      - .gradle/caches
   allow_failure: true
   before_script:
     - cd backend/mmart
@@ -39,13 +26,8 @@ clean:
     - ./gradlew clean
 
 build:
-  # image: $IMAGE_OPENJDK
+  image: $IMAGE_OPENJDK
   stage: build
-  cache:
-    key: gradle-dependency
-    paths: 
-      - .gradle/wrapper
-      - .gradle/caches
   allow_failure: true
   needs:
     - job: clean
@@ -66,7 +48,6 @@ build:
 
 package:
   stage: package
-  cache: []
   allow_failure: true
   before_script:
     - cd backend/mmart
@@ -79,6 +60,7 @@ package:
     - docker push teqteqteqteq/red-limo-backend:latest
 
 deploy:
+  stage: deploy
   image:
     name: bitnami/kubectl:latest
     entrypoint: ['']
