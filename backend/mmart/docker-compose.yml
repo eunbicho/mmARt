@@ -10,7 +10,7 @@ services:
       TZ: "Asia/Seoul"
     restart: unless-stopped
     volumes:
-      - red-limo-data:/var/lib/mysql
+      - red_limo_data:/var/lib/mysql
 
   cache_database:
     container_name: redis
@@ -20,7 +20,7 @@ services:
     environment:
       TZ: "Asia/Seoul"
     volumes:
-      - red-limo-cache:/data
+      - red_limo_cache:/data
     
   backend:
     restart: on-failure
@@ -36,7 +36,3 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: red-limo
       TZ: "Asia/Seoul"
-
-volumes:
-  red-limo-data:
-  red-limo-cache:
