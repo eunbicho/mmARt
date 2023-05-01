@@ -133,4 +133,4 @@ deploy:
   script:
     # - kubectl config get-contexts
     # - kubectl config use-context path/to/agent/repository:red-limo-agent
-    - kubectl cluster-info
+    - kubectl apply -f k8s/deployment.yaml
