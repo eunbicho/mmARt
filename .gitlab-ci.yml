@@ -38,6 +38,13 @@ build:
     - echo "Compiling the code..."
     - ./gradlew clean build -x test
 
+package:
+  image: docker:stable-dind
+  stage: build
+  allow_failure: true
+  script:
+    - docker --version
+
 deploy:
   stage: deploy
   image:
