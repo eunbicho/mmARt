@@ -7,16 +7,16 @@ workflow:
 # variables:
 #   IMAGE_OPENJDK_GRADLE: gradle:7.6.1-jdk17-alpine
 #   IMAGE_OPENJDK: openjdk:17-alpine
-variables:
-  GRADLE_OPTS: "-Dorg.gradle.caching=true -Dorg.gradle.daemon=false"
-  GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
-  DOCKER_HOST: tcp://docker:2375/
+# variables:
+#   GRADLE_OPTS: "-Dorg.gradle.caching=true -Dorg.gradle.daemon=false"
+#   GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
+#   DOCKER_HOST: tcp://docker:2375/
 
-image: openjdk:17-alpine
-cache:
-  key: $CI_COMMIT_REF_SLUG
-  paths:
-    - .gradlew/
+# image: openjdk:17-alpine
+# cache:
+#   key: $CI_COMMIT_REF_SLUG
+#   paths:
+#     - .gradlew/
 
 stages:
   - test
@@ -24,10 +24,8 @@ stages:
   - deploy
 
 build:
-  image: docker
+  image: openjdk:17-alpine
   stage: build
-  services:
-    - name: docker:dind
   allow_failure: true
   before_script:
     - cd backend/mmart/src/main/resources
@@ -36,25 +34,15 @@ build:
     - ls -al
     - cd ../../../
     - chmod +x gradlew
-    - docker login -u teqteqteqteq -p $DOCKERHUB_PW
   script:
     - echo "Compiling the code..."
     - ./gradlew clean build -x test
-  after_script:
-    - echo "Building Docker Image..."
-    - docker build -t teqteqteqteq/red-limo-backend:latest .
-    - echo "Publishing Docker Image..."
-    - docker push teqteqteqteq/red-limo-backend:latest
 
 deploy:
   stage: deploy
   image:
     name: bitnami/kubectl:latest
     entrypoint: ['']
-  services:
-    - docker:stable-dind
   allow_failure: true
-  before_script:
-    - docker login -u teqteqteqteq -p $DOCKERHUB_PW
   script:
     - kubectl apply -f k8s/deployment.yaml
