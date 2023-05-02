@@ -50,13 +50,15 @@ build:
     - ./gradlew clean build -x test
   artifacts:
     paths:
-      - build/libs/*-SNAPSHOT.jar
+      - backend/mmart/build/libs/*-SNAPSHOT.jar
 
 package:
   image: docker:20.10.16
   services: 
     - docker:20.10.16-dind
   stage: build
+  needs:
+    - build
   allow_failure: true
   script:
     - docker --version
