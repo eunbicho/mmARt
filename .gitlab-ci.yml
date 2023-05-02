@@ -10,7 +10,7 @@ workflow:
 variables:
   GRADLE_OPTS: "-Dorg.gradle.caching=true -Dorg.gradle.daemon=false"
   GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
-  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_HOST: tcp://localhost:2375/
 
 image: openjdk:17-alpine
 cache:
@@ -27,7 +27,10 @@ build:
   image: docker:latest
   stage: build
   services:
-    - docker:dind
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+
   allow_failure: true
   before_script:
     - cd backend/mmart/src/main/resources
