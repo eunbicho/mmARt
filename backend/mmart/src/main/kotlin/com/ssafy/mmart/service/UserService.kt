@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService @Autowired constructor(
+    val amazonS3Service: AmazonS3Service,
     val userRepository: UserRepository,
 ) {
     fun getUser(userIdx: Int): User? {
@@ -21,7 +22,7 @@ class UserService @Autowired constructor(
     fun createUser(userReq: UserReq): User? {
         var oldUser = userRepository.findByEmail(userReq.email)
         return if (oldUser == null) {
-            userRepository.save(userReq.toEntity())
+            userRepository.save(userReq.toEntity(amazonS3Service.getQRCodeImage(userReq.email)!!))
         } else {
             throw EmailDuplicateException()
         }

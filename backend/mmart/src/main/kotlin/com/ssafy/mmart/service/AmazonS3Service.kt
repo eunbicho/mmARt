@@ -45,10 +45,9 @@ class AmazonS3Service @Autowired constructor(
 ) {
 
     // QR코드 이미지 생성
-    fun getQRCodeImage(userIdx: Int): String? {
+    fun getQRCodeImage(email: String): String? {
         val qrCodeWriter = QRCodeWriter()
-        var user = userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
-        var text = user.email
+        var text = email
         val bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 200, 200)
         val pngOutputStream = ByteArrayOutputStream()
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)
