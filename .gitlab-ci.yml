@@ -13,23 +13,12 @@ stages:
   - build
   - deploy
 
-# clean:
-#   image: $IMAGE_OPENJDK_GRADLE
-#   stage: build
-#   allow_failure: true
-#   before_script:
-#     - cd backend/mmart
-#     - chmod +x gradlew
-#   script:
-#     - echo "Cleaning leftovers from previous builds"
-#     - ./gradlew clean
-
 build:
   image: openjdk:17-alpine
   stage: build
+  services:
+    - docker:stable-dind
   allow_failure: true
-  # needs:
-  #   - job: clean
   before_script:
     - cd backend/mmart/src/main/resources
     - echo $SPRINGBOOT_PROPS >> "application.properties"
@@ -45,30 +34,14 @@ build:
     - docker build -t teqteqteqteq/red-limo-backend:latest .
     - echo "Publishing Docker Image..."
     - docker push teqteqteqteq/red-limo-backend:latest
-  # artifacts:
-  #   name: app.jar
-  #   paths:
-  #     - backend/mmart/build/libs/mmart-0.0.1-SNAPSHOT.jar
-  #   expire_in: 1 week
-
-# package:
-#   stage: package
-#   allow_failure: true
-#   before_script:
-#     - cd backend/mmart
-#     - docker login -u teqteqteqteq -p $DOCKERHUB_PW
-#   script:
-#     - echo "Building Docker Image..."
-#     - docker build -t teqteqteqteq/red-limo-backend:latest .
-#   after_script:
-#     - echo "Publishing Docker Image..."
-#     - docker push teqteqteqteq/red-limo-backend:latest
 
 deploy:
   stage: deploy
   image:
     name: bitnami/kubectl:latest
     entrypoint: ['']
+  services:
+    - docker:stable-dind
   allow_failure: true
   before_script:
     - docker login -u teqteqteqteq -p $DOCKERHUB_PW
