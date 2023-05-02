@@ -15,13 +15,13 @@ data class PaymentDetail (
     val paymentDetailIdx: Int? = null,
 
     @Column(name = "amount")
-    val amount: Int,
+    val quantity: Int,
 
     @Column(name = "discount")
     val discount: Int = 0,
 
     @Column(name = "costResult")
-    val costResult: Int,
+    val totalPrice: Int,
 
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
