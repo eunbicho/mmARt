@@ -24,13 +24,12 @@ stages:
   - deploy
 
 build:
-  image: docker:latest
+  image: docker
   stage: build
   services:
     - name: docker:dind
       entrypoint: ["env", "-u", "DOCKER_HOST"]
       command: ["dockerd-entrypoint.sh"]
-
   allow_failure: true
   before_script:
     - cd backend/mmart/src/main/resources
