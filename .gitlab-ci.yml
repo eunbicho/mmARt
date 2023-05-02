@@ -37,7 +37,7 @@ build:
     - docker login -u teqteqteqteq -p $DOCKERHUB_PW
   script:
     - echo "Compiling the code..."
-    - gradlew clean build -x test
+    - ./gradlew clean build -x test
   after_script:
     - echo "Building Docker Image..."
     - docker build -t teqteqteqteq/red-limo-backend:latest .
