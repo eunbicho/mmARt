@@ -41,9 +41,7 @@
 #         [[runners.kubernetes.volumes.empty_dir]]
 #           name = "docker-certs"
 #           mount_path = "/certs/client"
-#           medium = "Memory"
-
-
+#           medium = "Memory"dd
 gitlab-runner:
     image: gitlab/gitlab-runner:latest
     gitlabUrl: https://lab.ssafy.com/
@@ -55,3 +53,12 @@ gitlab-runner:
     runners:
         privileged: true
         namespace: gitlab-runner
+        config: |
+            [[runners]]
+            [runners.kubernetes]
+                image = "ubuntu:20.04"
+                privileged = true
+            [[runners.kubernetes.volumes.empty_dir]]
+                name = "docker-certs"
+                mount_path = "/certs/client"
+                medium = "Memory"
