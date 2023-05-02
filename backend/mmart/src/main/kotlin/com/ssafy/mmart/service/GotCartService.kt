@@ -8,6 +8,8 @@ import com.ssafy.mmart.exception.not_found.GotCartNotFoundException
 import com.ssafy.mmart.exception.not_found.ItemNotFoundException
 import com.ssafy.mmart.exception.not_found.UserNotFoundException
 import com.ssafy.mmart.exception.not_found.WrongQuantityException
+import com.ssafy.mmart.repository.ItemCouponRepository
+import com.ssafy.mmart.repository.ItemItemCouponRepository
 import com.ssafy.mmart.repository.ItemRepository
 import com.ssafy.mmart.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,18 +23,36 @@ class GotCartService @Autowired constructor(
     var redisTemplate: RedisTemplate<String, Any>,
     val userRepository: UserRepository,
     val itemRepository: ItemRepository,
-//    val getCartService: GetCartService,
+    val itemCouponRepository: ItemCouponRepository,
+    val itemItemCouponRepository: ItemItemCouponRepository,
 ){
     val GOTCART = "GOTCART"
     val gotCartOps: HashOperations<String, Int, MutableMap<Int, Int>> = redisTemplate.opsForHash()
 
+
+    fun setGotCarts(temp:  MutableMap<Int, Int>): GotCartRes {
+        var total = 0
+        var gotCartRes = GotCartRes(mutableListOf(), total)
+        temp!!.keys.forEach{ hashKey ->
+            var tempItemIdx = hashKey
+            var tempQuantity = temp[hashKey]!!
+            gotCartRes.itemList.add(GotCartItem(tempItemIdx, tempQuantity))
+            var tempItem = itemRepository.findByIdOrNull(tempItemIdx) ?: throw ItemNotFoundException()
+            var tempPrice = tempItem.price
+            val tempCoupon = itemItemCouponRepository.findByItem_ItemIdx(tempItemIdx)
+            if (tempCoupon != null) {
+                tempPrice -= itemCouponRepository.findByIdOrNull(tempCoupon.itemCoupon.itemCouponIdx)!!.couponCost
+            }
+            total += tempPrice * tempQuantity
+        }
+        gotCartRes.total = total
+        return gotCartRes
+    }
+
     fun getGotCarts(userIdx: Int): GotCartRes {
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-
         var temp = gotCartOps.get(GOTCART, userIdx)
-        var gotCartRes = GotCartRes(mutableListOf())
-        temp!!.keys.forEach{ hashKey -> gotCartRes.itemList.add(GotCartItem(hashKey, temp[hashKey]!!))}
-        return gotCartRes
+        return setGotCarts(temp!!)
     }
 
     fun createGotCart(gotCartReq: GotCartReq): GotCartRes {
@@ -42,58 +62,38 @@ class GotCartService @Autowired constructor(
         var temp = gotCartOps.get(GOTCART, gotCartReq.userIdx)
         if (temp.isNullOrEmpty()) {
             var map: MutableMap<Int, Int> = mutableMapOf()
-            map[gotCartReq.itemIdx] = gotCartReq.inventory
+            map[gotCartReq.itemIdx] = gotCartReq.quantity
             gotCartOps.put(GOTCART, gotCartReq.userIdx, map)
         } else {
             if (temp.containsKey(gotCartReq.itemIdx)) {
-                temp[gotCartReq.itemIdx] = temp[gotCartReq.itemIdx]!! + gotCartReq.inventory
+                temp[gotCartReq.itemIdx] = temp[gotCartReq.itemIdx]!! + gotCartReq.quantity
             } else {
-                temp[gotCartReq.itemIdx] = gotCartReq.inventory
+                temp[gotCartReq.itemIdx] = gotCartReq.quantity
             }
             gotCartOps.put(GOTCART, gotCartReq.userIdx, temp)
         }
-        var gotCartRes = GotCartRes(mutableListOf())
-        temp!!.keys.forEach{ hashKey -> gotCartRes.itemList.add(GotCartItem(hashKey, temp[hashKey]!!)) }
-
-//        getCartService.deleteGetCart(gotCartReq.userIdx, gotCartReq.itemIdx)
-
-        return gotCartRes
+        return setGotCarts(temp!!)
     }
 
     fun updateGotCart(gotCartReq: GotCartReq): GotCartRes {
         userRepository.findByIdOrNull(gotCartReq.userIdx) ?: throw UserNotFoundException()
-        var item = itemRepository.findByIdOrNull(gotCartReq.itemIdx) ?: throw ItemNotFoundException()
+        itemRepository.findByIdOrNull(gotCartReq.itemIdx) ?: throw ItemNotFoundException()
 
-        if (gotCartReq.inventory <= 0) throw WrongQuantityException()
+        if (gotCartReq.quantity <= 0 ) throw WrongQuantityException()
 
         var temp = gotCartOps.get(GOTCART, gotCartReq.userIdx)
         if (temp.isNullOrEmpty()) {
             throw GotCartEmptyException()
         } else {
             if (temp.containsKey(gotCartReq.itemIdx)) {
-                temp[gotCartReq.itemIdx] = gotCartReq.inventory
+                temp[gotCartReq.itemIdx] = gotCartReq.quantity
             } else {
                 throw GotCartNotFoundException()
             }
             gotCartOps.put(GOTCART, gotCartReq.userIdx, temp)
         }
-        var gotCartRes = GotCartRes(mutableListOf())
-        temp!!.keys.forEach{ hashKey -> gotCartRes.itemList.add(GotCartItem(hashKey, temp[hashKey]!!)) }
-
-        return gotCartRes
+        return setGotCarts(temp)
     }
-
-//    fun deleteGotCarts(userIdx: Int): GotCartRes {
-//        userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-//        var gotCartRes = GotCartRes(mutableListOf())
-//        var temp = gotCartOps.get(GOTCART, userIdx)
-//        if (!temp.isNullOrEmpty()) {
-//            temp!!.keys.forEach{ hashKey -> gotCartRes.itemList.add(GotCartItem(hashKey, temp[hashKey]!!)) }
-//            temp.clear()
-//            gotCartOps.put(GOTCART, userIdx, temp)
-//        }
-//        return gotCartRes
-//    }
 
     fun deleteGotCart(userIdx: Int, itemIdx: Int): GotCartRes {
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
@@ -106,10 +106,6 @@ class GotCartService @Autowired constructor(
             throw GotCartNotFoundException()
         }
         gotCartOps.put(GOTCART, userIdx, temp)
-
-        var gotCartRes = GotCartRes(mutableListOf())
-        temp!!.keys.forEach{ hashKey -> gotCartRes.itemList.add(GotCartItem(hashKey, temp[hashKey]!!)) }
-
-        return gotCartRes
+        return setGotCarts(temp)
     }
 }
