@@ -55,3 +55,13 @@ gitlab-runner:
     runners:
         privileged: true
         namespace: gitlab-runner
+        config: |
+            [[runners]]
+              executor = "docker"
+              [runners.docker]
+                tls_verify = false
+                image = "docker"
+                privileged = true
+                disable_cache = false
+                volumes = ["/certs/client", "/cache"]
+
