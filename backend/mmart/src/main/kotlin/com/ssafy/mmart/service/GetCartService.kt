@@ -7,9 +7,7 @@ import com.ssafy.mmart.domain.getCart.dto.PutGetCartReq
 import com.ssafy.mmart.exception.bad_request.BadAccessException
 import com.ssafy.mmart.exception.conflict.GetCartEmptyException
 import com.ssafy.mmart.exception.not_found.*
-import com.ssafy.mmart.repository.CategoryRepository
-import com.ssafy.mmart.repository.ItemRepository
-import com.ssafy.mmart.repository.UserRepository
+import com.ssafy.mmart.repository.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.HashOperations
 import org.springframework.data.redis.core.RedisTemplate
@@ -21,7 +19,8 @@ class GetCartService @Autowired constructor(
     var userRepository: UserRepository,
     var itemRepository: ItemRepository,
     var categoryRepository: CategoryRepository,
-
+    var itemItemCouponRepository: ItemItemCouponRepository,
+    var couponRepository: ItemCouponRepository,
     ) {
     //카테고리는 인덱스를 마이너스로, 인벤토리는 0으로 쓰기
     val GETCART = "GETCART"
@@ -68,10 +67,7 @@ class GetCartService @Autowired constructor(
             }
         }
 //        getCartOps.entries(GETCART).keys.forEach { haskKey -> getCartOps.delete(GETCART, haskKey) }
-        var temp2 = getCartOps.get(GETCART, createGetCartReq.userIdx)
-        var getCartRes = GetCartRes(mutableListOf())
-        temp2!!.keys.forEach { haskKey -> getCartRes.itemList.add(GetCartItem(haskKey, temp2.get(haskKey)!!)) }
-        return getCartRes
+        return setGetCarts(temp!!)
     }
 
     fun putGetCart(putGetCartReq: PutGetCartReq): GetCartRes {
@@ -103,10 +99,7 @@ class GetCartService @Autowired constructor(
             }
             getCartOps.put(GETCART, putGetCartReq.userIdx, temp)
         }
-        var temp2 = getCartOps.get(GETCART, putGetCartReq.userIdx)
-        var getCartRes = GetCartRes(mutableListOf())
-        temp2!!.keys.forEach { haskKey -> getCartRes.itemList.add(GetCartItem(haskKey, temp2.get(haskKey)!!)) }
-        return getCartRes
+        return setGetCarts(temp!!)
     }
 
     open fun getGetCart(userIdx: Int): GetCartRes {
@@ -117,24 +110,19 @@ class GetCartService @Autowired constructor(
         if (temp.isNullOrEmpty()) {
             throw GetCartEmptyException()
         } else {
-            var getCartRes = GetCartRes(mutableListOf())
-            temp!!.keys.forEach { haskKey -> getCartRes.itemList.add(GetCartItem(haskKey, temp.get(haskKey)!!)) }
-            return getCartRes
+            return setGetCarts(temp!!)
         }
     }
 
     fun deleteGetCarts(userIdx: Int): GetCartRes {
         //유저가 존재하는지 확인
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
-        var getCartRes = GetCartRes(mutableListOf())
         var temp = getCartOps.get(GETCART, userIdx)
         if (!temp.isNullOrEmpty()) {
             temp.clear()
             getCartOps.put(GETCART, userIdx, temp)
         }
-        var temp2 = getCartOps.get(GETCART, userIdx)
-        print(temp2.toString())
-        return getCartRes
+        return setGetCarts(temp!!)
     }
 
     fun deleteGetCart(userIdx: Int, itemIdx: Int): GetCartRes {
@@ -162,10 +150,23 @@ class GetCartService @Autowired constructor(
         }
         getCartOps.put(GETCART, userIdx, temp)
 
-        var temp2 = getCartOps.get(GETCART, userIdx)
-        var getCartRes = GetCartRes(mutableListOf())
-        temp2!!.keys.forEach { haskKey -> getCartRes.itemList.add(GetCartItem(haskKey, temp2.get(haskKey)!!)) }
+        return setGetCarts(temp!!)
+    }
+
+    fun setGetCarts(temp: MutableMap<Int, Int>): GetCartRes{
+        var getCartRes = GetCartRes(mutableListOf(),0)
+        temp!!.keys.forEach { haskKey -> getCartRes.itemList.add(GetCartItem(haskKey, temp.get(haskKey)!!))
+            var item = itemRepository.findById(haskKey).orElseThrow(::ItemNotFoundException)
+            var eachPrice = item.price
+            //쿠폰이 있으면, 쿠폰 가격만큼 item의 price에서 빼준다.
+            var itemItemCoupon = itemItemCouponRepository.findByItem_ItemIdx(item.itemIdx!!)
+            if(itemItemCoupon != null){
+                var itemCoupon = couponRepository.findById(itemItemCoupon.itemCoupon.itemCouponIdx!!)
+                eachPrice-=itemCoupon.get().couponDiscount
+            }
+            getCartRes.total+=eachPrice*temp.get(haskKey)!!}
         return getCartRes
+
     }
 
 }
