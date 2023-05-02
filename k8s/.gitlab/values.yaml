@@ -55,14 +55,3 @@ gitlab-runner:
     runners:
         privileged: true
         namespace: gitlab-runner
-        config: |
-            [[runners]]
-            [runners.kubernetes]
-                image = "ubuntu:20.04"
-                privileged = true
-            [[runners.kubernetes.volumes.host_path]]
-                name = "docker"
-                mount_path = "/var/run/docker.sock"
-                read_only = true
-                host_path = "/var/run/docker.sock"
-
