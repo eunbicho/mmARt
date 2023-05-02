@@ -33,11 +33,11 @@ class GotCartService @Autowired constructor(
     fun setGotCarts(temp: MutableMap<Int, Int>): GotCartRes {
         var total = 0
         var gotCartRes = GotCartRes(mutableListOf(), total)
-        temp!!.keys.forEach{ hashKey ->
-            var tempItemIdx = hashKey
-            var tempQuantity = temp[hashKey]!!
+        temp.keys.forEach{ hashKey ->
+            val tempItemIdx = hashKey
+            val tempQuantity = temp[hashKey]!!
             gotCartRes.itemList.add(GotCartItem(tempItemIdx, tempQuantity))
-            var tempItem = itemRepository.findByIdOrNull(tempItemIdx) ?: throw ItemNotFoundException()
+            val tempItem = itemRepository.findByIdOrNull(tempItemIdx) ?: throw ItemNotFoundException()
             var tempPrice = tempItem.price
             val tempCoupon = itemItemCouponRepository.findByItem_ItemIdx(tempItemIdx)
             if (tempCoupon != null) {
