@@ -63,4 +63,30 @@ class ItemService @Autowired constructor(
         result.addAll(temp2)
         return result
     }
+
+    fun getItemsFrequent(userIdx: Int): List<Item?> {
+        return jpaQueryFactory
+            .select(item)
+            .from(paymentDetail)
+            .join(paymentDetail.item, item)
+            .join(paymentDetail.payment, payment)
+            .where(payment.user.userIdx.eq(userIdx), item.itemIdx.eq(paymentDetail.item.itemIdx))
+            .groupBy(item.itemIdx)
+            .orderBy(paymentDetail.count().desc(), payment.date.desc())
+            .limit(10)
+            .fetch()
+    }
+
+    fun getItemsRecent(userIdx: Int): List<Item?> {
+        return jpaQueryFactory
+            .select(item)
+            .from(paymentDetail)
+            .join(paymentDetail.item, item)
+            .join(paymentDetail.payment, payment)
+            .where(payment.user.userIdx.eq(userIdx), item.itemIdx.eq(paymentDetail.item.itemIdx))
+            .orderBy(payment.date.desc())
+            .fetch()
+            .distinctBy{ it.itemIdx }
+            .take(10)
+    }
 }
