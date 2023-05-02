@@ -39,7 +39,8 @@ build:
     - ./gradlew clean build -x test
 
 package:
-  image: docker:stable-dind
+  image: docker:20.10.16
+  services: docker:20.10.16-dind
   stage: build
   allow_failure: true
   script:
