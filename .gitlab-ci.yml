@@ -44,6 +44,7 @@ package:
   allow_failure: true
   script:
     - docker --version
+    - systemctl --user start docker
     - docker build -t teqteqteqteq/red-limo-backend backend/mmart/
 
 deploy:
