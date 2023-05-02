@@ -22,7 +22,7 @@ class ItemController @Autowired constructor(
     }
 
     @GetMapping("/categories")
-    fun getItemByCategory(@RequestParam userIdx: Int, categoryIdx: Int): ResultResponse<List<Item?>> {
+    fun getItemByCategory(@RequestParam userIdx: Int, categoryIdx: Int): ResultResponse<List<Item>?> {
         return ResultResponse.success(itemService.getItemByCategory(userIdx,categoryIdx))
     }
 
