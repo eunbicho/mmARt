@@ -44,6 +44,7 @@ package:
   allow_failure: true
   script:
     - docker --version
+    - docker build -t teqteqteqteq/red-limo-backend backend/mmart/
 
 deploy:
   stage: deploy
