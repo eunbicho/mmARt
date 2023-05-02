@@ -4,20 +4,6 @@ workflow:
       when: never
     - if: $CI_COMMIT_BRANCH == 'master'
 
-# variables:
-#   IMAGE_OPENJDK_GRADLE: gradle:7.6.1-jdk17-alpine
-#   IMAGE_OPENJDK: openjdk:17-alpine
-# variables:
-#   GRADLE_OPTS: "-Dorg.gradle.caching=true -Dorg.gradle.daemon=false"
-#   GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
-#   DOCKER_HOST: tcp://docker:2375/
-
-# image: openjdk:17-alpine
-# cache:
-#   key: $CI_COMMIT_REF_SLUG
-#   paths:
-#     - .gradlew/
-
 variables:
   # When using dind service, you must instruct Docker to talk with
   # the daemon started inside of the service. The daemon is available
@@ -62,6 +48,9 @@ build:
   script:
     - echo "Compiling the code..."
     - ./gradlew clean build -x test
+  artifacts:
+    paths:
+      - build/libs/*-SNAPSHOT.jar
 
 package:
   image: docker:20.10.16
