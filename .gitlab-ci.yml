@@ -7,6 +7,15 @@ workflow:
 # variables:
 #   IMAGE_OPENJDK_GRADLE: gradle:7.6.1-jdk17-alpine
 #   IMAGE_OPENJDK: openjdk:17-alpine
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.caching=true -Dorg.gradle.daemon=false"
+  GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
+
+image: openjdk:17-alpine
+cache:
+  key: $CI_COMMIT_REF_SLUG
+  paths:
+    - .gradlew/
 
 stages:
   - test
@@ -14,10 +23,10 @@ stages:
   - deploy
 
 build:
-  image: openjdk:17-alpine
+  image: docker:latest
   stage: build
   services:
-    - docker:stable-dind
+    - docker:dind
   allow_failure: true
   before_script:
     - cd backend/mmart/src/main/resources
@@ -28,7 +37,7 @@ build:
     - docker login -u teqteqteqteq -p $DOCKERHUB_PW
   script:
     - echo "Compiling the code..."
-    - ./gradlew clean build -x test
+    - gradlew clean build -x test
   after_script:
     - echo "Building Docker Image..."
     - docker build -t teqteqteqteq/red-limo-backend:latest .
