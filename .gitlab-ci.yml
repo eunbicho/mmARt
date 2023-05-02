@@ -40,7 +40,8 @@ build:
 
 package:
   image: docker:20.10.16
-  services: docker:20.10.16-dind
+  services: 
+    - docker:20.10.16-dind
   stage: build
   allow_failure: true
   script:
