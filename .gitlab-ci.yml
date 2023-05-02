@@ -10,6 +10,7 @@ workflow:
 variables:
   GRADLE_OPTS: "-Dorg.gradle.caching=true -Dorg.gradle.daemon=false"
   GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
+  DOCKER_HOST: tcp://docker:2375/
 
 image: openjdk:17-alpine
 cache:
@@ -31,6 +32,7 @@ build:
   before_script:
     - cd backend/mmart/src/main/resources
     - echo $SPRINGBOOT_PROPS >> "application.properties"
+    - cat application.properties
     - ls -al
     - cd ../../../
     - chmod +x gradlew
