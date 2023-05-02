@@ -40,4 +40,14 @@ class ItemController @Autowired constructor(
     fun getItemsRecent(@RequestParam userIdx: Int): ResultResponse<List<Item?>> {
         return ResultResponse.success(itemService.getItemsRecent(userIdx))
     }
+
+    @GetMapping("/favorite")
+    fun getItemsFavorite(@RequestParam userIdx: Int): ResultResponse<List<Item?>> {
+        return ResultResponse.success(itemService.getItemsFavorite(userIdx))
+    }
+
+    @GetMapping("/discount")
+    fun getItemsDiscount(): ResultResponse<List<Item?>> {
+        return ResultResponse.success(itemService.getItemsDiscount())
+    }
 }
