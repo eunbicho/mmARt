@@ -2,6 +2,7 @@ package com.ssafy.mmart.controller
 
 import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.item.Item
+import com.ssafy.mmart.domain.itemDetailImage.ItemDetailImage
 import com.ssafy.mmart.service.ItemService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -14,6 +15,10 @@ class ItemController @Autowired constructor(
     @GetMapping("/{itemIdx}")
     fun getItem(@PathVariable itemIdx: Int): ResultResponse<Item?> {
         return ResultResponse.success(itemService.getItem(itemIdx))
+    }
+    @GetMapping("/{itemIdx}/detail-image")
+    fun getItemDetailImage(@PathVariable itemIdx: Int): ResultResponse<ItemDetailImage?> {
+        return ResultResponse.success(itemService.getItemDetailImage(itemIdx))
     }
 
     @GetMapping("/barcode")

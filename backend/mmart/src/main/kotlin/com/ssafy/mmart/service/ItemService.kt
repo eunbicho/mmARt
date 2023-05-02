@@ -5,6 +5,8 @@ import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.item.Item
 import com.ssafy.mmart.domain.item.QItem.item
+import com.ssafy.mmart.domain.itemDetailImage.ItemDetailImage
+import com.ssafy.mmart.domain.itemDetailImage.QItemDetailImage.itemDetailImage
 import com.ssafy.mmart.domain.payment.QPayment.payment
 import com.ssafy.mmart.domain.paymentDetail.QPaymentDetail.paymentDetail
 import com.ssafy.mmart.repository.ItemRepository
@@ -22,6 +24,13 @@ class ItemService @Autowired constructor(
         return jpaQueryFactory
             .selectFrom(item)
             .where(item.itemIdx.eq(itemIdx))
+            .fetchOne()
+    }
+
+    fun getItemDetailImage(itemIdx: Int): ItemDetailImage? {
+        return jpaQueryFactory
+            .selectFrom(itemDetailImage)
+            .where(itemDetailImage.item.itemIdx.eq(itemIdx))
             .fetchOne()
     }
 
