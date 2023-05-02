@@ -4,60 +4,65 @@ workflow:
       when: never
     - if: $CI_COMMIT_BRANCH == 'master'
 
-variables:
-  IMAGE_OPENJDK_GRADLE: gradle:7.6.1-jdk17-alpine
-  IMAGE_OPENJDK: openjdk:17-alpine
+# variables:
+#   IMAGE_OPENJDK_GRADLE: gradle:7.6.1-jdk17-alpine
+#   IMAGE_OPENJDK: openjdk:17-alpine
 
 stages:
   - test
   - build
-  - package
   - deploy
 
-clean:
-  image: $IMAGE_OPENJDK_GRADLE
-  stage: build
-  allow_failure: true
-  before_script:
-    - cd backend/mmart
-    - chmod +x gradlew
-  script:
-    - echo "Cleaning leftovers from previous builds"
-    - ./gradlew clean
+# clean:
+#   image: $IMAGE_OPENJDK_GRADLE
+#   stage: build
+#   allow_failure: true
+#   before_script:
+#     - cd backend/mmart
+#     - chmod +x gradlew
+#   script:
+#     - echo "Cleaning leftovers from previous builds"
+#     - ./gradlew clean
 
 build:
-  image: $IMAGE_OPENJDK
+  image: openjdk:17-alpine
   stage: build
   allow_failure: true
-  needs:
-    - job: clean
+  # needs:
+  #   - job: clean
   before_script:
     - cd backend/mmart/src/main/resources
     - echo $SPRINGBOOT_PROPS >> "application.properties"
     - ls -al
     - cd ../../../
     - chmod +x gradlew
-  script:
-    - echo "Compiling the code..."
-    - ./gradlew build -x test
-  artifacts:
-    name: app.jar
-    paths:
-      - backend/mmart/build/libs/mmart-0.0.1-SNAPSHOT.jar
-    expire_in: 1 week
-
-package:
-  stage: package
-  allow_failure: true
-  before_script:
-    - cd backend/mmart
     - docker login -u teqteqteqteq -p $DOCKERHUB_PW
   script:
+    - echo "Compiling the code..."
+    - ./gradlew clean build -x test
+  after_script:
     - echo "Building Docker Image..."
     - docker build -t teqteqteqteq/red-limo-backend:latest .
-  after_script:
     - echo "Publishing Docker Image..."
     - docker push teqteqteqteq/red-limo-backend:latest
+  # artifacts:
+  #   name: app.jar
+  #   paths:
+  #     - backend/mmart/build/libs/mmart-0.0.1-SNAPSHOT.jar
+  #   expire_in: 1 week
+
+# package:
+#   stage: package
+#   allow_failure: true
+#   before_script:
+#     - cd backend/mmart
+#     - docker login -u teqteqteqteq -p $DOCKERHUB_PW
+#   script:
+#     - echo "Building Docker Image..."
+#     - docker build -t teqteqteqteq/red-limo-backend:latest .
+#   after_script:
+#     - echo "Publishing Docker Image..."
+#     - docker push teqteqteqteq/red-limo-backend:latest
 
 deploy:
   stage: deploy
@@ -65,5 +70,7 @@ deploy:
     name: bitnami/kubectl:latest
     entrypoint: ['']
   allow_failure: true
+  before_script:
+    - docker login -u teqteqteqteq -p $DOCKERHUB_PW
   script:
     - kubectl apply -f k8s/deployment.yaml
