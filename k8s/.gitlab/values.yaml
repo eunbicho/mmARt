@@ -65,6 +65,10 @@
 gitlabUrl: https://lab.ssafy.com/
 runnerRegistrationToken: GR1348941317B-WeHV6rh3x6-AVw5
 
+rbac:
+    create: false
+    serviceAccountName: gitlab-runner
+
 runners:
   config: |
     [[runners]]
