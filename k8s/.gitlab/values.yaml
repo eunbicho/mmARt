@@ -57,11 +57,12 @@ gitlab-runner:
         namespace: gitlab-runner
         config: |
             [[runners]]
-              executor = "docker"
-              [runners.docker]
-                tls_verify = false
-                image = "docker"
+            [runners.kubernetes]
+                image = "ubuntu:20.04"
                 privileged = true
-                disable_cache = false
-                volumes = ["/certs/client", "/cache"]
+            [[runners.kubernetes.volumes.host_path]]
+                name = "docker"
+                mount_path = "/var/run/docker.sock"
+                read_only = true
+                host_path = "/var/run/docker.sock"
 
