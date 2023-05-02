@@ -10,7 +10,9 @@ import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.qrcode.QRCodeWriter
 import com.ssafy.mmart.exception.not_found.ItemNotFoundException
 import com.ssafy.mmart.exception.not_found.PhotoNotFoundException
+import com.ssafy.mmart.exception.not_found.UserNotFoundException
 import com.ssafy.mmart.repository.ItemRepository
+import com.ssafy.mmart.repository.UserRepository
 import marvin.image.MarvinImage
 import org.marvinproject.image.transform.scale.Scale
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,15 +41,17 @@ class AmazonS3Service @Autowired constructor(
 
     val getCartService: GetCartService,
     val itemRepository: ItemRepository,
+    val userRepository: UserRepository,
 ) {
 
     // QR코드 이미지 생성
-    fun getQRCodeImage(userIdx: Int): String? {
+    fun getQRCodeImage(email: String): String? {
         val qrCodeWriter = QRCodeWriter()
-        var text = "$userIdx"
+        var text = email
         val bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 200, 200)
         val pngOutputStream = ByteArrayOutputStream()
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)
+        //이거 유저 디비에 저장하기
         val fileName = "qrcode/"+UUID.randomUUID().toString()+".png"
         //multifile 변환
         val resizePhoto=CustomMultipartFile(fileName, "PNG", "image/png", pngOutputStream.toByteArray())
