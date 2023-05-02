@@ -32,7 +32,7 @@ class ItemService @Autowired constructor(
             .fetchOne()
     }
 
-    fun getItemByCategory(userIdx: Int, categoryIdx: Int): MutableList<Item>? {
+    fun getItemByCategory(userIdx: Int, categoryIdx: Int): List<Item>? {
         var result = jpaQueryFactory.select(item)
             .from(paymentDetail)
             .join(paymentDetail.payment, payment)
