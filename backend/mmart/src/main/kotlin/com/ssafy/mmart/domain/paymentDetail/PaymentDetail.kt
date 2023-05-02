@@ -14,13 +14,13 @@ data class PaymentDetail (
     @Column(name = "paymentDetailIdx")
     val paymentDetailIdx: Int? = null,
 
-    @Column(name = "amount")
+    @Column(name = "quantity")
     val quantity: Int,
 
     @Column(name = "discount")
     val discount: Int = 0,
 
-    @Column(name = "costResult")
+    @Column(name = "totalPrice")
     val totalPrice: Int,
 
     @ManyToOne

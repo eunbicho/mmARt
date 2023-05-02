@@ -30,7 +30,7 @@ class GotCartService @Autowired constructor(
     val gotCartOps: HashOperations<String, Int, MutableMap<Int, Int>> = redisTemplate.opsForHash()
 
 
-    fun setGotCarts(temp:  MutableMap<Int, Int>): GotCartRes {
+    fun setGotCarts(temp: MutableMap<Int, Int>): GotCartRes {
         var total = 0
         var gotCartRes = GotCartRes(mutableListOf(), total)
         temp!!.keys.forEach{ hashKey ->
@@ -41,7 +41,7 @@ class GotCartService @Autowired constructor(
             var tempPrice = tempItem.price
             val tempCoupon = itemItemCouponRepository.findByItem_ItemIdx(tempItemIdx)
             if (tempCoupon != null) {
-                tempPrice -= itemCouponRepository.findByIdOrNull(tempCoupon.itemCoupon.itemCouponIdx)!!.couponCost
+                tempPrice -= itemCouponRepository.findByIdOrNull(tempCoupon.itemCoupon.itemCouponIdx)!!.couponDiscount
             }
             total += tempPrice * tempQuantity
         }

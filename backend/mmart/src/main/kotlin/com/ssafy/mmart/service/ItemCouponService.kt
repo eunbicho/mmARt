@@ -16,7 +16,6 @@ import javax.transaction.Transactional
 
 @Service
 class ItemCouponService @Autowired constructor(
-    val itemCouponRepository: ItemCouponRepository,
     val itemItemCouponRepository: ItemItemCouponRepository,
 ) {
     fun getCoupon(itemIdx:Int): ItemCoupon? {
@@ -27,7 +26,5 @@ class ItemCouponService @Autowired constructor(
         }else{
             return null
         }
-
-
     }
 }

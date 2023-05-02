@@ -117,7 +117,6 @@ class GetCartService @Autowired constructor(
     fun deleteGetCarts(userIdx: Int): GetCartRes {
         //유저가 존재하는지 확인
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
-        var getCartRes = GetCartRes(mutableListOf(),0)
         var temp = getCartOps.get(GETCART, userIdx)
         if (!temp.isNullOrEmpty()) {
             temp.clear()
@@ -154,7 +153,7 @@ class GetCartService @Autowired constructor(
         return setGetCarts(temp!!)
     }
 
-    fun setGetCarts(temp:  MutableMap<Int, Int>): GetCartRes{
+    fun setGetCarts(temp: MutableMap<Int, Int>): GetCartRes{
         var getCartRes = GetCartRes(mutableListOf(),0)
         temp!!.keys.forEach { haskKey -> getCartRes.itemList.add(GetCartItem(haskKey, temp.get(haskKey)!!))
             var item = itemRepository.findById(haskKey).orElseThrow(::ItemNotFoundException)
@@ -163,7 +162,7 @@ class GetCartService @Autowired constructor(
             var itemItemCoupon = itemItemCouponRepository.findByItem_ItemIdx(item.itemIdx!!)
             if(itemItemCoupon != null){
                 var itemCoupon = couponRepository.findById(itemItemCoupon.itemCoupon.itemCouponIdx!!)
-                eachPrice-=itemCoupon.get().couponCost
+                eachPrice-=itemCoupon.get().couponDiscount
             }
             getCartRes.total+=eachPrice*temp.get(haskKey)!!}
         return getCartRes
