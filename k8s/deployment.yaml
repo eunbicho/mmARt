@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: springboot
-        image: teqteqteqteq:red-limo-backend:latest
+        image: teqteqteqteq/red-limo-backend:latest
         ports:
         - containerPort: 8080
