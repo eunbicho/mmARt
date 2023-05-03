@@ -46,7 +46,7 @@ services:
       dockerfile: Dockerfile
     restart: on-failure
     ports:
-      - 1695:80
+      - 8788:80
 
 volumes:
   data:
