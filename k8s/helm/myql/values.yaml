@@ -1,0 +1,7 @@
+auth:
+  rootPassword: red-limo
+  datanase: red-limo-db
+
+extraEnvVars:
+  - name: TZ
+    value: "Asia/Seoul"
