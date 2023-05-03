@@ -1,55 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: red-limo
+        - name: MYSQL_DATABASE
+          value: red-limo-db
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+---
 apiVersion: v1
 kind: Service
 metadata:
- name: todo-mysql
- labels:
-   app: todo-mysql
+  name: mysql
 spec:
- type: ClusterIP
- selector:
-   app: todo-mysql
- ports:
-   - port: 3306
-     protocol: TCP
- clusterIP: "None"
- 
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
- name: todo-mysql
-spec:
- selector:
-   matchLabels:
-     app: todo-mysql
- serviceName: todo-mysql
- replicas: 1
- template:
-   metadata:
-     labels:
-       app: todo-mysql
-   spec:
-     terminationGracePeriodSeconds: 10
-     containers:
-     - name: todo-mysql
-       image: mysql:8
-       ports:
-       - containerPort: 3306
-         name: todo-mysql
-       env:
-       - name: MYSQL_ROOT_PASSWORD
-         value: "red-limo"
-       - name: MYSQL_DATABASE
-         value: "red-limo-db"
-       volumeMounts:
-       - mountPath: /var/lib/mysql
-         name: todo-volume
- volumeClaimTemplates:
- - metadata:
-     name: todo-volume
-   spec:
-     storageClassName: sc-local
-     accessModes: [ "ReadWriteOnce" ]
-     resources:
-       requests:
-         storage: 1Gi
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
