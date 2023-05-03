@@ -6,8 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
+//import androidx.compose.material.OutlinedTextField
+//import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -16,12 +17,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.mmart.ui.theme.Main_yellow
 import com.example.mmart.ui.theme.mainFont
 
 // 검색바
 @Composable
 fun searchBar(){
+    val navController = rememberNavController()
     var searchWord by remember { mutableStateOf("") }
 
     fun search(){
@@ -30,7 +34,7 @@ fun searchBar(){
     }
 
     fun barcodeSearch(){
-        println(searchWord)
+       navController.navigate("barcodeScan")
     }
 
     // 검색창
@@ -85,6 +89,3 @@ fun searchBar(){
         )
     )
 }
-
-
-
