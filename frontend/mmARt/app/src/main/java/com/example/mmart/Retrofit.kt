@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 // http request
@@ -13,6 +14,14 @@ interface APIS {
     // 카테고리 별 아이템
     @GET("items/categories")
     suspend fun getCategories(@Query("userIdx") userIdx: Int, @Query("categoryIdx") categoryIdx: Int): ItemResult
+
+    // 바코드 스캔
+    @GET("items/barcode")
+    suspend fun getItemByBarcode(@Query("barcode") barcode: Long): ItemResult
+
+    // 장볼구니 조회
+    @GET("getcarts/{userId}")
+    suspend fun getCartsRead(@Path("userId") userId: Int): CartResult
 
     companion object {
         private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
@@ -56,3 +65,20 @@ data class CategoryInfo(
     val updateTime: List<Int>
 )
 
+// 카트 관련 Result
+data class CartResult(
+    val resultCode : String?,
+    val result: CartContent
+)
+
+data class CartContent(
+    val itemList: List<ItemList>,
+    val total: Int,
+    val errorCode: String,
+    val message: String
+)
+
+data class ItemList(
+    val itemIdx: Int,
+    val quantity: Int
+)

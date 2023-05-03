@@ -18,54 +18,34 @@ import androidx.navigation.NavController
 import androidx.compose.material.*
 import androidx.compose.ui.semantics.Role.Companion.Image
 import coil.compose.AsyncImage
+
 import kotlinx.coroutines.*
 
 @Composable
-fun Category(navController: NavController, categoryId: Int?){
+fun MyPage(navController: NavController, userId: Int?){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
-    var result: List<ItemInfo>? by remember { mutableStateOf(null) }
+//    var result: CartContent? by remember { mutableStateOf(null) }
+//    var resultCode: String? by remember { mutableStateOf(null) }
 
     // 한 번만 실행
     LaunchedEffect(true) {
-        result = coroutineScope.async { api.getCategories(1, categoryId!!) }.await().result
+       val response = coroutineScope.async { api.getCartsRead(userId!!) }.await()
+//        result = response.result
+//        resultCode = response.resultCode
+        println(response)
     }
+
 
     Column() {
         Row() {
 
-            Text(text = "categotyId = ${categoryId}")
+            Text(text = "마이페이지")
 
             Button(onClick = { navController.navigate("main") }) {
                 Text(text = "메인으로")
             }
-        }
-
-        // result가 null이 아닐 경우만
-        if (result != null) {
-
-
-            LazyColumn(
-            ){
-                items(result!!){
-                        item ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ){
-                        AsyncImage(
-                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
-                            contentDescription = item.itemName
-                        )
-
-                        Text(text = item.itemName)
-
-                        Text(text = "${item.price}원")
-                    }
-                }
-            }
-
         }
 
     }
