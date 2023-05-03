@@ -31,7 +31,7 @@ fun GotCart(navController: NavController, userId: Int?){
 
     // 한 번만 실행
     LaunchedEffect(true) {
-       val response = coroutineScope.async { api.getCartsRead(userId!!) }.await()
+       val response = coroutineScope.async { api.gotCartsRead(userId!!) }.await()
         result = response.result
         resultCode = response.resultCode
     }
