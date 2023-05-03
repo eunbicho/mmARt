@@ -4,10 +4,7 @@ import com.ssafy.mmart.domain.gotCart.dto.GotCartItem
 import com.ssafy.mmart.domain.gotCart.dto.GotCartReq
 import com.ssafy.mmart.domain.gotCart.dto.GotCartRes
 import com.ssafy.mmart.exception.conflict.GotCartEmptyException
-import com.ssafy.mmart.exception.not_found.GotCartNotFoundException
-import com.ssafy.mmart.exception.not_found.ItemNotFoundException
-import com.ssafy.mmart.exception.not_found.UserNotFoundException
-import com.ssafy.mmart.exception.not_found.WrongQuantityException
+import com.ssafy.mmart.exception.not_found.*
 import com.ssafy.mmart.repository.ItemCouponRepository
 import com.ssafy.mmart.repository.ItemItemCouponRepository
 import com.ssafy.mmart.repository.ItemRepository
@@ -51,8 +48,8 @@ class GotCartService @Autowired constructor(
 
     fun getGotCarts(userIdx: Int): GotCartRes {
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-        var temp = gotCartOps.get(GOTCART, userIdx)
-        return setGotCarts(temp!!)
+        var temp = gotCartOps.get(GOTCART, userIdx) ?: throw GotCartEmptyException()
+        return setGotCarts(temp)
     }
 
     fun createGotCart(gotCartReq: GotCartReq): GotCartRes {
@@ -61,9 +58,9 @@ class GotCartService @Autowired constructor(
 
         var temp = gotCartOps.get(GOTCART, gotCartReq.userIdx)
         if (temp.isNullOrEmpty()) {
-            var map: MutableMap<Int, Int> = mutableMapOf()
-            map[gotCartReq.itemIdx] = gotCartReq.quantity
-            gotCartOps.put(GOTCART, gotCartReq.userIdx, map)
+            temp = mutableMapOf()
+            temp[gotCartReq.itemIdx] = gotCartReq.quantity
+            gotCartOps.put(GOTCART, gotCartReq.userIdx, temp)
         } else {
             if (temp.containsKey(gotCartReq.itemIdx)) {
                 temp[gotCartReq.itemIdx] = temp[gotCartReq.itemIdx]!! + gotCartReq.quantity
@@ -72,14 +69,15 @@ class GotCartService @Autowired constructor(
             }
             gotCartOps.put(GOTCART, gotCartReq.userIdx, temp)
         }
-        return setGotCarts(temp!!)
+        return setGotCarts(temp)
     }
 
     fun updateGotCart(gotCartReq: GotCartReq): GotCartRes {
         userRepository.findByIdOrNull(gotCartReq.userIdx) ?: throw UserNotFoundException()
-        itemRepository.findByIdOrNull(gotCartReq.itemIdx) ?: throw ItemNotFoundException()
+        val item = itemRepository.findByIdOrNull(gotCartReq.itemIdx) ?: throw ItemNotFoundException()
 
         if (gotCartReq.quantity <= 0 ) throw WrongQuantityException()
+        if (gotCartReq.quantity > item.inventory) throw OverQuantityException()
 
         var temp = gotCartOps.get(GOTCART, gotCartReq.userIdx)
         if (temp.isNullOrEmpty()) {

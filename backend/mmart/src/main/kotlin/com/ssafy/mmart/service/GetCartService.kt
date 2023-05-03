@@ -52,9 +52,9 @@ class GetCartService @Autowired constructor(
             //아이템 존재하는지 확인
             itemRepository.findById(createGetCartReq.itemIdx).orElseThrow(::ItemNotFoundException)
             if (temp == null) {
-                var map: MutableMap<Int, Int> = mutableMapOf()
-                map.put(createGetCartReq.itemIdx, 1)
-                getCartOps.put(GETCART, createGetCartReq.userIdx, map)
+                temp = mutableMapOf()
+                temp.put(createGetCartReq.itemIdx, 1)
+                getCartOps.put(GETCART, createGetCartReq.userIdx, temp)
             } else {
                 //MAP에 내가 넣으려는 값이 있는지 체크
                 val flag = temp.containsKey(createGetCartReq.itemIdx)
