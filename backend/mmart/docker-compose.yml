@@ -39,15 +39,6 @@ services:
       SPRING_DATASOURCE_PASSWORD: red-limo
       TZ: "Asia/Seoul"
 
-  sentiment-analysis:
-    container_name: sentiment_analysis_container
-    build:
-      context: ../../ai/sentiment_analysis
-      dockerfile: Dockerfile
-    restart: on-failure
-    ports:
-      - 8788:80
-
 volumes:
   data:
   cache:
