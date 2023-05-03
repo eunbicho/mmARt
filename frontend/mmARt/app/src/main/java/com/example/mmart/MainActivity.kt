@@ -166,7 +166,7 @@ fun Main(navController: NavController) {
             modifier = Modifier
                 .padding(top = 160.dp),
         ) {
-            searchBar()
+            searchBar(navController)
 
             // 카테고리 부분
             Box(
