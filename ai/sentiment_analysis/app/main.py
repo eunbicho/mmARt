@@ -14,11 +14,7 @@ app = FastAPI()
 model = load_model()
 
 
-@app.get("/")
-def get_connect():
-    return "server connection success"
-
-@app.post("/predict")
+@app.post("/reviews/sentiment-analysis")
 def post_predict(review: Review):
     result = tf.sigmoid(model(tf.constant([review.review])))
 
