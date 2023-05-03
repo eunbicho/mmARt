@@ -24,8 +24,8 @@ import com.example.mmart.ui.theme.mainFont
 
 // 검색바
 @Composable
-fun searchBar(){
-    val navController = rememberNavController()
+fun searchBar(navController: NavController){
+
     var searchWord by remember { mutableStateOf("") }
 
     fun search(){
@@ -34,7 +34,7 @@ fun searchBar(){
     }
 
     fun barcodeSearch(){
-       navController.navigate("barcodeScan")
+        navController.navigate("barcodeScan")
     }
 
     // 검색창

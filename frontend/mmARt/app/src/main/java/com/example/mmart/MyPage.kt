@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.material.*
 import androidx.compose.ui.semantics.Role.Companion.Image
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
 import kotlinx.coroutines.*
@@ -26,17 +27,12 @@ fun MyPage(navController: NavController, userId: Int?){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
-//    var result: CartContent? by remember { mutableStateOf(null) }
-//    var resultCode: String? by remember { mutableStateOf(null) }
+    var result: UserInfo? by remember { mutableStateOf(null) }
 
     // 한 번만 실행
     LaunchedEffect(true) {
-       val response = coroutineScope.async { api.getCartsRead(userId!!) }.await()
-//        result = response.result
-//        resultCode = response.resultCode
-        println(response)
+       result = coroutineScope.async { api.getUser(userId!!) }.await().result
     }
-
 
     Column() {
         Row() {
@@ -46,6 +42,9 @@ fun MyPage(navController: NavController, userId: Int?){
             Button(onClick = { navController.navigate("main") }) {
                 Text(text = "메인으로")
             }
+        }
+        if(result != null){
+            Text("${result!!.name}님", fontSize = 20.sp)
         }
 
     }
