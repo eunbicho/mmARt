@@ -1,6 +1,6 @@
 auth:
   rootPassword: red-limo
-  datanase: red-limo-db
+  database: red-limo-db
 
 extraEnvVars:
   - name: TZ
