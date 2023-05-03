@@ -65,11 +65,11 @@ package:
     - ls -al
     - docker build -t teqteqteqteq/red-limo-backend backend/mmart/
 
-deploy:
-  stage: deploy
-  image:
-    name: bitnami/kubectl:latest
-    entrypoint: ['']
-  allow_failure: true
-  script:
-    - kubectl apply -f k8s/deployment.yaml
+# deploy:
+#   stage: deploy
+#   image:
+#     name: bitnami/kubectl:latest
+#     entrypoint: ['']
+#   allow_failure: true
+#   script:
+#     - kubectl apply -f k8s/deployment.yaml
