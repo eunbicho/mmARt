@@ -42,7 +42,7 @@ services:
   sentiment-analysis:
     container_name: sentiment_analysis_container
     build:
-      context: ./ai/sentiment_analysis
+      context: ../../ai/sentiment_analysis
       dockerfile: Dockerfile
     restart: on-failure
     ports:
