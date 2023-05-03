@@ -2,6 +2,7 @@ package com.ssafy.mmart.controller
 
 import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.item.Item
+import com.ssafy.mmart.domain.itemDetailImage.ItemDetailImage
 import com.ssafy.mmart.service.ItemService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -15,6 +16,10 @@ class ItemController @Autowired constructor(
     fun getItem(@PathVariable itemIdx: Int): ResultResponse<Item?> {
         return ResultResponse.success(itemService.getItem(itemIdx))
     }
+    @GetMapping("/{itemIdx}/detail-image")
+    fun getItemDetailImage(@PathVariable itemIdx: Int): ResultResponse<ItemDetailImage?> {
+        return ResultResponse.success(itemService.getItemDetailImage(itemIdx))
+    }
 
     @GetMapping("/barcode")
     fun getItemByBarcode(@RequestParam barcode: String): ResultResponse<Item?> {
@@ -22,8 +27,27 @@ class ItemController @Autowired constructor(
     }
 
     @GetMapping("/categories")
-    fun getItemByCategory(@RequestParam userIdx: Int, categoryIdx: Int): ResultResponse<List<Item?>> {
+    fun getItemByCategory(@RequestParam userIdx: Int, categoryIdx: Int): ResultResponse<List<Item>?> {
         return ResultResponse.success(itemService.getItemByCategory(userIdx,categoryIdx))
     }
 
+    @GetMapping("/frequent")
+    fun getItemsFrequent(@RequestParam userIdx: Int): ResultResponse<List<Item?>> {
+        return ResultResponse.success(itemService.getItemsFrequent(userIdx))
+    }
+
+    @GetMapping("/recent")
+    fun getItemsRecent(@RequestParam userIdx: Int): ResultResponse<List<Item?>> {
+        return ResultResponse.success(itemService.getItemsRecent(userIdx))
+    }
+
+    @GetMapping("/favorite")
+    fun getItemsFavorite(@RequestParam userIdx: Int): ResultResponse<List<Item?>> {
+        return ResultResponse.success(itemService.getItemsFavorite(userIdx))
+    }
+
+    @GetMapping("/discount")
+    fun getItemsDiscount(): ResultResponse<List<Item?>> {
+        return ResultResponse.success(itemService.getItemsDiscount())
+    }
 }

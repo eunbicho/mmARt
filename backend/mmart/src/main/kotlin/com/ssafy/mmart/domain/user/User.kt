@@ -20,7 +20,6 @@ data class User(
     @Column(name = "name")
     var name: String,
 
-    @Column(name = "point")
-    @ColumnDefault("0")
-    var point: Int? = 0,
+    @Column(name = "qrcode")
+    var qrcode: String,
 ):Base()

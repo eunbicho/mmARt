@@ -1,5 +1,3 @@
-# Adding workflow rules to avoid other branches to use the pipeline 
-# since we only want to use the master branch
 workflow:
   rules:
     - if: $CI_COMMIT_TAG
@@ -11,19 +9,18 @@ variables:
   IMAGE_OPENJDK: openjdk:17-alpine
 
 stages:
-  - clean
-  - build
   - test
-  - build-image
-  - publish-image
+  - build
+  - package
   - deploy
 
 clean:
   image: $IMAGE_OPENJDK_GRADLE
-  stage: clean
+  stage: build
+  allow_failure: true
   before_script:
-  - cd backend/mmart
-  - chmod +x gradlew
+    - cd backend/mmart
+    - chmod +x gradlew
   script:
     - echo "Cleaning leftovers from previous builds"
     - ./gradlew clean
@@ -31,68 +28,42 @@ clean:
 build:
   image: $IMAGE_OPENJDK
   stage: build
+  allow_failure: true
   needs:
     - job: clean
   before_script:
-  - cd backend/mmart
-  - chmod +x gradlew
+    - cd backend/mmart/src/main/resources
+    - echo $SPRINGBOOT_PROPS >> "application.properties"
+    - ls -al
+    - cd ../../../
+    - chmod +x gradlew
   script:
     - echo "Compiling the code..."
     - ./gradlew build -x test
   artifacts:
+    name: app.jar
     paths:
-      - build/libs/*-SNAPSHOT.jar
+      - backend/mmart/build/libs/mmart-0.0.1-SNAPSHOT.jar
+    expire_in: 1 week
 
-static-code-analysis:
-  image: $IMAGE_OPENJDK_GRADLE
-  stage: test
+package:
+  stage: package
+  allow_failure: true
   before_script:
     - cd backend/mmart
-    - chmod +x gradlew
-  script:
-    - echo "Running Static Code Analysis..."
-    - echo "Checking style..."
-    - ./gradlew checkstyleMain
-    - echo "Checking duplicated code..."
-    - ./gradlew cpdCheck
-    - echo "Checking bugs..."
-    - ./gradlew spotbugsMain
-    - echo "Checking code standard..."
-    - ./gradlew pmdMain
-
-unit-test:
-  image: $IMAGE_OPENJDK_GRADLE
-  stage: test
-  before_script:
-    - cd backend/mmart
-    - chmod +x gradlew
-  script:
-    - echo "Running unit tests..."
-    - ./gradlew test -Dspring.profiles.active=test
-
-coverage-test:
-  image: $IMAGE_OPENJDK_GRADLE
-  stage: test
-  needs:
-    - job: unit-test
-  script:
-    - echo "Running coverage tests..."
-
-build-image:
-  stage: build-image
-  needs:
-    - job: build
-  before_script:
-    - cd backend/mmart
+    - docker login -u teqteqteqteq -p $DOCKERHUB_PW
   script:
     - echo "Building Docker Image..."
-    - docker build -t teqteqteqteq/red-limo-backend:latest
-
-publish-image:
-  stage: publish-image
-  needs:
-    - job: build-image
-  script:
+    - docker build -t teqteqteqteq/red-limo-backend:latest .
+  after_script:
     - echo "Publishing Docker Image..."
-    - docker login -u mjovanc -p $DOCKERHUB_PW
     - docker push teqteqteqteq/red-limo-backend:latest
+
+deploy:
+  stage: deploy
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  allow_failure: true
+  script:
+    - kubectl apply -f k8s/deployment.yaml

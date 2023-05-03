@@ -14,8 +14,8 @@ data class ItemCoupon (
     @Column(name = "couponName")
     val couponName: String,
 
-    @Column(name = "couponCost")
-    val couponCost: Int,
+    @Column(name = "couponDiscount")
+    val couponDiscount: Int,
 
     @Column(name = "couponExpired")
     val couponExpired: LocalDateTime,
