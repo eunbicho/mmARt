@@ -18,7 +18,7 @@ class SwaggerConfig {
     fun api(): Docket? {
         return Docket(DocumentationType.OAS_30)
                 .securityContexts(listOf(securityContext()))
-                .securitySchemes(java.util.List.of(apiKey()) as List<SecurityScheme>?)
+                .securitySchemes(listOf(apiKey()) as List<SecurityScheme>?)
                 .useDefaultResponseMessages(false)
                 .select()
                 .apis(RequestHandlerSelectors.any())
@@ -42,11 +42,11 @@ class SwaggerConfig {
                 .build()
     }
 
-    private fun defaultAuth(): List<SecurityReference>? {
+    private fun defaultAuth(): List<SecurityReference> {
         val authorizationScope = AuthorizationScope("global", "accessEverything")
         val authorizationScopes: Array<AuthorizationScope?> = arrayOfNulls<AuthorizationScope>(1)
         authorizationScopes[0] = authorizationScope
-        return java.util.List.of<SecurityReference>(SecurityReference("Authorization", authorizationScopes))
+        return listOf<SecurityReference>(SecurityReference("Authorization", authorizationScopes))
     }
 
     private fun apiKey(): ApiKey {
