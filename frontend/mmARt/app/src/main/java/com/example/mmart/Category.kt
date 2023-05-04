@@ -1,10 +1,12 @@
 package com.example.mmart
 
 import android.media.Image
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -16,7 +18,6 @@ import androidx.navigation.NavController
 import androidx.compose.material.*
 import androidx.compose.ui.semantics.Role.Companion.Image
 import coil.compose.AsyncImage
-
 import kotlinx.coroutines.*
 
 @Composable
@@ -31,7 +32,6 @@ fun Category(navController: NavController, categoryId: Int?){
         result = coroutineScope.async { api.getCategories(1, categoryId!!) }.await().result
     }
 
-
     Column() {
         Row() {
 
@@ -41,8 +41,13 @@ fun Category(navController: NavController, categoryId: Int?){
                 Text(text = "메인으로")
             }
         }
+
+        // result가 null이 아닐 경우만
         if (result != null) {
-            LazyColumn{
+
+
+            LazyColumn(
+            ){
                 items(result!!){
                         item ->
                     Row(
