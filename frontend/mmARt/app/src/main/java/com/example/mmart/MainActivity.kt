@@ -13,12 +13,18 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -44,11 +50,29 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "main") {
+                // 메인 화면
                 composable(route = "main"){
                     Main(navController)
                 }
+                //카테고리 별 상품 보기
                 composable(route = "category/{categoryId}", arguments = listOf(navArgument("categoryId"){type = NavType.IntType})){ backStackEntry ->
                     Category(navController, backStackEntry.arguments?.getInt("categoryId"))
+                }
+                // 바코드 스캔
+                composable(route = "barcodeScan"){
+                    BarcodeScan(navController)
+                }
+                // 장볼구니
+                composable(route = "getCart/{userId}", arguments = listOf(navArgument("userId"){type = NavType.IntType})){ backStackEntry ->
+                    GetCart(navController, backStackEntry.arguments?.getInt("userId"))
+                }
+                // 장봤구니
+                composable(route = "gotCart/{userId}", arguments = listOf(navArgument("userId"){type = NavType.IntType})){ backStackEntry ->
+                    GotCart(navController, backStackEntry.arguments?.getInt("userId"))
+                }
+                // 마이페이지
+                composable(route = "myPage/{userId}", arguments = listOf(navArgument("userId"){type = NavType.IntType})){ backStackEntry ->
+                    MyPage(navController, backStackEntry.arguments?.getInt("userId"))
                 }
             }
         }
@@ -56,18 +80,51 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter") // Scaffold의 padding value 사용 안 할 때
 @Composable
 fun Main(navController: NavController) {
+    // userId
+    val userId = 1
 
     // 카테고리 별 상품보기
     fun category(categoryId: Int){
         navController.navigate("category/$categoryId")
     }
 
-
     Scaffold(
-
+        bottomBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+            ) {
+                Image(painter = painterResource(R.drawable.bottombar_1), contentDescription = "빠른장보기",
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .aspectRatio(1f / 1f)
+                        .clickable(onClick = { navController.navigate("barcodeScan") })
+                )
+                Image(painter = painterResource(R.drawable.bottombar_2), contentDescription = "장볼구니",
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .aspectRatio(1f / 1f)
+                        .clickable(onClick = { navController.navigate("getCart/$userId") }))
+                Image(painter = painterResource(R.drawable.bottombar_3), contentDescription = "장봤구니",
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .aspectRatio(1f / 1f)
+                        .clickable(onClick = { navController.navigate("getCart/$userId") }))
+                Image(painter = painterResource(R.drawable.bottombar_4), contentDescription = "마이페이지",
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .aspectRatio(1f / 1f)
+                        .clickable(onClick = { navController.navigate("myPage/$userId") }))
+            }
+        }
     ) {
         // 배경 이미지
         Image(
@@ -84,7 +141,7 @@ fun Main(navController: NavController) {
                     .align(Alignment.TopStart)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
                 Image(
                     painter = painterResource(R.drawable.logo),
                     contentDescription = "로고",
@@ -104,178 +161,121 @@ fun Main(navController: NavController) {
 
             }
         }
-    // 바디
-    Column(
-        modifier = Modifier
-            .padding(top = 160.dp),
-    ) {
-        searchBar()
-
-       // 카테고리 부분
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 30.dp)
-                .height(200.dp)
-
+        // 바디
+        Column(
+            modifier = Modifier
+                .padding(top = 160.dp),
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(vertical = 20.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+            searchBar(navController)
+
+            // 카테고리 부분
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp)
+                    .height(200.dp)
 
             ) {
-                LazyRow(){
-                    items(4){
-                        item ->
-                        Text(text = "${item+1}")
-                    }
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 15.dp)
+                        .fillMaxHeight()
+                        .padding(vertical = 20.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
+
                 ) {
-                    Column(
+                    LazyRow(
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .clickable { category(1) },
-                        horizontalAlignment = Alignment.CenterHorizontally
-
+                            .fillMaxWidth()
+                            .padding(horizontal = 15.dp)
                     ) {
-                        val description = "가공식품"
-                        Image(
-                            painter = painterResource(R.drawable.category_1),
-                            contentDescription = description,
-                            modifier = Modifier
-                                .size(50.dp)
-                        )
-                        Text(description, fontFamily = mainFont)
+                        items(4) { item ->
+                            fun imageResource(num: Int): Int {
+                                return when (num) {
+                                    0 -> R.drawable.category_1
+                                    1 -> R.drawable.category_2
+                                    2 -> R.drawable.category_3
+                                    3 -> R.drawable.category_4
+                                    else -> R.drawable.category_1
+                                }
+                            }
+
+                            fun description(num: Int): String {
+                                return when (num) {
+                                    0 -> "가공식품"
+                                    1 -> "신선식품"
+                                    2 -> "일상용품"
+                                    3 -> "의약품"
+                                    else -> "가공식품"
+                                }
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .clickable { category(item + 1) },
+                                horizontalAlignment = Alignment.CenterHorizontally
+
+                            ) {
+                                Image(
+                                    painter = painterResource(imageResource(item)),
+                                    contentDescription = description(item),
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                )
+                                Text(description(item), fontFamily = mainFont)
+                            }
+                        }
                     }
 
-                    Column(
+                    LazyRow(
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .clickable { category(2) },
-                        horizontalAlignment = Alignment.CenterHorizontally
-
+                            .fillMaxWidth()
+                            .padding(horizontal = 15.dp)
                     ) {
-                        val description = "신선식품"
-                        Image(
-                            painter = painterResource(R.drawable.category_2),
-                            contentDescription = description,
-                            modifier = Modifier
-                                .size(50.dp)
-                        )
-                        Text(description, fontFamily = mainFont)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .clickable { category(3) },
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        items(4) { item ->
+                            fun imageResource(num: Int): Int {
+                                return when (num) {
+                                    0 -> R.drawable.category_5
+                                    1 -> R.drawable.category_6
+                                    2 -> R.drawable.category_7
+                                    3 -> R.drawable.category_8
+                                    else -> R.drawable.category_1
+                                }
+                            }
 
-                    ) {
-                        val description = "일상용품"
-                        Image(
-                            painter = painterResource(R.drawable.category_3),
-                            contentDescription = description,
-                            modifier = Modifier
-                                .size(50.dp)
-                        )
-                        Text(description, fontFamily = mainFont)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .clickable { category(4) },
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            fun description(num: Int): String {
+                                return when (num) {
+                                    0 -> "교육용품"
+                                    1 -> "디지털"
+                                    2 -> "인테리어"
+                                    3 -> "스포츠"
+                                    else -> "가공식품"
+                                }
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .clickable { category(item + 5) },
+                                horizontalAlignment = Alignment.CenterHorizontally
 
-                    ) {
-                        val description = "의약품"
-                        Image(
-                            painter = painterResource(R.drawable.category_4),
-                            contentDescription = description,
-                            modifier = Modifier
-                                .size(50.dp)
-                        )
-                        Text(description, fontFamily = mainFont)
+                            ) {
+                                Image(
+                                    painter = painterResource(imageResource(item)),
+                                    contentDescription = description(item),
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                )
+                                Text(description(item), fontFamily = mainFont)
+                            }
+                        }
                     }
-                }
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .clickable { category(5) },
-                        horizontalAlignment = Alignment.CenterHorizontally
-
-                    ) {
-                        val description = "교육/문화용품"
-                        Image(
-                            painter = painterResource(R.drawable.category_5),
-                            contentDescription = description,
-                            modifier = Modifier
-                                .size(50.dp)
-                        )
-                        Text(description, fontFamily = mainFont)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .clickable { category(6) },
-                        horizontalAlignment = Alignment.CenterHorizontally
-
-                    ) {
-                        val description = "디지털"
-                        Image(
-                            painter = painterResource(R.drawable.category_6),
-                            contentDescription = description,
-                            modifier = Modifier
-                                .size(50.dp)
-                        )
-                        Text(description, fontFamily = mainFont)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .clickable { category(7) },
-                        horizontalAlignment = Alignment.CenterHorizontally
-
-                    ) {
-                        val description = "가구/인테리어"
-                        Image(
-                            painter = painterResource(R.drawable.category_7),
-                            contentDescription = description,
-                            modifier = Modifier
-                                .size(50.dp)
-                        )
-                        Text(description, fontFamily = mainFont)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .clickable { category(8) },
-                        horizontalAlignment = Alignment.CenterHorizontally
-
-                    ) {
-                        val description = "스포츠"
-                        Image(
-                            painter = painterResource(R.drawable.category_8),
-                            contentDescription = description,
-                            modifier = Modifier
-                                .size(50.dp)
-                        )
-                        Text(description, fontFamily = mainFont)
-                    }
+                    Button(onClick = {  }){ Text(text = "유니티테스트") }
                 }
             }
         }
-    }
 
     }
-
-
 }
+
 
 @Preview(showBackground = true)
 @Composable

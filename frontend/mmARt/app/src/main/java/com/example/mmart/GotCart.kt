@@ -18,24 +18,29 @@ import androidx.navigation.NavController
 import androidx.compose.material.*
 import androidx.compose.ui.semantics.Role.Companion.Image
 import coil.compose.AsyncImage
+
 import kotlinx.coroutines.*
 
 @Composable
-fun Category(navController: NavController, categoryId: Int?){
+fun GotCart(navController: NavController, userId: Int?){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
-    var result: List<ItemInfo>? by remember { mutableStateOf(null) }
+    var result: CartContent? by remember { mutableStateOf(null) }
+    var resultCode: String? by remember { mutableStateOf(null) }
 
     // 한 번만 실행
     LaunchedEffect(true) {
-        result = coroutineScope.async { api.getCategories(1, categoryId!!) }.await().result
+       val response = coroutineScope.async { api.gotCartsRead(userId!!) }.await()
+        result = response.result
+        resultCode = response.resultCode
     }
+
 
     Column() {
         Row() {
 
-            Text(text = "categotyId = ${categoryId}")
+            Text(text = "장봤구니")
 
             Button(onClick = { navController.navigate("main") }) {
                 Text(text = "메인으로")
@@ -43,30 +48,27 @@ fun Category(navController: NavController, categoryId: Int?){
         }
 
         // result가 null이 아닐 경우만
-        if (result != null) {
+        if(result != null){
+            if (resultCode == "SUCCESS") {
+                LazyColumn(
+                ){
+                    items(result!!.itemList){
+                            item ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Text(text = "${item.itemIdx}")
 
-
-            LazyColumn(
-            ){
-                items(result!!){
-                        item ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ){
-                        AsyncImage(
-                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
-                            contentDescription = item.itemName
-                        )
-
-                        Text(text = item.itemName)
-
-                        Text(text = "${item.price}원")
+                        }
                     }
                 }
-            }
 
+            } else {
+                Text(result!!.message)
+            }
         }
+
 
     }
 }
