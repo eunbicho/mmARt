@@ -41,24 +41,6 @@ class GetCartService @Autowired constructor(
         //내가 담기를 원하는 재고가 기존의 수량을 넘는지 체크
         if (item.inventory < createGetCartReq.quality)
             throw OverQuantityException()
-//        if (createGetCartReq.itemIdx < 0) {
-//            //카테고리 추가일 경우
-//            //카테고리가 존재하는지 확인해야함!!
-//            categoryRepository.findById(-createGetCartReq.itemIdx).orElseThrow(::ItemNotFoundException)
-//
-//            if (temp == null) {
-//                var map: MutableMap<Int, Int> = mutableMapOf()
-//                map.put(createGetCartReq.itemIdx, 0)
-//                getCartOps.put(GETCART, createGetCartReq.userIdx, map)
-//            } else {
-//                //MAP에 내가 넣으려는 값이 있는지 체크
-//                val flag = temp.containsKey(createGetCartReq.itemIdx)
-//                if (!flag) {//값이 없으면
-//                    temp.put(createGetCartReq.itemIdx, 0)
-//                }
-//                getCartOps.put(GETCART, createGetCartReq.userIdx, temp)
-//            }
-//        }
 
         if (temp == null) {
             temp = mutableMapOf()
@@ -112,13 +94,8 @@ class GetCartService @Autowired constructor(
     fun getGetCart(userIdx: Int): GetCartRes {
         //유저가 존재하는지 확인
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
-
-        val temp = getCartOps.get(getCart, userIdx)
-        if (temp.isNullOrEmpty()) {
-            throw GetCartEmptyException()
-        } else {
-            return setGetCarts(temp)
-        }
+        val temp = getCartOps.get(getCart, userIdx) ?: mutableMapOf()
+        return setGetCarts(temp)
     }
 
     fun deleteGetCarts(userIdx: Int): GetCartRes {
