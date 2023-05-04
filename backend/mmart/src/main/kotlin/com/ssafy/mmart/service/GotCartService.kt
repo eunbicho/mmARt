@@ -1,5 +1,6 @@
 package com.ssafy.mmart.service
 
+import com.ssafy.mmart.domain.getCart.dto.GetCartItem
 import com.ssafy.mmart.domain.gotCart.dto.GotCartItem
 import com.ssafy.mmart.domain.gotCart.dto.GotCartReq
 import com.ssafy.mmart.domain.gotCart.dto.GotCartRes
@@ -32,13 +33,25 @@ class GotCartService @Autowired constructor(
         val gotCartRes = GotCartRes(mutableListOf(), total)
         temp.keys.forEach{ hashKey ->
             val tempQuantity = temp[hashKey]!!
-            gotCartRes.itemList.add(GotCartItem(hashKey, tempQuantity))
             val tempItem = itemRepository.findByIdOrNull(hashKey) ?: throw ItemNotFoundException()
             var tempPrice = tempItem.price
+            var isCoupon = false;
             val tempCoupon = itemItemCouponRepository.findByItem_ItemIdx(hashKey)
             if (tempCoupon != null) {
+                isCoupon=true
                 tempPrice -= itemCouponRepository.findByIdOrNull(tempCoupon.itemCoupon.itemCouponIdx)!!.couponDiscount
             }
+            gotCartRes.itemList.add(
+                GotCartItem(
+                    hashKey,
+                    tempItem.itemName,
+                    tempItem.price,
+                    tempItem.thumbnail!!,
+                    isCoupon,
+                    tempPrice,
+                    tempQuantity
+                )
+            )
             total += tempPrice * tempQuantity
         }
         gotCartRes.total = total

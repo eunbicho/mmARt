@@ -21,7 +21,7 @@ class GetCartService @Autowired constructor(
     var categoryRepository: CategoryRepository,
     var itemItemCouponRepository: ItemItemCouponRepository,
     var couponRepository: ItemCouponRepository,
-    ) {
+) {
     //카테고리는 인덱스를 마이너스로, 인벤토리는 0으로 쓰기
     val getCart = "GETCART"
     val getCartOps: HashOperations<String, Int, MutableMap<Int, Int>> = redisTemplate.opsForHash()
@@ -60,20 +60,20 @@ class GetCartService @Autowired constructor(
 //            }
 //        }
 
-            if (temp == null) {
-                temp = mutableMapOf()
+        if (temp == null) {
+            temp = mutableMapOf()
+            temp[createGetCartReq.itemIdx] = createGetCartReq.quality
+            getCartOps.put(getCart, createGetCartReq.userIdx, temp)
+        } else {
+            //MAP에 내가 넣으려는 값이 있는지 체크
+            val flag = temp.containsKey(createGetCartReq.itemIdx)
+            if (flag) {//값이 있으면
+                temp[createGetCartReq.itemIdx] = temp[createGetCartReq.itemIdx]!! + createGetCartReq.quality
+            } else {//값이 없으면
                 temp[createGetCartReq.itemIdx] = createGetCartReq.quality
-                getCartOps.put(getCart, createGetCartReq.userIdx, temp)
-            } else {
-                //MAP에 내가 넣으려는 값이 있는지 체크
-                val flag = temp.containsKey(createGetCartReq.itemIdx)
-                if (flag) {//값이 있으면
-                    temp[createGetCartReq.itemIdx] = temp[createGetCartReq.itemIdx]!! + createGetCartReq.quality
-                } else {//값이 없으면
-                    temp[createGetCartReq.itemIdx] = createGetCartReq.quality
-                }
-                getCartOps.put(getCart, createGetCartReq.userIdx, temp)
             }
+            getCartOps.put(getCart, createGetCartReq.userIdx, temp)
+        }
         return setGetCarts(temp)
     }
 
@@ -160,19 +160,33 @@ class GetCartService @Autowired constructor(
         return setGetCarts(temp)
     }
 
-    fun setGetCarts(temp: MutableMap<Int, Int>): GetCartRes{
-        val getCartRes = GetCartRes(mutableListOf(),0)
-        if(temp.isNotEmpty()){
-            temp.keys.forEach { haskKey -> getCartRes.itemList.add(GetCartItem(haskKey, temp[haskKey]!!))
+    fun setGetCarts(temp: MutableMap<Int, Int>): GetCartRes {
+        val getCartRes = GetCartRes(mutableListOf(), 0)
+        if (temp.isNotEmpty()) {
+            temp.keys.forEach { haskKey ->
                 val item = itemRepository.findById(haskKey).orElseThrow(::ItemNotFoundException)
                 var eachPrice = item.price
+                var isCoupon = false;
                 //쿠폰이 있으면, 쿠폰 가격만큼 item의 price에서 빼준다.
                 val itemItemCoupon = itemItemCouponRepository.findByItem_ItemIdx(item.itemIdx!!)
-                if(itemItemCoupon != null){
+                if (itemItemCoupon != null) {
+                    isCoupon = true;
                     val itemCoupon = couponRepository.findById(itemItemCoupon.itemCoupon.itemCouponIdx!!)
-                    eachPrice-=itemCoupon.get().couponDiscount
+                    eachPrice -= itemCoupon.get().couponDiscount
                 }
-                getCartRes.total+=eachPrice* temp[haskKey]!!}
+                getCartRes.itemList.add(
+                    GetCartItem(
+                        haskKey,
+                        item.itemName,
+                        item.price,
+                        item.thumbnail!!,
+                        isCoupon,
+                        eachPrice,
+                        temp[haskKey]!!
+                    )
+                )
+                getCartRes.total += eachPrice * temp[haskKey]!!
+            }
         }
         return getCartRes
 
