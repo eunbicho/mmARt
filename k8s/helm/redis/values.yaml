@@ -1,0 +1,4 @@
+master:
+  extraEnvVars:
+    - name: TZ
+      value: "Asia/Seoul"

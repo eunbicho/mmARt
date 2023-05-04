@@ -1,6 +1,5 @@
 package com.ssafy.mmart.service
 
-import com.querydsl.core.Tuple
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.favoriteCategory.QFavorite.favorite
@@ -43,7 +42,7 @@ class ItemService @Autowired constructor(
     }
 
     fun getItemByCategory(userIdx: Int, categoryIdx: Int): List<Item>? {
-        var result = jpaQueryFactory.select(item)
+        val result = jpaQueryFactory.select(item)
             .from(paymentDetail)
             .join(paymentDetail.payment, payment)
             .join(paymentDetail.item, item)
@@ -52,7 +51,7 @@ class ItemService @Autowired constructor(
             .orderBy(item.itemIdx.count().desc(), payment.date.max().desc())
             .fetch()
         //이제 재고 있는 전체 리스트 add
-        var temp = jpaQueryFactory
+        val temp = jpaQueryFactory
             .selectFrom(item)
             .where(
                 item.notIn(
@@ -65,7 +64,7 @@ class ItemService @Autowired constructor(
                 )
             .fetch()
         result.addAll(temp)
-        var temp2 = jpaQueryFactory
+        val temp2 = jpaQueryFactory
             .selectFrom(item)
             .where(item.inventory.eq(0))
             .fetch()

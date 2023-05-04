@@ -24,7 +24,7 @@ class RedisConfig(@Value("\${spring.redis.host}")
      */
     @Bean
     fun redisConnectionFactory(): RedisConnectionFactory? {
-        return LettuceConnectionFactory(redisHost!!, redisPort)
+        return LettuceConnectionFactory(redisHost, redisPort)
     }
 
     @Bean

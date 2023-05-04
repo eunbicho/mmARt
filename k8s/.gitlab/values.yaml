@@ -41,17 +41,41 @@
 #         [[runners.kubernetes.volumes.empty_dir]]
 #           name = "docker-certs"
 #           mount_path = "/certs/client"
-#           medium = "Memory"
+#           medium = "Memory"dd  
+# gitlab-runner:
+#     image: gitlab/gitlab-runner:latest
+#     gitlabUrl: https://lab.ssafy.com/
+#     runnerRegistrationToken: GR1348941S3VVKyQxqjVXDKZsmVxz
+#     concurrent: 4
+#     rbac:
+#         create: true
+#         clusterWideAccess: true
+#     runners:
+#         privileged: true
+#         namespace: gitlab-runner
+#         config: |
+#             [[runners]]
+#             [runners.kubernetes]
+#                 image = "ubuntu:20.04"
+#                 privileged = true
+#             [[runners.kubernetes.volumes.empty_dir]]
+#                 name = "docker-certs"
+#                 mount_path = "/certs/client"
+#                 medium = "Memory"
+gitlabUrl: https://lab.ssafy.com/
+runnerRegistrationToken: GR1348941317B-WeHV6rh3x6-AVw5
 
+rbac:
+    create: false
+    serviceAccountName: gitlab-runner
 
-gitlab-runner:
-    image: gitlab/gitlab-runner:latest
-    gitlabUrl: https://lab.ssafy.com/
-    runnerRegistrationToken: GR1348941S3VVKyQxqjVXDKZsmVxz
-    concurrent: 4
-    rbac:
-        create: true
-        clusterWideAccess: true
-    runners:
-        privileged: true
-        namespace: gitlab-runner
+runners:
+  config: |
+    [[runners]]
+      [runners.kubernetes]
+        image = "ubuntu:20.04"
+        privileged = true
+      [[runners.kubernetes.volumes.empty_dir]]
+        name = "docker-certs"
+        mount_path = "/certs/client"
+        medium = "Memory"

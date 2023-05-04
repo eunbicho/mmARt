@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class GetCartService @Autowired constructor(
-    var redisTemplate: RedisTemplate<String, Any>,
+    private var redisTemplate: RedisTemplate<String, Any>,
     var userRepository: UserRepository,
     var itemRepository: ItemRepository,
     var categoryRepository: CategoryRepository,
@@ -23,51 +23,58 @@ class GetCartService @Autowired constructor(
     var couponRepository: ItemCouponRepository,
     ) {
     //카테고리는 인덱스를 마이너스로, 인벤토리는 0으로 쓰기
-    val GETCART = "GETCART"
+    val getCart = "GETCART"
     val getCartOps: HashOperations<String, Int, MutableMap<Int, Int>> = redisTemplate.opsForHash()
 
     fun createGetCart(createGetCartReq: CreateGetCartReq): GetCartRes {
         //유저가 존재하는지 확인
         userRepository.findById(createGetCartReq.userIdx).orElseThrow(::UserNotFoundException)
-        var temp = getCartOps.get(GETCART, createGetCartReq.userIdx)
-        if (createGetCartReq.itemIdx < 0) {
-            //카테고리 추가일 경우
-            //카테고리가 존재하는지 확인해야함!!
-            categoryRepository.findById(-createGetCartReq.itemIdx).orElseThrow(::ItemNotFoundException)
+        var temp = getCartOps.get(getCart, createGetCartReq.userIdx)
+
+        //선택한 수량이 0 초과인지 체크
+        if (createGetCartReq.quality <= 0)
+            throw WrongQuantityException()
+
+        //아이템 존재하는지 확인
+        val item = itemRepository.findById(createGetCartReq.itemIdx).orElseThrow(::ItemNotFoundException)
+
+        //내가 담기를 원하는 재고가 기존의 수량을 넘는지 체크
+        if (item.inventory < createGetCartReq.quality)
+            throw OverQuantityException()
+//        if (createGetCartReq.itemIdx < 0) {
+//            //카테고리 추가일 경우
+//            //카테고리가 존재하는지 확인해야함!!
+//            categoryRepository.findById(-createGetCartReq.itemIdx).orElseThrow(::ItemNotFoundException)
+//
+//            if (temp == null) {
+//                var map: MutableMap<Int, Int> = mutableMapOf()
+//                map.put(createGetCartReq.itemIdx, 0)
+//                getCartOps.put(GETCART, createGetCartReq.userIdx, map)
+//            } else {
+//                //MAP에 내가 넣으려는 값이 있는지 체크
+//                val flag = temp.containsKey(createGetCartReq.itemIdx)
+//                if (!flag) {//값이 없으면
+//                    temp.put(createGetCartReq.itemIdx, 0)
+//                }
+//                getCartOps.put(GETCART, createGetCartReq.userIdx, temp)
+//            }
+//        }
 
             if (temp == null) {
-                var map: MutableMap<Int, Int> = mutableMapOf()
-                map.put(createGetCartReq.itemIdx, 0)
-                getCartOps.put(GETCART, createGetCartReq.userIdx, map)
-            } else {
-                //MAP에 내가 넣으려는 값이 있는지 체크
-                val flag = temp.containsKey(createGetCartReq.itemIdx)
-                if (!flag) {//값이 없으면
-                    temp.put(createGetCartReq.itemIdx, 0)
-                }
-                getCartOps.put(GETCART, createGetCartReq.userIdx, temp)
-            }
-        } else {
-            //아이템 추가일 경우
-            //아이템 존재하는지 확인
-            itemRepository.findById(createGetCartReq.itemIdx).orElseThrow(::ItemNotFoundException)
-            if (temp == null) {
                 temp = mutableMapOf()
-                temp.put(createGetCartReq.itemIdx, 1)
-                getCartOps.put(GETCART, createGetCartReq.userIdx, temp)
+                temp[createGetCartReq.itemIdx] = createGetCartReq.quality
+                getCartOps.put(getCart, createGetCartReq.userIdx, temp)
             } else {
                 //MAP에 내가 넣으려는 값이 있는지 체크
                 val flag = temp.containsKey(createGetCartReq.itemIdx)
                 if (flag) {//값이 있으면
-                    temp.put(createGetCartReq.itemIdx, temp.get(createGetCartReq.itemIdx)!! + 1)
+                    temp[createGetCartReq.itemIdx] = temp[createGetCartReq.itemIdx]!! + createGetCartReq.quality
                 } else {//값이 없으면
-                    temp.put(createGetCartReq.itemIdx, 1)
+                    temp[createGetCartReq.itemIdx] = createGetCartReq.quality
                 }
-                getCartOps.put(GETCART, createGetCartReq.userIdx, temp)
+                getCartOps.put(getCart, createGetCartReq.userIdx, temp)
             }
-        }
-//        getCartOps.entries(GETCART).keys.forEach { haskKey -> getCartOps.delete(GETCART, haskKey) }
-        return setGetCarts(temp!!)
+        return setGetCarts(temp)
     }
 
     fun putGetCart(putGetCartReq: PutGetCartReq): GetCartRes {
@@ -76,51 +83,51 @@ class GetCartService @Autowired constructor(
             throw BadAccessException()
         userRepository.findById(putGetCartReq.userIdx).orElseThrow(::UserNotFoundException)
         //아이템 존재하는지 확인
-        var item = itemRepository.findById(putGetCartReq.itemIdx).orElseThrow(::ItemNotFoundException)
+        val item = itemRepository.findById(putGetCartReq.itemIdx).orElseThrow(::ItemNotFoundException)
 
         //선택한 수량이 0 초과인지 체크
-        if (putGetCartReq.inventory <= 0)
+        if (putGetCartReq.quality <= 0)
             throw WrongQuantityException()
 
         //내가 담기를 원하는 재고가 기존의 수량을 넘는지 체크
-        if (item.inventory < putGetCartReq.inventory)
+        if (item.inventory < putGetCartReq.quality)
             throw OverQuantityException()
 
-        var temp = getCartOps.get(GETCART, putGetCartReq.userIdx)
+        val temp = getCartOps.get(getCart, putGetCartReq.userIdx)
         if (temp.isNullOrEmpty()) {
             throw GetCartEmptyException()
         } else {
             //MAP에 내가 넣으려는 값이 있는지 체크
             val flag = temp.containsKey(putGetCartReq.itemIdx)
             if (flag) {//값이 있으면(있어야함. 수량 수정이므로)
-                temp.put(putGetCartReq.itemIdx, putGetCartReq.inventory)
+                temp[putGetCartReq.itemIdx] = putGetCartReq.quality
             } else {//값이 없으면 익셉션 발생
                 throw GetCartNotFoundException()
             }
-            getCartOps.put(GETCART, putGetCartReq.userIdx, temp)
+            getCartOps.put(getCart, putGetCartReq.userIdx, temp)
         }
-        return setGetCarts(temp!!)
+        return setGetCarts(temp)
     }
 
-    open fun getGetCart(userIdx: Int): GetCartRes {
+    fun getGetCart(userIdx: Int): GetCartRes {
         //유저가 존재하는지 확인
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
 
-        var temp = getCartOps.get(GETCART, userIdx)
+        val temp = getCartOps.get(getCart, userIdx)
         if (temp.isNullOrEmpty()) {
             throw GetCartEmptyException()
         } else {
-            return setGetCarts(temp!!)
+            return setGetCarts(temp)
         }
     }
 
     fun deleteGetCarts(userIdx: Int): GetCartRes {
         //유저가 존재하는지 확인
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
-        var temp = getCartOps.get(GETCART, userIdx)
+        val temp = getCartOps.get(getCart, userIdx)
         if (!temp.isNullOrEmpty()) {
             temp.clear()
-            getCartOps.put(GETCART, userIdx, temp)
+            getCartOps.put(getCart, userIdx, temp)
         }
         return setGetCarts(temp!!)
     }
@@ -128,7 +135,7 @@ class GetCartService @Autowired constructor(
     fun deleteGetCart(userIdx: Int, itemIdx: Int): GetCartRes {
         //유저가 존재하는지 확인
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
-        var temp = getCartOps.get(GETCART, userIdx)
+        val temp = getCartOps.get(getCart, userIdx)
         if (temp.isNullOrEmpty())
             throw GetCartEmptyException()
         if (itemIdx < 0) {
@@ -148,23 +155,25 @@ class GetCartService @Autowired constructor(
         } else {//값이 없으면 익셉션 발생
             throw GetCartNotFoundException()
         }
-        getCartOps.put(GETCART, userIdx, temp)
+        getCartOps.put(getCart, userIdx, temp)
 
-        return setGetCarts(temp!!)
+        return setGetCarts(temp)
     }
 
     fun setGetCarts(temp: MutableMap<Int, Int>): GetCartRes{
-        var getCartRes = GetCartRes(mutableListOf(),0)
-        temp!!.keys.forEach { haskKey -> getCartRes.itemList.add(GetCartItem(haskKey, temp.get(haskKey)!!))
-            var item = itemRepository.findById(haskKey).orElseThrow(::ItemNotFoundException)
-            var eachPrice = item.price
-            //쿠폰이 있으면, 쿠폰 가격만큼 item의 price에서 빼준다.
-            var itemItemCoupon = itemItemCouponRepository.findByItem_ItemIdx(item.itemIdx!!)
-            if(itemItemCoupon != null){
-                var itemCoupon = couponRepository.findById(itemItemCoupon.itemCoupon.itemCouponIdx!!)
-                eachPrice-=itemCoupon.get().couponDiscount
-            }
-            getCartRes.total+=eachPrice*temp.get(haskKey)!!}
+        val getCartRes = GetCartRes(mutableListOf(),0)
+        if(temp.isNotEmpty()){
+            temp.keys.forEach { haskKey -> getCartRes.itemList.add(GetCartItem(haskKey, temp[haskKey]!!))
+                val item = itemRepository.findById(haskKey).orElseThrow(::ItemNotFoundException)
+                var eachPrice = item.price
+                //쿠폰이 있으면, 쿠폰 가격만큼 item의 price에서 빼준다.
+                val itemItemCoupon = itemItemCouponRepository.findByItem_ItemIdx(item.itemIdx!!)
+                if(itemItemCoupon != null){
+                    val itemCoupon = couponRepository.findById(itemItemCoupon.itemCoupon.itemCouponIdx!!)
+                    eachPrice-=itemCoupon.get().couponDiscount
+                }
+                getCartRes.total+=eachPrice* temp[haskKey]!!}
+        }
         return getCartRes
 
     }
