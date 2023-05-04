@@ -1,6 +1,5 @@
 package com.ssafy.mmart.service
 
-import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.favorite.dto.CreateFavoriteReq
 import com.ssafy.mmart.domain.favoriteCategory.Favorite
 import com.ssafy.mmart.exception.bad_request.BadAccessException
@@ -20,7 +19,6 @@ class FavoriteService @Autowired constructor(
     val userRepository: UserRepository,
     val itemRepository: ItemRepository,
     val categoryRepository: CategoryRepository,
-    val jpaQueryFactory: JPAQueryFactory,
 ) {
     fun getFavorites(userIdx: Int): List<Favorite>? {
         //유저가 존재하는지 확인

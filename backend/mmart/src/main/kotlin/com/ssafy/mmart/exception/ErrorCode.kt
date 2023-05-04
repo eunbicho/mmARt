@@ -25,6 +25,6 @@ enum class ErrorCode(httpStatus: HttpStatus,message: String) {
     BAD_ACCESS(HttpStatus.BAD_REQUEST, "잘못된 접근입니다."),
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 에러");
 
-    public val httpStatus: HttpStatus = httpStatus
-    public val message: String = message
+    val httpStatus: HttpStatus = httpStatus
+    val message: String = message
 }
