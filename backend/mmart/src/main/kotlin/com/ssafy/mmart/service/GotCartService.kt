@@ -17,29 +17,40 @@ import org.springframework.stereotype.Service
 
 @Service
 class GotCartService @Autowired constructor(
-    var redisTemplate: RedisTemplate<String, Any>,
+    private var redisTemplate: RedisTemplate<String, Any>,
     val userRepository: UserRepository,
     val itemRepository: ItemRepository,
     val itemCouponRepository: ItemCouponRepository,
     val itemItemCouponRepository: ItemItemCouponRepository,
 ){
-    val GOTCART = "GOTCART"
+    val gotCart = "GOTCART"
     val gotCartOps: HashOperations<String, Int, MutableMap<Int, Int>> = redisTemplate.opsForHash()
 
 
     fun setGotCarts(temp: MutableMap<Int, Int>): GotCartRes {
         var total = 0
-        var gotCartRes = GotCartRes(mutableListOf(), total)
+        val gotCartRes = GotCartRes(mutableListOf(), total)
         temp.keys.forEach{ hashKey ->
-            val tempItemIdx = hashKey
             val tempQuantity = temp[hashKey]!!
-            gotCartRes.itemList.add(GotCartItem(tempItemIdx, tempQuantity))
-            val tempItem = itemRepository.findByIdOrNull(tempItemIdx) ?: throw ItemNotFoundException()
+            val tempItem = itemRepository.findByIdOrNull(hashKey) ?: throw ItemNotFoundException()
             var tempPrice = tempItem.price
-            val tempCoupon = itemItemCouponRepository.findByItem_ItemIdx(tempItemIdx)
+            var isCoupon = false;
+            val tempCoupon = itemItemCouponRepository.findByItem_ItemIdx(hashKey)
             if (tempCoupon != null) {
+                isCoupon=true
                 tempPrice -= itemCouponRepository.findByIdOrNull(tempCoupon.itemCoupon.itemCouponIdx)!!.couponDiscount
             }
+            gotCartRes.itemList.add(
+                GotCartItem(
+                    hashKey,
+                    tempItem.itemName,
+                    tempItem.price,
+                    tempItem.thumbnail!!,
+                    isCoupon,
+                    tempPrice,
+                    tempQuantity
+                )
+            )
             total += tempPrice * tempQuantity
         }
         gotCartRes.total = total
@@ -48,7 +59,7 @@ class GotCartService @Autowired constructor(
 
     fun getGotCarts(userIdx: Int): GotCartRes {
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-        var temp = gotCartOps.get(GOTCART, userIdx) ?: throw GotCartEmptyException()
+        val temp = gotCartOps.get(gotCart, userIdx) ?: mutableMapOf()
         return setGotCarts(temp)
     }
 
@@ -56,18 +67,18 @@ class GotCartService @Autowired constructor(
         userRepository.findByIdOrNull(gotCartReq.userIdx) ?: throw UserNotFoundException()
         itemRepository.findByIdOrNull(gotCartReq.itemIdx) ?: throw ItemNotFoundException()
 
-        var temp = gotCartOps.get(GOTCART, gotCartReq.userIdx)
+        var temp = gotCartOps.get(gotCart, gotCartReq.userIdx)
         if (temp.isNullOrEmpty()) {
             temp = mutableMapOf()
             temp[gotCartReq.itemIdx] = gotCartReq.quantity
-            gotCartOps.put(GOTCART, gotCartReq.userIdx, temp)
+            gotCartOps.put(gotCart, gotCartReq.userIdx, temp)
         } else {
             if (temp.containsKey(gotCartReq.itemIdx)) {
                 temp[gotCartReq.itemIdx] = temp[gotCartReq.itemIdx]!! + gotCartReq.quantity
             } else {
                 temp[gotCartReq.itemIdx] = gotCartReq.quantity
             }
-            gotCartOps.put(GOTCART, gotCartReq.userIdx, temp)
+            gotCartOps.put(gotCart, gotCartReq.userIdx, temp)
         }
         return setGotCarts(temp)
     }
@@ -79,7 +90,7 @@ class GotCartService @Autowired constructor(
         if (gotCartReq.quantity <= 0 ) throw WrongQuantityException()
         if (gotCartReq.quantity > item.inventory) throw OverQuantityException()
 
-        var temp = gotCartOps.get(GOTCART, gotCartReq.userIdx)
+        val temp = gotCartOps.get(gotCart, gotCartReq.userIdx)
         if (temp.isNullOrEmpty()) {
             throw GotCartEmptyException()
         } else {
@@ -88,7 +99,7 @@ class GotCartService @Autowired constructor(
             } else {
                 throw GotCartNotFoundException()
             }
-            gotCartOps.put(GOTCART, gotCartReq.userIdx, temp)
+            gotCartOps.put(gotCart, gotCartReq.userIdx, temp)
         }
         return setGotCarts(temp)
     }
@@ -96,14 +107,14 @@ class GotCartService @Autowired constructor(
     fun deleteGotCart(userIdx: Int, itemIdx: Int): GotCartRes {
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
         itemRepository.findByIdOrNull(itemIdx) ?: throw ItemNotFoundException()
-        var temp = gotCartOps.get(GOTCART, userIdx)
+        val temp = gotCartOps.get(gotCart, userIdx)
         if (temp.isNullOrEmpty()) throw GotCartEmptyException()
         if (temp.containsKey(itemIdx)) {
             temp.remove(itemIdx)
         } else {
             throw GotCartNotFoundException()
         }
-        gotCartOps.put(GOTCART, userIdx, temp)
+        gotCartOps.put(gotCart, userIdx, temp)
         return setGotCarts(temp)
     }
 }
