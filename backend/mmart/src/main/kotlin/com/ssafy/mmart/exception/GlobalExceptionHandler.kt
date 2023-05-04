@@ -11,7 +11,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(AbstractAppException::class)
     fun abstractBaseExceptionHandler(e: AbstractAppException): ResponseEntity<ResultResponse<ErrorResponse>> {
 //        log.error("{} {}", e.getErrorCode().name(), e.getMessage())
-        return ResponseEntity.status(e.errorCode.httpStatus!!)
+        return ResponseEntity.status(e.errorCode.httpStatus)
             .body(ResultResponse.error(e))
     }
 
@@ -19,7 +19,7 @@ class GlobalExceptionHandler {
     fun persistenceException(e: PersistenceException): ResponseEntity<ResultResponse<ErrorResponse>> {
 //        log.error("{} {}", ErrorCode.DATABASE_ERROR.name, ErrorCode.DATABASE_ERROR.getMessage())
         e.printStackTrace()
-        return ResponseEntity.status(ErrorCode.DATABASE_ERROR.httpStatus!!)
+        return ResponseEntity.status(ErrorCode.DATABASE_ERROR.httpStatus)
             .body(ResultResponse.error(ErrorResponse.of(ErrorCode.DATABASE_ERROR)))
     }
 }

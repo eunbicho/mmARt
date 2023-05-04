@@ -10,9 +10,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.qrcode.QRCodeWriter
 import com.ssafy.mmart.exception.not_found.ItemNotFoundException
 import com.ssafy.mmart.exception.not_found.PhotoNotFoundException
-import com.ssafy.mmart.exception.not_found.UserNotFoundException
 import com.ssafy.mmart.repository.ItemRepository
-import com.ssafy.mmart.repository.UserRepository
 import marvin.image.MarvinImage
 import org.marvinproject.image.transform.scale.Scale
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,17 +36,13 @@ class AmazonS3Service @Autowired constructor(
 
     @Value("\${aws-cloud.aws.s3.bucket.url}")
     private val bucketUrl: String,
-
-    val getCartService: GetCartService,
     val itemRepository: ItemRepository,
-    val userRepository: UserRepository,
 ) {
 
     // QR코드 이미지 생성
     fun getQRCodeImage(email: String): String? {
         val qrCodeWriter = QRCodeWriter()
-        var text = email
-        val bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 200, 200)
+        val bitMatrix = qrCodeWriter.encode(email, BarcodeFormat.QR_CODE, 200, 200)
         val pngOutputStream = ByteArrayOutputStream()
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)
         //이거 유저 디비에 저장하기
@@ -73,7 +67,7 @@ class AmazonS3Service @Autowired constructor(
         amazonS3.deleteObject(DeleteObjectRequest(bucket, fileName))
     }
 
-    private fun createFileName(fileName: String): String? {
+    private fun createFileName(fileName: String): String {
         return UUID.randomUUID().toString() + getFileExtension(fileName)
     }
 
@@ -91,7 +85,7 @@ class AmazonS3Service @Autowired constructor(
             throw PhotoNotFoundException()
         }
 
-        val fileName = "images/"+createFileName(photo.originalFilename!!);
+        val fileName = "images/"+createFileName(photo.originalFilename!!)
         val fileFormat = photo.contentType!!.split("/")[1]
         val image = ImageIO.read(photo.inputStream)
         //resizer 실횅
@@ -117,10 +111,10 @@ class AmazonS3Service @Autowired constructor(
         if (url.isEmpty()) {
             throw PhotoNotFoundException()
         }
-        var item = itemRepository.findById(itemIdx).orElseThrow(::ItemNotFoundException)
+        val item = itemRepository.findById(itemIdx).orElseThrow(::ItemNotFoundException)
 
         val imgURL = URL(url)
-        var itemName=item.barcode
+        val itemName=item.barcode
 
         val fileName = "images/$itemName.png"
         val fileFormat = "png"
@@ -198,7 +192,7 @@ class AmazonS3Service @Autowired constructor(
             return originalFileName
         }
 
-        override fun getContentType(): String? {
+        override fun getContentType(): String {
             return contentType
         }
 
@@ -215,8 +209,8 @@ class AmazonS3Service @Autowired constructor(
         }
 
         override fun transferTo(dest: File) {
-            val fileOutputStream = FileOutputStream(dest);
-            fileOutputStream.write(fileContent);
+            val fileOutputStream = FileOutputStream(dest)
+            fileOutputStream.write(fileContent)
         }
 
     }
