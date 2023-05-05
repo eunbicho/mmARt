@@ -1,6 +1,7 @@
 package com.ssafy.mmart.service
 
 import com.ssafy.mmart.domain.user.User
+import com.ssafy.mmart.domain.user.dto.LoginUserReq
 import com.ssafy.mmart.domain.user.dto.UserReq
 import com.ssafy.mmart.exception.conflict.EmailDuplicateException
 import com.ssafy.mmart.exception.not_found.UserNotFoundException
@@ -33,5 +34,13 @@ class UserService @Autowired constructor(
         val user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
         userRepository.deleteById(userIdx)
         return user
+    }
+
+    fun logInUser(loginUserReq: LoginUserReq): User? {
+//        val user = userRepository.findByEmail(loginUserReq.email) ?: throw UserNotFoundException()
+//        if(!user.password.equals(loginUserReq.password))
+//            throw UserNotFoundException()
+//        return user
+        return userRepository.findByEmailAndPassword(loginUserReq.email,loginUserReq.password)
     }
 }
