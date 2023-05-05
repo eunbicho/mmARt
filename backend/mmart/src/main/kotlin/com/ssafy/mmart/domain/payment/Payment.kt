@@ -15,13 +15,10 @@ data class Payment(
     val paymentIdx: Int? = null,
 
     @Column(name = "marketName")
-    val marketName: String,
+    val marketName: String = "역삼",
 
     @Column(name = "date")
-    val date: LocalDateTime,
-
-    @Column(name = "pointUse")
-    val pointUse: Int?,
+    val date: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "total")
     val total: Int,
