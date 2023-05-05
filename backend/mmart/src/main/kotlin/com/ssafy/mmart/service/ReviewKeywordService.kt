@@ -4,11 +4,13 @@ import com.querydsl.core.types.ExpressionUtils.count
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.reviewKeyword.QReviewKeyword.reviewKeyword
+import com.ssafy.mmart.domain.reviewKeyword.ReviewKeyword
+import com.ssafy.mmart.domain.reviewKeyword.dto.ReviewKeywordReq
 import com.ssafy.mmart.domain.reviewKeyword.dto.ReviewKeywordRes
 import com.ssafy.mmart.domain.reviewReviewKeyword.QReviewReviewKeyword.reviewReviewKeyword
-import com.ssafy.mmart.repository.PaymentDetailRepository
-import com.ssafy.mmart.repository.ReviewKeywordRepository
-import com.ssafy.mmart.repository.UserRepository
+import com.ssafy.mmart.domain.reviewReviewKeyword.ReviewReviewKeyword
+import com.ssafy.mmart.exception.not_found.ReviewNotFoundException
+import com.ssafy.mmart.repository.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -17,8 +19,9 @@ import org.springframework.stereotype.Service
 class ReviewKeywordService @Autowired constructor(
     val jpaQueryFactory: JPAQueryFactory,
     val reviewKeywordRepository: ReviewKeywordRepository,
+    val reviewReviewKeywordRepository: ReviewReviewKeywordRepository,
     val userRepository: UserRepository,
-    val paymentDetailRepository: PaymentDetailRepository,
+    val reviewRepository: ReviewRepository,
 ){
 
     fun getReviewKeywords(itemIdx: Int): List<ReviewKeywordRes>? {
@@ -42,14 +45,6 @@ class ReviewKeywordService @Autowired constructor(
                 )))
             }
         }
-//        var result = jpaQueryFactory
-//            .select(reviewReviewKeyword.reviewKeyword.keywordContent, Expressions.`as`(count(reviewReviewKeyword.reviewReviewKeywordIdx),"cnt"))
-//            .from(reviewReviewKeyword)
-//            .join(reviewReviewKeyword.reviewKeyword,reviewKeyword)
-//            .where(reviewReviewKeyword.item.itemIdx.eq(itemIdx))
-//            .groupBy(reviewReviewKeyword.reviewKeyword)
-//            .orderBy(count(reviewReviewKeyword.reviewReviewKeywordIdx).asc)
-//            .fetch()
         return reviewKeywordRes;
     }
 //
@@ -72,41 +67,16 @@ class ReviewKeywordService @Autowired constructor(
 //        }
 //    }
 //
-//    fun createReview(userIdx: Int, paymentDetailIdx: Int, reviewReq: ReviewReq): Review? {
-//        val user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-//        val paymentDetail = paymentDetailRepository.findByIdOrNull(paymentDetailIdx) ?: throw PaymentDetailNotFoundException()
-//        if (paymentDetail.payment.user != user) throw BadAccessException()
-//        val oldReview = reviewRepository.findByPaymentDetail(paymentDetail)
-//        return if (oldReview == null) {
-//            reviewRepository.save(reviewReq.toEntity(paymentDetail.item, paymentDetail, user))
-//        } else {
-//            throw ReviewDuplicateException()
-//        }
-//    }
-//
-//    @Transactional
-//    fun updateReview(userIdx: Int, reviewIdx: Int, reviewReq: ReviewReq): Review? {
-//        val review = reviewRepository.findByIdOrNull(reviewIdx) ?: throw ReviewNotFoundException()
-//        val user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-//        return if (user == review.user) {
-//            review.apply{
-//                content = reviewReq.content
-//                star = reviewReq.star
-//            }
-//        } else {
-//            throw BadAccessException()
-//        }
-//    }
-//
-//    @Transactional
-//    fun deleteReview(reviewIdx: Int, userIdx: Int): Review? {
-//        val user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-//        val review = reviewRepository.findByIdOrNull(reviewIdx) ?: throw ReviewNotFoundException()
-//        if (user == review.user) {
-//            reviewRepository.deleteById(review.reviewIdx!!)
-//        } else {
-//            throw BadAccessException()
-//        }
-//        return review
-//    }
+    fun createReviewKeyword(reviewKeywordReq: ReviewKeywordReq): List<ReviewKeywordRes>? {
+        //같은 키워드가 이미 있는지 확인
+        var temp = reviewKeywordRepository.findByKeywordContent(reviewKeywordReq.keywordContent)
+        val review = reviewRepository.findById(reviewKeywordReq.reviewIdx).orElseThrow(::ReviewNotFoundException)
+        if(temp == null){
+            //같은 키워드가 없다면, reviewKeyword에 추가해주자.
+            temp = reviewKeywordRepository.save(ReviewKeyword(isPositive = reviewKeywordReq.isPositive, keywordContent = reviewKeywordReq.keywordContent))
+        }
+        //review-reivewKeyword 테이블에 추가해주기
+        reviewReviewKeywordRepository.save(ReviewReviewKeyword(reviewKeyword = temp, review = review, item = review.item))
+        return getReviewKeywords(review.item.itemIdx!!)
+    }
 }
