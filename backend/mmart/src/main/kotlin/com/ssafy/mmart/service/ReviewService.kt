@@ -4,10 +4,8 @@ import com.ssafy.mmart.domain.review.Review
 import com.ssafy.mmart.domain.review.dto.ReviewReq
 import com.ssafy.mmart.exception.bad_request.BadAccessException
 import com.ssafy.mmart.exception.conflict.ReviewDuplicateException
-import com.ssafy.mmart.exception.not_found.PaymentDetailNotFoundException
-import com.ssafy.mmart.exception.not_found.ReviewNotFoundException
-import com.ssafy.mmart.exception.not_found.ReviewsNotFoundException
-import com.ssafy.mmart.exception.not_found.UserNotFoundException
+import com.ssafy.mmart.exception.not_found.*
+import com.ssafy.mmart.repository.ItemRepository
 import com.ssafy.mmart.repository.PaymentDetailRepository
 import com.ssafy.mmart.repository.ReviewRepository
 import com.ssafy.mmart.repository.UserRepository
@@ -20,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 class ReviewService @Autowired constructor(
     val reviewRepository: ReviewRepository,
     val userRepository: UserRepository,
+    val itemRepository: ItemRepository,
     val paymentDetailRepository: PaymentDetailRepository,
 ){
     fun getReview(reviewIdx: Int): Review? {
@@ -28,21 +27,12 @@ class ReviewService @Autowired constructor(
 
     fun getUserReviews(userIdx: Int): List<Review>? {
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
-        val reviews = reviewRepository.findAllByUser_UserIdx(userIdx)
-        return if (reviews.isNullOrEmpty()) {
-            throw ReviewsNotFoundException()
-        } else {
-            reviews
-        }
+        return reviewRepository.findAllByUser_UserIdx(userIdx)
     }
 
     fun getItemReviews(itemIdx: Int): List<Review>? {
-        val reviews = reviewRepository.findAllByItem_ItemIdx(itemIdx)
-        return if (reviews.isNullOrEmpty()) {
-            throw ReviewsNotFoundException()
-        } else {
-            reviews
-        }
+        itemRepository.findById(itemIdx).orElseThrow(::ItemNotFoundException)
+        return reviewRepository.findAllByItem_ItemIdx(itemIdx)
     }
 
     fun createReview(userIdx: Int, paymentDetailIdx: Int, reviewReq: ReviewReq): Review? {
