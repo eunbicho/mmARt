@@ -4,6 +4,7 @@ import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.favoriteCategory.QFavorite.favorite
 import com.ssafy.mmart.domain.item.Item
+import com.ssafy.mmart.domain.item.QItem
 import com.ssafy.mmart.domain.item.QItem.item
 import com.ssafy.mmart.domain.item.dto.GetItemRes
 import com.ssafy.mmart.domain.itemCoupon.QItemCoupon.itemCoupon
@@ -17,6 +18,7 @@ import com.ssafy.mmart.repository.ItemDetailRepository
 import com.ssafy.mmart.repository.ItemItemCouponRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 
 @Service
@@ -32,7 +34,13 @@ class ItemService @Autowired constructor(
         var eachPrice = item.price
         var isCoupon = false;
         //쿠폰이 있으면, 쿠폰 가격만큼 item의 price에서 빼준다.
-        val itemItemCoupon = itemItemCouponRepository.findByItem_ItemIdx(item.itemIdx!!)
+        val itemItemCoupon = jpaQueryFactory
+            .selectFrom(itemItemCoupon)
+            .join(itemItemCoupon.item, QItem.item)
+            .join(itemItemCoupon.itemCoupon, itemCoupon)
+            .where(itemItemCoupon.item.eq(item), itemCoupon.couponExpired.after(LocalDateTime.now()))
+            .orderBy(itemCoupon.couponDiscount.desc())
+            .fetchOne()
         if (itemItemCoupon != null) {
             isCoupon = true;
             val itemCoupon = couponRepository.findById(itemItemCoupon.itemCoupon.itemCouponIdx!!)
@@ -54,9 +62,9 @@ class ItemService @Autowired constructor(
     }
 
     fun setItemListRes(items: List<Item>): List<GetItemRes>? {
-        var result: MutableList<GetItemRes>? = mutableListOf()
+        val result: MutableList<GetItemRes> = mutableListOf()
         items.forEach { item ->
-            result!!.add(setItemRes(item)!!)
+            result.add(setItemRes(item)!!)
         }
         return result
     }
@@ -168,7 +176,7 @@ class ItemService @Autowired constructor(
             .from(itemItemCoupon)
             .join(itemItemCoupon.item, item)
             .join(itemItemCoupon.itemCoupon, itemCoupon)
-            .where(item.itemIdx.eq(itemItemCoupon.item.itemIdx))
+            .where(item.itemIdx.eq(itemItemCoupon.item.itemIdx),itemCoupon.couponExpired.after(LocalDateTime.now()))
             .orderBy(itemCoupon.couponExpired.asc())
             .limit(10)
             .fetch())
