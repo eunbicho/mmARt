@@ -25,12 +25,7 @@ class PaymentService @Autowired constructor(
 ){
     fun getPayments(userIdx: Int): List<Payment>? {
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-        val payments = paymentRepository.findAllByUser_UserIdx(userIdx)
-        return if (payments.isNullOrEmpty()) {
-            throw PaymentNotFoundException()
-        } else {
-            payments
-        }
+        return paymentRepository.findAllByUser_UserIdx(userIdx)
     }
 
     fun createPayment(userIdx: Int, paymentReq: PaymentReq): Payment? {
