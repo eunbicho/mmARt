@@ -22,16 +22,18 @@ class PaymentService @Autowired constructor(
     val userRepository: UserRepository,
     val itemRepository: ItemRepository,
     val paymentDetailRepository: PaymentDetailRepository,
+    val gotCartService: GotCartService,
 ){
     fun getPayments(userIdx: Int): List<Payment>? {
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
         return paymentRepository.findAllByUser_UserIdx(userIdx)
     }
 
-    fun createPayment(userIdx: Int, paymentReq: PaymentReq): Payment? {
+    fun createPayment(userIdx: Int): Payment? {
         val user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-        val payment = paymentRepository.save(paymentReq.toEntity(user))
-        for (gotCartItem in paymentReq.gotCartRes.itemList) {
+        val gotCartRes = gotCartService.getGotCarts(userIdx)
+        val payment = paymentRepository.save(Payment(user=user, total = gotCartRes.total))
+        for (gotCartItem in gotCartRes.itemList) {
             val item = itemRepository.findByIdOrNull(gotCartItem.itemIdx) ?: throw ItemNotFoundException()
             val paymentDetail = PaymentDetail(
                 quantity = gotCartItem.quantity,
