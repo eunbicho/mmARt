@@ -116,7 +116,7 @@ fun Main(navController: NavController) {
                         .weight(1f)
                         .fillMaxHeight()
                         .aspectRatio(1f / 1f)
-                        .clickable(onClick = { navController.navigate("getCart/$userId") }))
+                        .clickable(onClick = { navController.navigate("gotCart/$userId") }))
                 Image(painter = painterResource(R.drawable.bottombar_4), contentDescription = "마이페이지",
                     modifier = Modifier
                         .weight(1f)

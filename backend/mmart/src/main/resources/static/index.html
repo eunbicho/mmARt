@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <base href="/" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#72CCFF" />
+    <meta property="og:url" content="https://k8a405.p.ssafy.io/" />
+    <meta property="og:title" content="mmAR+">
+    <meta property="og:description" content="Mobile Mart AR Plus" />
+    <meta property="og:site_name" content="mmAR+" />
+    <meta property="og:locale" content="ko-KR" />
+<!--    <meta property="og:image" content="https://snapstory401.s3.ap-northeast-2.amazonaws.com/meta/web-meta.png" />-->
+    <link rel="icon" href="/static/mmart-icon.ico" />
+    <link rel="stylesheet" href="/static/index.css">
+    <title>mmAR+</title>
+</head>
+<body id="body">
+<p>키오스크입니당</p>
+<div id="main">
+    <form id="qrcode" onsubmit="return false;">
+        <input type="text" name="email" placeholder="QR코드를 인식해주세요." autofocus>
+    </form>
+    <div id="paymentList">
+
+    </div>
+    <button id="goToPay">결제하기</button>
+</div>
+
+
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    // function adjustLayout() {
+    //     if (window.innerWidth >= 1280) {
+    //         document.getElementById("body").style.margin ="5% 15% 5% 15%"
+    //         document.getElementById("main").style.display = "flex"
+    //         document.getElementById("main").style.alignItems = "center"
+    //         document.getElementById("block1").style.width = "60%"
+    //         document.getElementById("block2").style.width = "40%"
+    //     } else {
+    //         document.getElementById("body").style.margin ="0 5% 5% 5%"
+    //         document.getElementById("main").style.display = "block"
+    //         document.getElementById("main").style.textAlign = "-webkit-center"
+    //         document.getElementById("block1").style.width = "100%"
+    //         document.getElementById("block2").style.width = "80%"
+    //     }
+    // }
+    // adjustLayout() // Call the function initially to adjust the layout on page load
+    // window.addEventListener("resize", adjustLayout) // Add an event listener to adjust the layout on window resize
+
+    const BASE_URL = "http://localhost:8080/api/v1"
+    // const BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1"
+
+    const inputQrcode = document.querySelector("#qrcode")
+    const paymentList = document.querySelector("#paymentList")
+    const payBtn = document.querySelector("#goToPay")
+    payBtn.style.display = "none"
+
+    let userIdx = 0
+    let gotCartRes = []
+
+    inputQrcode.addEventListener("submit", e => {
+        console.log(e.target.email.value)
+        axios
+            .get(`${BASE_URL}/gotcarts?email=${e.target.email.value}`)
+            .then( res => {
+                console.log(res.data.result)
+                inputQrcode.style.display = "none"
+                userIdx = res.data.result.userIdx
+                gotCartRes = res.data.result.gotCartRes
+                return res.data.result.gotCartRes.itemList
+            })
+            .then( items => {
+                    getGotCarts(items)
+                    payBtn.style.display = "inline"
+            })
+            .catch( err => {
+                alert("QR코드를 다시 인식해주세요.")
+                console.log(err)
+            })
+        e.target.email.value = ""
+        e.preventDefault()
+    })
+
+    function getGotCarts(items) {
+        let ul = document.createElement("ul")
+        let li = document.createElement("li")
+
+        paymentList.appendChild(ul)
+
+        items.forEach( item => {
+            li.innerHTML += item.itemName
+            ul.appendChild(li)
+            li = document.createElement("li")
+        })
+    }
+
+    payBtn.addEventListener("click", e => {
+        e.preventDefault()
+        axios
+            .post(`${BASE_URL}/payments?userIdx=${userIdx}`, {
+                gotCartRes: gotCartRes
+            })
+            .then( res => {
+                console.log(res)
+                alert("결제가 완료되었습니다.")
+            })
+            .catch( err => {
+                console.log(err)
+                alert("결제가 완료되지 않았습니다.")
+            })
+    })
+</script>

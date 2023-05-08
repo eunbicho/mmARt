@@ -32,10 +32,11 @@ interface APIS {
     suspend fun getUser(@Path("userId") userId: Int): UserResult
 
     companion object {
-        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
+        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
+//        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
 
         fun create(): APIS {
-            val gson : Gson =   GsonBuilder().setLenient().create();
+            val gson : Gson = GsonBuilder().setLenient().create();
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -87,8 +88,13 @@ data class CartContent(
 )
 
 data class ItemList(
-    val itemIdx: Int,
-    val quantity: Int
+    val itemIdx:Int,
+    val itemName:String,
+    val price:Int,
+    val thumbnail:String,
+    val isCoupon:Boolean,
+    val couponPrice:Int,
+    val quantity:Int,
 )
 
 // 회원 정보 Result
@@ -100,4 +106,5 @@ data class UserResult(
 data class UserInfo(
     val userIdx: Int,
     val name: String,
+    val qrcode: String,
 )

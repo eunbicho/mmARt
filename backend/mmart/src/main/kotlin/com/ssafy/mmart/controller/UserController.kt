@@ -18,6 +18,11 @@ class UserController @Autowired constructor(
         return ResultResponse.success(userService.getUser(userIdx))
     }
 
+    @GetMapping
+    fun getUserByEmail(@RequestParam email: String): ResultResponse<User?> {
+        return ResultResponse.success(userService.getUserByEmail(email))
+    }
+
     @PostMapping
     fun createUser(@RequestBody userReq: UserReq): ResultResponse<User?> {
         return ResultResponse.success(userService.createUser(userReq))
