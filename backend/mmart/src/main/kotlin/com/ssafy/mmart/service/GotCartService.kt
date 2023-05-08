@@ -3,6 +3,7 @@ package com.ssafy.mmart.service
 import com.ssafy.mmart.domain.gotCart.dto.GotCartItem
 import com.ssafy.mmart.domain.gotCart.dto.GotCartReq
 import com.ssafy.mmart.domain.gotCart.dto.GotCartRes
+import com.ssafy.mmart.domain.gotCart.dto.GotCartToPayRes
 import com.ssafy.mmart.exception.conflict.GotCartEmptyException
 import com.ssafy.mmart.exception.not_found.*
 import com.ssafy.mmart.repository.ItemCouponRepository
@@ -35,7 +36,7 @@ class GotCartService @Autowired constructor(
             val tempItem = itemRepository.findByIdOrNull(hashKey) ?: throw ItemNotFoundException()
             var tempPrice = tempItem.price
             var isCoupon = false;
-            val tempCoupon = itemItemCouponRepository.findByItem_ItemIdx(hashKey)
+            val tempCoupon = itemItemCouponRepository.findByItem_ItemIdx(tempItem.itemIdx!!)
             if (tempCoupon != null) {
                 isCoupon=true
                 tempPrice -= itemCouponRepository.findByIdOrNull(tempCoupon.itemCoupon.itemCouponIdx)!!.couponDiscount
@@ -61,6 +62,12 @@ class GotCartService @Autowired constructor(
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
         val temp = gotCartOps.get(gotCart, userIdx) ?: mutableMapOf()
         return setGotCarts(temp)
+    }
+
+    fun getGotCartsByEmail(email: String): GotCartToPayRes {
+        val user = userRepository.findByEmail(email) ?: throw UserNotFoundException()
+        val temp = gotCartOps.get(gotCart, user.userIdx!!) ?: mutableMapOf()
+        return GotCartToPayRes(setGotCarts(temp), user.userIdx)
     }
 
     fun createGotCart(gotCartReq: GotCartReq): GotCartRes {
@@ -101,6 +108,17 @@ class GotCartService @Autowired constructor(
             }
             gotCartOps.put(gotCart, gotCartReq.userIdx, temp)
         }
+        return setGotCarts(temp)
+    }
+
+    fun deleteGotCarts(userIdx: Int): GotCartRes {
+        userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
+        val temp = gotCartOps.get(gotCart, userIdx)
+        if (!temp.isNullOrEmpty()){
+            temp.clear()
+//            gotCartOps.put(gotCart, userIdx, temp)
+            gotCartOps.delete(gotCart, userIdx)
+        } else throw GotCartNotFoundException()
         return setGotCarts(temp)
     }
 

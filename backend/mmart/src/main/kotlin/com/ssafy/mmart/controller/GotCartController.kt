@@ -3,6 +3,7 @@ package com.ssafy.mmart.controller
 import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.gotCart.dto.GotCartReq
 import com.ssafy.mmart.domain.gotCart.dto.GotCartRes
+import com.ssafy.mmart.domain.gotCart.dto.GotCartToPayRes
 import com.ssafy.mmart.service.GotCartService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -17,6 +18,11 @@ class GotCartController @Autowired constructor(
         return ResultResponse.success(gotCartService.getGotCarts(userIdx))
     }
 
+    @GetMapping
+    fun getGotCartsByEmail(@RequestParam email: String): ResultResponse<GotCartToPayRes> {
+        return ResultResponse.success(gotCartService.getGotCartsByEmail(email))
+    }
+
     @PostMapping
     fun createGotCart(@RequestBody gotCartReq: GotCartReq): ResultResponse<GotCartRes> {
         return ResultResponse.success(gotCartService.createGotCart(gotCartReq))
@@ -27,10 +33,10 @@ class GotCartController @Autowired constructor(
         return ResultResponse.success(gotCartService.updateGotCart(gotCartReq))
     }
 
-//    @DeleteMapping
-//    fun deleteGotCarts(@RequestParam userIdx: Int): ResultResponse<GotCartRes> {
-//        return ResultResponse.success(gotCartService.deleteGotCarts(userIdx))
-//    }
+    @DeleteMapping("/{userIdx}")
+    fun deleteGotCarts(@PathVariable userIdx: Int): ResultResponse<GotCartRes> {
+        return ResultResponse.success(gotCartService.deleteGotCarts(userIdx))
+    }
 
     @DeleteMapping
     fun deleteGotCart(@RequestParam userIdx: Int, @RequestParam itemIdx: Int): ResultResponse<GotCartRes> {

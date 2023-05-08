@@ -32,27 +32,27 @@ class GetCartService @Autowired constructor(
         var temp = getCartOps.get(getCart, createGetCartReq.userIdx)
 
         //선택한 수량이 0 초과인지 체크
-        if (createGetCartReq.quality <= 0)
+        if (createGetCartReq.quantity <= 0)
             throw WrongQuantityException()
 
         //아이템 존재하는지 확인
         val item = itemRepository.findById(createGetCartReq.itemIdx).orElseThrow(::ItemNotFoundException)
 
         //내가 담기를 원하는 재고가 기존의 수량을 넘는지 체크
-        if (item.inventory < createGetCartReq.quality)
+        if (item.inventory < createGetCartReq.quantity)
             throw OverQuantityException()
 
         if (temp == null) {
             temp = mutableMapOf()
-            temp[createGetCartReq.itemIdx] = createGetCartReq.quality
+            temp[createGetCartReq.itemIdx] = createGetCartReq.quantity
             getCartOps.put(getCart, createGetCartReq.userIdx, temp)
         } else {
             //MAP에 내가 넣으려는 값이 있는지 체크
             val flag = temp.containsKey(createGetCartReq.itemIdx)
             if (flag) {//값이 있으면
-                temp[createGetCartReq.itemIdx] = temp[createGetCartReq.itemIdx]!! + createGetCartReq.quality
+                temp[createGetCartReq.itemIdx] = temp[createGetCartReq.itemIdx]!! + createGetCartReq.quantity
             } else {//값이 없으면
-                temp[createGetCartReq.itemIdx] = createGetCartReq.quality
+                temp[createGetCartReq.itemIdx] = createGetCartReq.quantity
             }
             getCartOps.put(getCart, createGetCartReq.userIdx, temp)
         }
@@ -68,11 +68,11 @@ class GetCartService @Autowired constructor(
         val item = itemRepository.findById(putGetCartReq.itemIdx).orElseThrow(::ItemNotFoundException)
 
         //선택한 수량이 0 초과인지 체크
-        if (putGetCartReq.quality <= 0)
+        if (putGetCartReq.quantity <= 0)
             throw WrongQuantityException()
 
         //내가 담기를 원하는 재고가 기존의 수량을 넘는지 체크
-        if (item.inventory < putGetCartReq.quality)
+        if (item.inventory < putGetCartReq.quantity)
             throw OverQuantityException()
 
         val temp = getCartOps.get(getCart, putGetCartReq.userIdx)
@@ -82,7 +82,7 @@ class GetCartService @Autowired constructor(
             //MAP에 내가 넣으려는 값이 있는지 체크
             val flag = temp.containsKey(putGetCartReq.itemIdx)
             if (flag) {//값이 있으면(있어야함. 수량 수정이므로)
-                temp[putGetCartReq.itemIdx] = putGetCartReq.quality
+                temp[putGetCartReq.itemIdx] = putGetCartReq.quantity
             } else {//값이 없으면 익셉션 발생
                 throw GetCartNotFoundException()
             }
