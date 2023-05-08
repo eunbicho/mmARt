@@ -1,0 +1,17 @@
+@font-face {
+    font-family: "Gmarken Sans Bold";
+    src: url("/static/GmarketSansBold.otf");
+}
+@font-face {
+    font-family: "Gmarken Sans Medium";
+    src: url("/static/GmarketSansMedium.otf");
+}
+@font-face {
+    font-family: "Gmarken Sans Light";
+    src: url("/static/GmarketSansLight.otf");
+}
+
+body {
+    background-color: #72CCFF;
+    font-family: "Gmarken Sans Bold";
+}

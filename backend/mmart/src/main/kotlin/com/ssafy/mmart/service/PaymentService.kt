@@ -44,6 +44,7 @@ class PaymentService @Autowired constructor(
             )
             paymentDetailRepository.save(paymentDetail)
         }
+        gotCartService.deleteGotCarts(userIdx)
         return payment
     }
 
