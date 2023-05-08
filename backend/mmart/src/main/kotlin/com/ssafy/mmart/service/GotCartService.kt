@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.gotCart.dto.GotCartItem
 import com.ssafy.mmart.domain.gotCart.dto.GotCartReq
 import com.ssafy.mmart.domain.gotCart.dto.GotCartRes
+import com.ssafy.mmart.domain.gotCart.dto.GotCartToPayRes
 import com.ssafy.mmart.domain.item.QItem
 import com.ssafy.mmart.domain.itemCoupon.QItemCoupon
 import com.ssafy.mmart.domain.itemItemCoupon.QItemItemCoupon
@@ -78,6 +79,12 @@ class GotCartService @Autowired constructor(
         return setGotCarts(temp)
     }
 
+    fun getGotCartsByEmail(email: String): GotCartToPayRes {
+        val user = userRepository.findByEmail(email) ?: throw UserNotFoundException()
+        val temp = gotCartOps.get(gotCart, user.userIdx!!) ?: mutableMapOf()
+        return GotCartToPayRes(setGotCarts(temp), user.userIdx)
+    }
+
     fun createGotCart(gotCartReq: GotCartReq): GotCartRes {
         userRepository.findByIdOrNull(gotCartReq.userIdx) ?: throw UserNotFoundException()
         itemRepository.findByIdOrNull(gotCartReq.itemIdx) ?: throw ItemNotFoundException()
@@ -116,6 +123,17 @@ class GotCartService @Autowired constructor(
             }
             gotCartOps.put(gotCart, gotCartReq.userIdx, temp)
         }
+        return setGotCarts(temp)
+    }
+
+    fun deleteGotCarts(userIdx: Int): GotCartRes {
+        userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
+        val temp = gotCartOps.get(gotCart, userIdx)
+        if (!temp.isNullOrEmpty()){
+            temp.clear()
+//            gotCartOps.put(gotCart, userIdx, temp)
+            gotCartOps.delete(gotCart, userIdx)
+        } else throw GotCartNotFoundException()
         return setGotCarts(temp)
     }
 
