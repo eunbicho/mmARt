@@ -8,10 +8,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - 34.64.125.119
+    - k8a405.p.ssafy.io
     secretName: tlssecret
   rules:
-  - host: 34.64.125.119
+  - host: k8a405.p.ssafy.io
     http:
       paths:
       - path: /test
