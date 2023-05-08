@@ -6,13 +6,13 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     kubernetes.io/ingress.class: nginx
 spec:
-  tls:
-  - hosts:
-    - k8a405.p.ssafy.io
-    secretName: tlssecret
+  # tls:
+  # - hosts:
+  #   - 34.64.125.119
+  #   secretName: tlssecret
   rules:
-  - host: k8a405.p.ssafy.io
-    http:
+  # - host: 34.64.125.119
+  - http:
       paths:
       - path: /test
         pathType: Prefix
