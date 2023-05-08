@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -13,11 +14,11 @@ interface APIS {
 
     // 카테고리 별 아이템
     @GET("items/categories")
-    suspend fun getCategories(@Query("userIdx") userIdx: Int, @Query("categoryIdx") categoryIdx: Int): ItemResult
+    suspend fun getCategories(@Query("userIdx") userIdx: Int, @Query("categoryIdx") categoryIdx: Int): ItemsResult
 
     // 바코드 스캔
     @GET("items/barcode")
-    suspend fun getItemByBarcode(@Query("barcode") barcode: Long): ItemResult
+    suspend fun getItemByBarcode(@Query("barcode") barcode: Long): ItemsResult
 
     // 장볼구니 조회
     @GET("getcarts/{userId}")
@@ -30,6 +31,17 @@ interface APIS {
     // 마이페이지 조회
     @GET("users/{userId}")
     suspend fun getUser(@Path("userId") userId: Int): UserResult
+
+    // 상품 상세 조회
+    @GET("items/{itemId}/detail-image")
+    suspend fun getItemInfo(@Path("itemId") itemId: Int): ItemDetailResult
+
+    // 상품 별 리뷰 조회
+    @GET("reviews/item")
+    suspend fun getItemReview(@Query("itemIdx") itemIdx: Int): ReviewResult
+
+    // 리뷰 작성
+//    @POST()
 
     companion object {
         private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
@@ -45,32 +57,45 @@ interface APIS {
     }
 }
 
-// Item Controller 관련 result
-data class ItemResult(
-    var resultCode : String,
-    var result: List<ItemInfo>
+// Item 검색 관련 result
+data class ItemsResult(
+    val resultCode : String,
+    val result: List<ItemInfo>
 )
 
 data class ItemInfo(
     val itemIdx: Int,
     val itemName: String,
     val price: Int,
+    val couponPrice: Int,
     val inventory: Int,
     val barcode: String,
     val thumbnail: String,
     val placeInfo: String?,
     val weight: Int,
-    val category: CategoryInfo,
-    val createTime: List<Int>,
-    val updateTime: List<Int>
+    val content: String?,
+    val quantity: Int
 )
 
-data class CategoryInfo(
-    val categoryIdx: Int,
-    val categoryName: String,
-    val placeInfo: String?,
-    val createTime: List<Int>,
-    val updateTime: List<Int>
+//data class CategoryInfo(
+//    val categoryIdx: Int,
+//    val categoryName: String,
+//    val placeInfo: String?,
+//    val createTime: List<Int>,
+//    val updateTime: List<Int>
+//)
+
+// item 상세 조회 관련 Result
+data class ItemDetailResult(
+    val resultCode : String,
+    val result: ItemDetail
+)
+
+// 변경 전 임시로
+data class ItemDetail(
+    val image: String,
+    val itemDetail: Any,
+    val item: ItemInfo
 )
 
 // 카트 관련 Result
@@ -80,16 +105,14 @@ data class CartResult(
 )
 
 data class CartContent(
-    val itemList: List<ItemList>,
+    val itemList: List<ItemInfo?>,
     val total: Int,
-    val errorCode: String,
-    val message: String
 )
 
-data class ItemList(
-    val itemIdx: Int,
-    val quantity: Int
-)
+//data class CartedItemList(
+//    val itemIdx: Int,
+//    val quantity: Int
+//)
 
 // 회원 정보 Result
 data class UserResult(
@@ -100,4 +123,21 @@ data class UserResult(
 data class UserInfo(
     val userIdx: Int,
     val name: String,
+)
+
+// 리뷰 Result
+data class ReviewResult(
+    val resultCode: String,
+    val result: List<ReviewDetail>
+)
+
+data class ReviewDetail(
+    val star: Int,
+    val content: String,
+    val paymentDetail: PaymentDetail
+)
+
+data class PaymentDetail(
+    val user: UserInfo,
+
 )
