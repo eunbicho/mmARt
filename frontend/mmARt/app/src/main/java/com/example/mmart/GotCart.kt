@@ -22,7 +22,7 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.*
 
 @Composable
-fun GotCart(navController: NavController, userId: Int?){
+fun GotCart(navController: NavController){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
@@ -58,14 +58,14 @@ fun GotCart(navController: NavController, userId: Int?){
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            Text(text = "${item.itemIdx}")
+//                            Text(text = "${item.itemIdx}")
 
                         }
                     }
                 }
 
             } else {
-                Text(result!!.message)
+//                Text(result!!.message)
             }
         }
 

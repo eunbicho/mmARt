@@ -1,6 +1,7 @@
 package com.example.mmart
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -32,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.example.mmart.ui.theme.Main_yellow
 import com.example.mmart.ui.theme.mainFont
@@ -42,49 +45,74 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.mmart.ui.theme.Main_blue
-
+import androidx.compose.material.Typography
+import androidx.compose.material.MaterialTheme
+import com.example.mmart.ui.theme.mainTypography
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "main") {
-                // 메인 화면
-                composable(route = "main"){
-                    Main(navController)
-                }
-                //카테고리 별 상품 보기
-                composable(route = "category/{categoryId}", arguments = listOf(navArgument("categoryId"){type = NavType.IntType})){ backStackEntry ->
-                    Category(navController, backStackEntry.arguments?.getInt("categoryId"))
-                }
-                // 바코드 스캔
-                composable(route = "barcodeScan"){
-                    BarcodeScan(navController)
-                }
-                // 장볼구니
-                composable(route = "getCart/{userId}", arguments = listOf(navArgument("userId"){type = NavType.IntType})){ backStackEntry ->
-                    GetCart(navController, backStackEntry.arguments?.getInt("userId"))
-                }
-                // 장봤구니
-                composable(route = "gotCart/{userId}", arguments = listOf(navArgument("userId"){type = NavType.IntType})){ backStackEntry ->
-                    GotCart(navController, backStackEntry.arguments?.getInt("userId"))
-                }
-                // 마이페이지
-                composable(route = "myPage/{userId}", arguments = listOf(navArgument("userId"){type = NavType.IntType})){ backStackEntry ->
-                    MyPage(navController, backStackEntry.arguments?.getInt("userId"))
+            MaterialTheme(typography = mainTypography) {
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "main") {
+                    // 메인 화면
+                    composable(route = "main") {
+                        Main(navController)
+                    }
+                    //카테고리 별 상품 보기
+                    composable(
+                        route = "category/{categoryId}",
+                        arguments = listOf(navArgument("categoryId") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        Category(navController, backStackEntry.arguments?.getInt("categoryId"))
+                    }
+                    // 바코드 스캔
+                    composable(route = "barcodeScan") {
+                        BarcodeScan(navController)
+                    }
+                    // 장볼구니
+                    composable(route = "getCart") {
+                        GetCart(navController)
+                    }
+                    // 장봤구니
+                    composable(route = "gotCart") {
+                        GotCart(navController)
+                    }
+                    // 마이페이지
+                    composable(route = "myPage") {
+                        MyPage(navController)
+                    }
+                    // 유니티 테스트
+                    //                composable(route = "unity"){
+                    //                    UnityTest(navController)
+                    //                }
+                    // 상품 상세
+                    composable(
+                        route = "item/{itemId}",
+                        arguments = listOf(navArgument("itemId") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        ItemDetail(navController, backStackEntry.arguments?.getInt("itemId"))
+                    }
+                    // 검색 결과
+                    composable(
+                        route = "search/{searchWord}",
+                        arguments = listOf(navArgument("searchWord") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        Search(navController, backStackEntry.arguments!!.getString("searchWord")!!)
+                    }
                 }
             }
         }
     }
 }
 
+// 유저 아이디
+var userId = 1
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter") // Scaffold의 padding value 사용 안 할 때
 @Composable
 fun Main(navController: NavController) {
-    // userId
-    val userId = 1
 
     // 카테고리 별 상품보기
     fun category(categoryId: Int){
@@ -110,19 +138,19 @@ fun Main(navController: NavController) {
                         .weight(1f)
                         .fillMaxHeight()
                         .aspectRatio(1f / 1f)
-                        .clickable(onClick = { navController.navigate("getCart/$userId") }))
+                        .clickable(onClick = { navController.navigate("getCart") }))
                 Image(painter = painterResource(R.drawable.bottombar_3), contentDescription = "장봤구니",
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
                         .aspectRatio(1f / 1f)
-                        .clickable(onClick = { navController.navigate("getCart/$userId") }))
+                        .clickable(onClick = { navController.navigate("gotCart") }))
                 Image(painter = painterResource(R.drawable.bottombar_4), contentDescription = "마이페이지",
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
                         .aspectRatio(1f / 1f)
-                        .clickable(onClick = { navController.navigate("myPage/$userId") }))
+                        .clickable(onClick = { navController.navigate("myPage") }))
             }
         }
     ) {
@@ -221,7 +249,7 @@ fun Main(navController: NavController) {
                                     modifier = Modifier
                                         .size(50.dp)
                                 )
-                                Text(description(item), fontFamily = mainFont)
+                                Text(description(item))
                             }
                         }
                     }
@@ -264,13 +292,14 @@ fun Main(navController: NavController) {
                                     modifier = Modifier
                                         .size(50.dp)
                                 )
-                                Text(description(item), fontFamily = mainFont)
+                                Text(description(item))
                             }
                         }
                     }
-                    Button(onClick = {  }){ Text(text = "유니티테스트") }
                 }
             }
+            Button(onClick = {  }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
+//          Button(onClick = { navController.navigate("unity") }){ Text(text = "유니티테스트") }
         }
 
     }

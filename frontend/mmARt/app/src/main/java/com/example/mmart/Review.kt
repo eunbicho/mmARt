@@ -16,29 +16,40 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.material.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role.Companion.Image
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-
 import kotlinx.coroutines.*
 
 @Composable
-fun MyPage(navController: NavController){
+fun Review(itemId: Int?){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
-    var result: UserInfo? by remember { mutableStateOf(null) }
+    var result: ItemDetail? by remember { mutableStateOf(null) }
+//    var reviewWrite: Boolean by remember { mutableStateOf(false) }
+    var reviewContent: String by remember { mutableStateOf("") }
 
     LaunchedEffect(true) {
-        // 유저 정보 조회
-       result = coroutineScope.async { api.getUser(userId!!) }.await().result
+        // 리뷰 조회
+        result = coroutineScope.async { api.getItemInfo(itemId!!) }.await().result
+    }
+
+    // 리뷰 작성
+    fun write(){
+        coroutineScope.async { api.getItemInfo(itemId!!) }
     }
 
     Column() {
-        topBar(navController = navController, "마이페이지")
-        if(result != null){
-            Text("${result!!.name}님", fontSize = 20.sp)
+        Row(){
+            Text(text = "리뷰")
+
         }
+
+            TextField(value = reviewContent, onValueChange = { reviewContent = it })
+            Button(onClick = { write() }) {
+                Text(text = "확인")
+            }
 
     }
 }
