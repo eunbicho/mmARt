@@ -27,7 +27,7 @@ fun MmARtTheme(content: @Composable () -> Unit) {
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = mainTypography,
         shapes = Shapes,
         content = content
     )

@@ -10,7 +10,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+//        maven { url 'https://artifactory.unity.com/artifactory/unity-internal' }
     }
 }
 rootProject.name = "mmARt"
 include ':app'
+//include ':app', ':unityLibrary'
