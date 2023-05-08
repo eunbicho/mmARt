@@ -1,6 +1,5 @@
 from floyd_warshall_test import initialize,floydWarshall,constructPath
 from held_karp import held_karp
-from bhk import bellman_held_karp_exact_algorithm
 
 def print_matrix(matrix):
     r=len(matrix)
@@ -58,7 +57,7 @@ for r in range(l):
 
 # 자신과 끝점에서는 0
 temp_graph[0][0]=0
-temp_graph[end][0]=1
+temp_graph[end][0]=0
 
 print("temp_graph")
 print_matrix(temp_graph)

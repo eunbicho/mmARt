@@ -22,15 +22,15 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.*
 
 @Composable
-fun GetCart(navController: NavController, userId: Int?){
+fun GetCart(navController: NavController){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
     var result: CartContent? by remember { mutableStateOf(null) }
     var resultCode: String? by remember { mutableStateOf(null) }
 
-    // 한 번만 실행
     LaunchedEffect(true) {
+        // 장볼구니 목록 조회
        val response = coroutineScope.async { api.getCartsRead(userId!!) }.await()
         result = response.result
         resultCode = response.resultCode
@@ -58,14 +58,14 @@ fun GetCart(navController: NavController, userId: Int?){
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            Text(text = "${item.itemIdx}")
+//                            Text(text = "${item.itemIdx}")
 
                         }
                     }
                 }
 
             } else {
-                Text(result!!.message)
+//                Text(result!!.message)
             }
         }
 

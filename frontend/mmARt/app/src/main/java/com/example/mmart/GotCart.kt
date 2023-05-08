@@ -75,7 +75,7 @@ fun GotCart(navController: NavController, userId: Int?){
                 }
                     Text(text = "합계 : ${resultCart!!.total}원")
             } else {
-                Text(resultCart!!.message)
+                Text("장봤구니가 비어있습니다.")
             }
         }
 
