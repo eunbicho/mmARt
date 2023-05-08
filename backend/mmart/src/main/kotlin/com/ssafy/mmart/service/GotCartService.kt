@@ -1,9 +1,13 @@
 package com.ssafy.mmart.service
 
+import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.gotCart.dto.GotCartItem
 import com.ssafy.mmart.domain.gotCart.dto.GotCartReq
 import com.ssafy.mmart.domain.gotCart.dto.GotCartRes
 import com.ssafy.mmart.domain.gotCart.dto.GotCartToPayRes
+import com.ssafy.mmart.domain.item.QItem
+import com.ssafy.mmart.domain.itemCoupon.QItemCoupon
+import com.ssafy.mmart.domain.itemItemCoupon.QItemItemCoupon
 import com.ssafy.mmart.exception.conflict.GotCartEmptyException
 import com.ssafy.mmart.exception.not_found.*
 import com.ssafy.mmart.repository.ItemCouponRepository
@@ -15,6 +19,7 @@ import org.springframework.data.redis.core.HashOperations
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class GotCartService @Autowired constructor(
@@ -23,6 +28,7 @@ class GotCartService @Autowired constructor(
     val itemRepository: ItemRepository,
     val itemCouponRepository: ItemCouponRepository,
     val itemItemCouponRepository: ItemItemCouponRepository,
+    private val jpaQueryFactory: JPAQueryFactory,
 ){
     val gotCart = "GOTCART"
     val gotCartOps: HashOperations<String, Int, MutableMap<Int, Int>> = redisTemplate.opsForHash()
@@ -36,7 +42,16 @@ class GotCartService @Autowired constructor(
             val tempItem = itemRepository.findByIdOrNull(hashKey) ?: throw ItemNotFoundException()
             var tempPrice = tempItem.price
             var isCoupon = false;
-            val tempCoupon = itemItemCouponRepository.findByItem_ItemIdx(tempItem.itemIdx!!)
+            val tempCoupon = jpaQueryFactory
+                .selectFrom(QItemItemCoupon.itemItemCoupon)
+                .join(QItemItemCoupon.itemItemCoupon.item, QItem.item)
+                .join(QItemItemCoupon.itemItemCoupon.itemCoupon, QItemCoupon.itemCoupon)
+                .where(
+                    QItemItemCoupon.itemItemCoupon.item.eq(tempItem), QItemCoupon.itemCoupon.couponExpired.after(
+                        LocalDateTime.now()
+                    ))
+                .orderBy(QItemCoupon.itemCoupon.couponDiscount.desc())
+                .fetchOne()
             if (tempCoupon != null) {
                 isCoupon=true
                 tempPrice -= itemCouponRepository.findByIdOrNull(tempCoupon.itemCoupon.itemCouponIdx)!!.couponDiscount

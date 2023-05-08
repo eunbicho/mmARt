@@ -1,9 +1,14 @@
 package com.ssafy.mmart.service
 
+import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.getCart.dto.CreateGetCartReq
 import com.ssafy.mmart.domain.getCart.dto.GetCartItem
 import com.ssafy.mmart.domain.getCart.dto.GetCartRes
 import com.ssafy.mmart.domain.getCart.dto.PutGetCartReq
+import com.ssafy.mmart.domain.item.QItem
+import com.ssafy.mmart.domain.itemCoupon.QItemCoupon.itemCoupon
+import com.ssafy.mmart.domain.itemItemCoupon.QItemItemCoupon.itemItemCoupon
+import com.ssafy.mmart.domain.payment.QPayment
 import com.ssafy.mmart.exception.bad_request.BadAccessException
 import com.ssafy.mmart.exception.conflict.GetCartEmptyException
 import com.ssafy.mmart.exception.not_found.*
@@ -12,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.HashOperations
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime.now
 
 @Service
 class GetCartService @Autowired constructor(
     private var redisTemplate: RedisTemplate<String, Any>,
+    val jpaQueryFactory: JPAQueryFactory,
     var userRepository: UserRepository,
     var itemRepository: ItemRepository,
     var categoryRepository: CategoryRepository,
@@ -140,29 +147,36 @@ class GetCartService @Autowired constructor(
     fun setGetCarts(temp: MutableMap<Int, Int>): GetCartRes {
         val getCartRes = GetCartRes(mutableListOf(), 0)
         if (temp.isNotEmpty()) {
-            temp.keys.forEach { haskKey ->
-                val item = itemRepository.findById(haskKey).orElseThrow(::ItemNotFoundException)
+            temp.keys.forEach { hashKey ->
+                val item = itemRepository.findById(hashKey).orElseThrow(::ItemNotFoundException)
                 var eachPrice = item.price
                 var isCoupon = false;
                 //쿠폰이 있으면, 쿠폰 가격만큼 item의 price에서 빼준다.
-                val itemItemCoupon = itemItemCouponRepository.findByItem_ItemIdx(item.itemIdx!!)
+                val itemItemCoupon = jpaQueryFactory
+                    .selectFrom(itemItemCoupon)
+                    .join(itemItemCoupon.item, QItem.item)
+                    .join(itemItemCoupon.itemCoupon, itemCoupon)
+                    .where(itemItemCoupon.item.eq(item), itemCoupon.couponExpired.after(now()))
+                    .orderBy(itemCoupon.couponDiscount.desc())
+                    .fetchOne()
                 if (itemItemCoupon != null) {
                     isCoupon = true;
                     val itemCoupon = couponRepository.findById(itemItemCoupon.itemCoupon.itemCouponIdx!!)
                     eachPrice -= itemCoupon.get().couponDiscount
+
                 }
                 getCartRes.itemList.add(
                     GetCartItem(
-                        haskKey,
+                        hashKey,
                         item.itemName,
                         item.price,
                         item.thumbnail!!,
                         isCoupon,
                         eachPrice,
-                        temp[haskKey]!!
+                        temp[hashKey]!!
                     )
                 )
-                getCartRes.total += eachPrice * temp[haskKey]!!
+                getCartRes.total += eachPrice * temp[hashKey]!!
             }
         }
         return getCartRes

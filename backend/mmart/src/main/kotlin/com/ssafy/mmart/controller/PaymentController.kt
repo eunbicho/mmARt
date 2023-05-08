@@ -24,8 +24,8 @@ class PaymentController @Autowired constructor(
    }
 
     @PostMapping
-    fun createPayment(@RequestParam userIdx: Int, @RequestBody paymentReq: PaymentReq): ResultResponse<Payment?> {
-        return ResultResponse.success(paymentService.createPayment(userIdx, paymentReq))
+    fun createPayment(@RequestParam userIdx: Int): ResultResponse<Payment?> {
+        return ResultResponse.success(paymentService.createPayment(userIdx))
     }
 
     @DeleteMapping
