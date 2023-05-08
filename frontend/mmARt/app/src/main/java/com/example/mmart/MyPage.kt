@@ -23,26 +23,19 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.*
 
 @Composable
-fun MyPage(navController: NavController, userId: Int?){
+fun MyPage(navController: NavController){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
     var result: UserInfo? by remember { mutableStateOf(null) }
 
-    // 한 번만 실행
     LaunchedEffect(true) {
+        // 유저 정보 조회
        result = coroutineScope.async { api.getUser(userId!!) }.await().result
     }
 
     Column() {
-        Row() {
-
-            Text(text = "마이페이지")
-
-            Button(onClick = { navController.navigate("main") }) {
-                Text(text = "메인으로")
-            }
-        }
+        topBar(navController = navController, "마이페이지")
         if(result != null){
             Text("${result!!.name}님", fontSize = 20.sp)
         }

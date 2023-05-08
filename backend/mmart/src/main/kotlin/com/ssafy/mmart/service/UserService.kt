@@ -20,6 +20,10 @@ class UserService @Autowired constructor(
         return userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
     }
 
+    fun getUserByEmail(email: String): User {
+        return userRepository.findByEmail(email) ?: throw UserNotFoundException()
+    }
+
     fun createUser(userReq: UserReq): User? {
         val oldUser = userRepository.findByEmail(userReq.email)
         return if (oldUser == null) {

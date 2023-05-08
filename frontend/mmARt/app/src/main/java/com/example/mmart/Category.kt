@@ -3,6 +3,7 @@ package com.example.mmart
 import android.media.Image
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,36 +28,46 @@ fun Category(navController: NavController, categoryId: Int?){
     val coroutineScope = rememberCoroutineScope()
     var result: List<ItemInfo>? by remember { mutableStateOf(null) }
 
-    // 한 번만 실행
+    // 카테고리 별 아이템 조회
     LaunchedEffect(true) {
-        result = coroutineScope.async { api.getCategories(1, categoryId!!) }.await().result
+        result = coroutineScope.async { api.getCategories(userId, categoryId!!) }.await().result
+    }
+
+    fun categoryName(): String{
+        return when(categoryId) {
+            1 -> "가공식품"
+            2 -> "신선식품"
+            3 -> "일상용품"
+            4 -> "의약품"
+            5 -> "교육용품"
+            6 -> "디지털"
+            7 -> "인테리어"
+            8 -> "스포츠"
+            else -> "카테고리"
+        }
     }
 
     Column() {
-        Row() {
-
-            Text(text = "categotyId = ${categoryId}")
-
-            Button(onClick = { navController.navigate("main") }) {
-                Text(text = "메인으로")
-            }
-        }
 
         // result가 null이 아닐 경우만
         if (result != null) {
 
+            // 상단바
+            topBar(navController = navController, categoryName())
 
             LazyColumn(
             ){
                 items(result!!){
                         item ->
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { navController.navigate("item/${item.itemIdx}") }
                     ){
                         AsyncImage(
                             model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
-                            contentDescription = item.itemName
+                            contentDescription = "상품 썸네일"
                         )
 
                         Text(text = item.itemName)
