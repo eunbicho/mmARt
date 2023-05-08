@@ -62,7 +62,7 @@ fun GotCart(navController: NavController, userId: Int?){
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            Text(text = "${item.itemIdx}")
+                            // Text(text = "${item.itemIdx}")
                             AsyncImage(
                                 model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
                                 contentDescription = item.itemName
@@ -76,7 +76,7 @@ fun GotCart(navController: NavController, userId: Int?){
                     Text(text = "합계 : ${resultCart!!.total}원")
 
             } else {
-                Text(resultCart!!.message)
+                // Text(resultCart!!.message)
             }
         }
 
