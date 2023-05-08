@@ -66,6 +66,15 @@ services:
       - elastic:/usr/share/elasticsearch/data
 
 
+  shortest-path:
+    container_name: shortest_path_container
+    build:
+      context: ../../ai/shortest-path
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - 8789:80
+
 volumes:
   data:
   cache:
