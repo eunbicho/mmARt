@@ -5,7 +5,12 @@ from typing import List
 from app.load_distance_matrix import load_distance_matrix
 from app.floyd_warshall import floyd_warshall_initialize
 from app.held_karp import held_karp
+from app.two_opt import local_search_2_opt
+from app.util import distance_calc
+
 from copy import deepcopy
+
+import numpy as np
 
 
 class Locations(BaseModel):
@@ -42,6 +47,7 @@ app = FastAPI()
 @app.post("/shortest-path")
 def find_shortest_path(locations: Locations):
     # 방문할 위치들 입력 확인.
+    print("locations")
     print(locations.locations)
 
     # 시작점과 끝점을 추가해서 TSP를 적용할 list 만들기.
@@ -60,11 +66,22 @@ def find_shortest_path(locations: Locations):
     # 방문해야할 장소 개수가 15이하일 때는 exact algorithm인 held-karp algorithm 적용.
     #           "          15이상일 때는 heuristic algorithm인 2-opt algorithm 적용.
     # 최단거리, 최단경로 초기화.
-    # shortest_distance = -1
-    # shortest_path = []
-    # if l <= 15:
-    shortest_distance, temp_path = held_karp(complete_graph,INF)
-    # else:
+    shortest_distance = -1
+    temp_path = []
+    if l <= 5:
+        shortest_distance, temp_path = held_karp(complete_graph,INF)
+    else:
+        # 입력 형태를 맞추기 위해, distance matrix인 complete_graph를 numpy array로 변환해줌.
+        complete_graph_np_array = np.array(complete_graph)
+
+        # seed 초기화. seed[0]는 경로를, seed[1]은 거리를 의미.
+        seed=[[],[]]
+
+        # path 초기화는 숫자가 낮은 순서로 방문.
+        seed[0]=[ i for i in range(len(complete_graph_np_array))]
+        seed[1] = distance_calc(complete_graph_np_array,seed)
+
+        temp_path,shortest_distance = local_search_2_opt(complete_graph_np_array,seed,-1,True)
 
     # 실제 경로로 변환해주기.
     # paths를 보고, 경로 알려주기.

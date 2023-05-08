@@ -1,5 +1,10 @@
+import os
+import pandas as pd
+from app.util import build_distance_matrix
+
+
 def load_distance_matrix(INF):
-    # test
+    # held-karp test
     # matrix 생성.
     distance_matrix = [[INF for j in range(5)] for i in range(5)]
 
@@ -23,7 +28,20 @@ def load_distance_matrix(INF):
     for i in range(5):
         distance_matrix[i][i]=0
 
+
+    # # 2-opt test
+    # # 현재 작업 중인 디렉토리를 확인합니다.
+    # cwd = os.getcwd()
+
+    # # 파일 경로를 지정합니다.
+    # file_path = os.path.join(cwd, 'app/TSP-02-Coordinates.txt')
+
+    # coordinates = pd.read_csv(file_path, sep = '\t')
+    # coordinates = coordinates.values
+
+    # distance_matrix = build_distance_matrix(coordinates)
     
+
     # real
 
     return distance_matrix
