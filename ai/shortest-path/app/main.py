@@ -94,4 +94,4 @@ def find_shortest_path(locations: Locations):
     print("shortest_distance")
     print(shortest_distance)
 
-    return real_path
+    return {"path":real_path}
