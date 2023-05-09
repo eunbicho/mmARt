@@ -107,6 +107,9 @@ fun Search(navController: NavController, searchWord: String){
         // 상단바
         topBar(navController = navController, "검색 결과")
 
+        // 검색
+        searchBar(navController)
+
         if(hits != null){
             // 검색 결과가 있을 때
             if (hits!!.hits.isNotEmpty()){
