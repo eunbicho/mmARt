@@ -1,5 +1,6 @@
 package com.example.mmart
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -62,13 +63,21 @@ fun GotCart(navController: NavController){
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     AsyncImage(
-                                        modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .clickable { navController.navigate("item/${item.itemIdx}") },
                                         model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
-                                        contentDescription = item.itemName
+                                        contentDescription = item.itemName,
                                     )
-                                    Text(text = "${item.itemName}")
+                                    Column() {
+                                        Text(
+                                            text = "${item.itemName}",
+                                            modifier = Modifier
+                                                .clickable { navController.navigate("item/${item.itemIdx}") },
+                                        )
+                                        Text(text = "${item.price}원")
+                                    }
                                     Text(text = "수량 : ${item.quantity}")
-                                    Text(text = "${item.price}원")
                                     Button(onClick = { deleteGotCart(item.itemIdx) }) {
                                         Text(text = "X")
                                     }
