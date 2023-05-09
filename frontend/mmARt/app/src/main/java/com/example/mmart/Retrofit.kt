@@ -33,7 +33,7 @@ interface APIS {
     suspend fun getUser(@Path("userId") userId: Int): UserResult
 
     // 상품 상세 조회
-    @GET("items/{itemId}/detail-image")
+    @GET("items/{itemId}")
     suspend fun getItemInfo(@Path("itemId") itemId: Int): ItemDetailResult
 
     // 상품 별 리뷰 조회
@@ -45,7 +45,6 @@ interface APIS {
 
     companion object {
         private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
-//        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
 
         fun create(): APIS {
             val gson : Gson =   GsonBuilder().setLenient().create();
@@ -68,6 +67,7 @@ data class ItemInfo(
     val itemIdx: Int,
     val itemName: String,
     val price: Int,
+    val isCoupon: Boolean,
     val couponPrice: Int,
     val inventory: Int,
     val barcode: String,
@@ -89,14 +89,7 @@ data class ItemInfo(
 // item 상세 조회 관련 Result
 data class ItemDetailResult(
     val resultCode : String,
-    val result: ItemDetail
-)
-
-// 변경 전 임시로
-data class ItemDetail(
-    val image: String,
-    val itemDetail: Any,
-    val item: ItemInfo
+    val result: ItemInfo
 )
 
 // 카트 관련 Result
@@ -106,7 +99,7 @@ data class CartResult(
 )
 
 data class CartContent(
-    val itemList: List<ItemInfo>,
+    val itemList: List<ItemInfo?>,
     val total: Int,
 )
 
@@ -118,13 +111,12 @@ data class CartContent(
 // 회원 정보 Result
 data class UserResult(
     val resultCode : String,
-    val result: UserInfo,
+    val result: UserInfo
 )
 
 data class UserInfo(
     val userIdx: Int,
     val name: String,
-    val qrcode: String,
 )
 
 // 리뷰 Result
@@ -136,7 +128,8 @@ data class ReviewResult(
 data class ReviewDetail(
     val star: Int,
     val content: String,
-    val paymentDetail: PaymentDetail
+    val paymentDetail: PaymentDetail,
+    val user: UserInfo
 )
 
 data class PaymentDetail(
