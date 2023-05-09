@@ -41,7 +41,7 @@ class GotCartService @Autowired constructor(
             val tempQuantity = temp[hashKey]!!
             val tempItem = itemRepository.findByIdOrNull(hashKey) ?: throw ItemNotFoundException()
             var tempPrice = tempItem.price
-            var isCoupon = false;
+            var isCoupon = false
             val tempCoupon = jpaQueryFactory
                 .selectFrom(QItemItemCoupon.itemItemCoupon)
                 .join(QItemItemCoupon.itemItemCoupon.item, QItem.item)

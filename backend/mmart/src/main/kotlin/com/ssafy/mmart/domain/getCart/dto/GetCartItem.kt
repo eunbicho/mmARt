@@ -7,5 +7,6 @@ data class GetCartItem(
     val thumbnail:String,
     val isCoupon:Boolean,
     val couponPrice:Int,
+    val placeInfo: String,
     val quantity:Int,
 )
