@@ -126,9 +126,8 @@ fun topBar(navController: NavController, title: String){
         modifier = Modifier
             .background(color = Color(0XFFF5F5F5))
             .fillMaxWidth()
-            .height(100.dp)
-            .padding(20.dp)
-            .padding(top=20.dp),
+            .height(80.dp)
+            .padding(20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
 
