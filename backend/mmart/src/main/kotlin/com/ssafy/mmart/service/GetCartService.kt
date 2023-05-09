@@ -1,22 +1,23 @@
 package com.ssafy.mmart.service
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.ssafy.mmart.domain.getCart.dto.CreateGetCartReq
-import com.ssafy.mmart.domain.getCart.dto.GetCartItem
-import com.ssafy.mmart.domain.getCart.dto.GetCartRes
-import com.ssafy.mmart.domain.getCart.dto.PutGetCartReq
+import com.ssafy.mmart.domain.getCart.dto.*
 import com.ssafy.mmart.domain.item.QItem
 import com.ssafy.mmart.domain.itemCoupon.QItemCoupon.itemCoupon
 import com.ssafy.mmart.domain.itemItemCoupon.QItemItemCoupon.itemItemCoupon
-import com.ssafy.mmart.domain.payment.QPayment
 import com.ssafy.mmart.exception.bad_request.BadAccessException
 import com.ssafy.mmart.exception.conflict.GetCartEmptyException
 import com.ssafy.mmart.exception.not_found.*
 import com.ssafy.mmart.repository.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.HashOperations
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
+import java.io.IOException
 import java.time.LocalDateTime.now
 
 @Service
@@ -105,6 +106,43 @@ class GetCartService @Autowired constructor(
         return setGetCarts(temp)
     }
 
+    fun getShortestPathGetCart(userIdx: Int): GetCartPathRes?{
+        //유저가 존재하는지 확인
+        userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
+        val getCartRes = getGetCart(userIdx)
+        val tempList = mutableListOf<String>()
+        val sortedItem = mutableListOf<SortItemRes>()
+        //placeInfo만 추출해서 넣기
+        getCartRes.itemList.forEach { cartItem ->
+            tempList.add(cartItem.placeInfo)
+        }
+        println(tempList)
+        //최단경로 가져오기
+        val client = OkHttpClient()
+        val body = """
+{ "locations": $tempList}
+""".toRequestBody("application/json".toMediaType())
+        val request = Request.Builder()
+            .url("http://k8a405.p.ssafy.io:8789/shortest-path")
+            .post(body)
+            .build()
+        println(request)
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+            val responseBody = response.body?.string()?.split(":")?.get(1)
+            //전체 경로 리스트
+            val totalList = responseBody?.substring(1, responseBody.length - 2)?.split(",")
+            totalList?.forEach { node ->
+                val nodeIdx = getCartRes.itemList.find { it.placeInfo == node }
+                if (nodeIdx != null) {
+
+                    sortedItem.add(SortItemRes(nodeIdx.itemName, nodeIdx.placeInfo, getCartRes.itemList.count { it.placeInfo == node }))
+                }
+            }
+            return GetCartPathRes(itemList = sortedItem, totalPath = totalList!!)
+        }
+    }
+
     fun deleteGetCarts(userIdx: Int): GetCartRes {
         //유저가 존재하는지 확인
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
@@ -150,7 +188,7 @@ class GetCartService @Autowired constructor(
             temp.keys.forEach { hashKey ->
                 val item = itemRepository.findById(hashKey).orElseThrow(::ItemNotFoundException)
                 var eachPrice = item.price
-                var isCoupon = false;
+                var isCoupon = false
                 //쿠폰이 있으면, 쿠폰 가격만큼 item의 price에서 빼준다.
                 val itemItemCoupon = jpaQueryFactory
                     .selectFrom(itemItemCoupon)
@@ -160,7 +198,7 @@ class GetCartService @Autowired constructor(
                     .orderBy(itemCoupon.couponDiscount.desc())
                     .fetchOne()
                 if (itemItemCoupon != null) {
-                    isCoupon = true;
+                    isCoupon = true
                     val itemCoupon = couponRepository.findById(itemItemCoupon.itemCoupon.itemCouponIdx!!)
                     eachPrice -= itemCoupon.get().couponDiscount
 
@@ -173,6 +211,7 @@ class GetCartService @Autowired constructor(
                         item.thumbnail!!,
                         isCoupon,
                         eachPrice,
+                        item.placeInfo,
                         temp[hashKey]!!
                     )
                 )

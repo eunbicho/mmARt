@@ -32,7 +32,7 @@ class ItemService @Autowired constructor(
     fun setItemRes(item: Item): GetItemRes? {
         val detail = itemDetailRepository.findByItem(item)!!
         var eachPrice = item.price
-        var isCoupon = false;
+        var isCoupon = false
         //쿠폰이 있으면, 쿠폰 가격만큼 item의 price에서 빼준다.
         val itemItemCoupon = jpaQueryFactory
             .selectFrom(itemItemCoupon)
@@ -42,7 +42,7 @@ class ItemService @Autowired constructor(
             .orderBy(itemCoupon.couponDiscount.desc())
             .fetchOne()
         if (itemItemCoupon != null) {
-            isCoupon = true;
+            isCoupon = true
             val itemCoupon = couponRepository.findById(itemItemCoupon.itemCoupon.itemCouponIdx!!)
             eachPrice -= itemCoupon.get().couponDiscount
         }
@@ -86,7 +86,7 @@ class ItemService @Autowired constructor(
         if (result != null) {
             return GetItemImageDetailRes(result.itemDetailImageIdx!!, result.image)
         }
-        return null;
+        return null
     }
 
     fun getItemByBarcode(barcode: String): GetItemRes? {
