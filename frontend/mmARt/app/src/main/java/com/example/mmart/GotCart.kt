@@ -24,6 +24,7 @@ import kotlinx.coroutines.*
 @Composable
 fun GotCart(navController: NavController){
 
+    val userId = 1
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
     var result: CartContent? by remember { mutableStateOf(null) }

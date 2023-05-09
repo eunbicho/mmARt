@@ -117,12 +117,13 @@ data class CartContent(
 // 회원 정보 Result
 data class UserResult(
     val resultCode : String,
-    val result: UserInfo
+    val result: UserInfo,
 )
 
 data class UserInfo(
     val userIdx: Int,
     val name: String,
+    val qrcode: String,
 )
 
 // 리뷰 Result
