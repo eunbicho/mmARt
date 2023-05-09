@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
 @Repository
-interface ItemCouponRepository : JpaRepository<ItemCoupon, Int>{
-}
+interface ItemCouponRepository : JpaRepository<ItemCoupon, Int>
