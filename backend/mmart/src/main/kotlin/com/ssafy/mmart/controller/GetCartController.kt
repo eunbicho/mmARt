@@ -2,6 +2,7 @@ package com.ssafy.mmart.controller
 
 import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.getCart.dto.CreateGetCartReq
+import com.ssafy.mmart.domain.getCart.dto.GetCartPathRes
 import com.ssafy.mmart.domain.getCart.dto.GetCartRes
 import com.ssafy.mmart.domain.getCart.dto.PutGetCartReq
 import com.ssafy.mmart.service.GetCartService
@@ -26,6 +27,11 @@ class GetCartController @Autowired constructor(
     @GetMapping("/{userIdx}")
     fun getGetCart(@PathVariable userIdx:Int): ResultResponse<GetCartRes> {
         return ResultResponse.success(getCartService.getGetCart(userIdx))
+    }
+
+    @GetMapping("/shortest-path/{userIdx}")
+    fun getShortestPathGetCart(@PathVariable userIdx:Int): ResultResponse<GetCartPathRes?> {
+        return ResultResponse.success(getCartService.getShortestPathGetCart(userIdx))
     }
 
     @DeleteMapping("/{userIdx}")//장볼구니 비우기
