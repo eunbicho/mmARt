@@ -45,7 +45,7 @@ class ReviewKeywordService @Autowired constructor(
                 )))
             }
         }
-        return reviewKeywordRes;
+        return reviewKeywordRes
     }
 //
 //    fun getUserReviews(userIdx: Int): List<Review>? {
