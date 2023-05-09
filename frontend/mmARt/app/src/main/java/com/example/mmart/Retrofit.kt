@@ -33,7 +33,7 @@ interface APIS {
     suspend fun getUser(@Path("userId") userId: Int): UserResult
 
     // 상품 상세 조회
-    @GET("items/{itemId}/detail-image")
+    @GET("items/{itemId}")
     suspend fun getItemInfo(@Path("itemId") itemId: Int): ItemDetailResult
 
     // 상품 별 리뷰 조회
@@ -67,6 +67,7 @@ data class ItemInfo(
     val itemIdx: Int,
     val itemName: String,
     val price: Int,
+    val isCoupon: Boolean,
     val couponPrice: Int,
     val inventory: Int,
     val barcode: String,
@@ -88,14 +89,7 @@ data class ItemInfo(
 // item 상세 조회 관련 Result
 data class ItemDetailResult(
     val resultCode : String,
-    val result: ItemDetail
-)
-
-// 변경 전 임시로
-data class ItemDetail(
-    val image: String,
-    val itemDetail: Any,
-    val item: ItemInfo
+    val result: ItemInfo
 )
 
 // 카트 관련 Result
@@ -134,7 +128,8 @@ data class ReviewResult(
 data class ReviewDetail(
     val star: Int,
     val content: String,
-    val paymentDetail: PaymentDetail
+    val paymentDetail: PaymentDetail,
+    val user: UserInfo
 )
 
 data class PaymentDetail(
