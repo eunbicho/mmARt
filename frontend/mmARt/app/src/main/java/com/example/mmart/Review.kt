@@ -26,13 +26,19 @@ fun Review(itemId: Int?){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
-    var result: ItemDetail? by remember { mutableStateOf(null) }
+//    var result: ItemDetail? by remember { mutableStateOf(null) }
 //    var reviewWrite: Boolean by remember { mutableStateOf(false) }
     var reviewContent: String by remember { mutableStateOf("") }
 
     LaunchedEffect(true) {
         // 리뷰 조회
-        result = coroutineScope.async { api.getItemInfo(itemId!!) }.await().result
+        try {
+//            result = coroutineScope.async { api.getItemInfo(itemId!!) }.await().result
+        } catch (e: Exception){
+            println("리뷰 조회 에러---------------------")
+            e.printStackTrace()
+            println("---------------------------------")
+        }
     }
 
     // 리뷰 작성
