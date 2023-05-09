@@ -42,9 +42,10 @@ dependencies {
 // https://mvnrepository.com/artifact/com.google.zxing/javase
 	implementation("com.google.zxing:javase:3.5.1")
 
-
 	implementation ("com.github.downgoon:marvin:1.5.5")
 	implementation ("com.github.downgoon:MarvinPlugins:1.5.5")
+
+	implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
 }
 
