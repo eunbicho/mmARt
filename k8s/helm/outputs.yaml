@@ -1,5 +1,5 @@
 NAME: mysql
-LAST DEPLOYED: Tue May  2 06:33:29 2023
+LAST DEPLOYED: Wed May  3 00:55:00 2023
 NAMESPACE: default
 STATUS: deployed
 REVISION: 1
@@ -33,13 +33,9 @@ To connect to your database:
   2. To connect to primary service (read/write):
 
       mysql -h mysql.default.svc.cluster.local -uroot -p"$MYSQL_ROOT_PASSWORD"
-
-
 ---
-
-
 NAME: redis
-LAST DEPLOYED: Tue May  2 06:33:54 2023
+LAST DEPLOYED: Wed May  3 00:57:13 2023
 NAMESPACE: default
 STATUS: deployed
 REVISION: 1
@@ -81,3 +77,57 @@ To connect to your database from outside the cluster execute the following comma
 
     kubectl port-forward --namespace default svc/redis-master 6379:6379 &
     REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli -h 127.0.0.1 -p 6379
+---
+NAME: jenkins
+LAST DEPLOYED: Thu May  4 00:07:39 2023
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. Get your 'admin' user password by running:
+  kubectl exec --namespace default -it svc/jenkins -c jenkins -- /bin/cat /run/secrets/additional/chart-admin-password && echo
+
+  Of00Vq35tqAedjyDZutzpR
+  Of00Vq35tqAedjyDZutzpR
+2. Get the Jenkins URL to visit by running these commands in the same shell:
+  echo http://127.0.0.1:8080
+  kubectl --namespace default port-forward svc/jenkins 8080:8080
+
+3. Login with the password from step 1 and the username: admin
+4. Configure security realm and authorization strategy
+5. Use Jenkins Configuration as Code by specifying configScripts in your values.yaml file, see documentation: http://127.0.0.1:8080/configuration-as-code and examples: https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos
+
+For more information on running Jenkins on Kubernetes, visit:
+https://cloud.google.com/solutions/jenkins-on-container-engine
+
+For more information about Jenkins Configuration as Code, visit:
+https://jenkins.io/projects/jcasc/
+
+
+NOTE: Consider using a custom image with pre-installed plugins
+
+
+
+MIIELTCCApWgAwIBAgIRAMQxMXp0c/dMdDxZANObBZMwDQYJKoZIhvcNAQELBQAw
+LzEtMCsGA1UEAxMkNDBhZTM5NzctMmUyZS00MjA5LWJiYjEtMWQ2Njc2NzVjMzBk
+MCAXDTIzMDUwMTEwMDgyN1oYDzIwNTMwNDIzMTEwODI3WjAvMS0wKwYDVQQDEyQ0
+MGFlMzk3Ny0yZTJlLTQyMDktYmJiMS0xZDY2NzY3NWMzMGQwggGiMA0GCSqGSIb3
+DQEBAQUAA4IBjwAwggGKAoIBgQC7axQ5LzVLUypoatwtxhFcwTjuIWzqG+iWYbCU
+yoiECtpx8ZwysV/cOvTI4u9xz0LDWBq0Oe3d8Tun7Z0f8XjpYIMDEco/6OK3AMKn
+vdlb2p6grCUoOW7q0oJCG19XOwfujsIJgiYecU/bMC/PSijNwQJ9ZbmGszBVblkv
+Az23TIPlEOTgeRq72Bfm+oU+O7jhVz0lGk6s0m7+Y23jnt2TPExiVMkL7VVDQRcl
+3SFWLuZdN+R3WhXTs3Ieob4hfeYvorEtQ6cpn0ZV0wAYOL5d1Bk8QZ5vpcwOJcT2
+2MQugPQwsAFrorCOnVIp3oCBenKgxP41ar8+SFw7KWpVNDQc73yRosUJokji6XAe
+51woEBirkgu68dAvpshSleZ5rLCiF5PVBXo8fi3hTTktgZFQ8LFVVjCxB15QkLx0
+knAJ/lKuZ9Y5lyVkKs/OtV5lyIXT0/by27to3PLtaaelfwYdtuYxMlGUGzs8gvIu
+RTXBpkxxk77gS0Ljf/x2+UVgIIcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgIEMA8G
+A1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFGht7ejKzCr2fSg8B4lZSUAnkeZxMA0G
+CSqGSIb3DQEBCwUAA4IBgQAm/FpGQ2ynUL+I2sllUSXNPSiyn9Zcbbtlg3dKbvgL
+z7TmRjk7t0y9ZL2l5K4r8BZqRRmIjCB3CeOIbaclOROiRwoCXOVyqdQl6pdn8tmC
+G05zYs1X31ZUT9WvAzcBfyi1SkcO/zGzQDUzSeI7PUCFwXawORtcGg77GYDUz5Rv
+WTiLGDB5JT2E+lIurVhp4GibjEprSdD52vwRY4anNU8j/7187xueWoP1rYwkjRAc
+N1XXrp0pkYgkuqoN3O9l8lH6t99TegtzS/8UyrM9RsaTPizDj7/EntvTIOZVPdvv
+lxwt8ixii6bAFDa5lgmqhZuqgHQ4L9fXaTXnT870PW9VtYUxrzMIT+sBsMCayIuJ
+iTtM4kYVrHOOuPt4qkuALbvcqpJC/4sL9N1D2Nv6YqoaFmPNnuQKrvIMm3xXwcTA
+JtjR82VuHJWc7UjsYmnczmkV8BfKPZQG3he6Eg115GvgIPLXYP6apkwD3cSMTZzh
+z63jghtAbi9mNd7Yj3zSQfg=
