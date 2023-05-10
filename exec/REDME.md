@@ -1,16 +1,20 @@
 ## 개발 환경
 
-- 형상 관리 : GitLab
-- 이슈 관리 : Jira
-- Communication :
+- Version Control
+    - GitLab
+- Agile Tool
+    - Jira
+- Communication
     - Mattermost
     - Webex
     - Notion
-- API 문서화
+- API Documentation
     - Swagger UI
-- OS : Windows 10
-- UI/UX : Figma
-- IDE :
+- OS
+    - Windows 10
+- UI/UX
+    - Figma
+- IDE
     - Visual Studio Code 1.75
     - Android Studio 2022.1.1
     - Intellij IDEA 2022.3.1
@@ -29,7 +33,8 @@
         - client 1.27.1
         - server 1.24.10-gke.2300
         - helm 3.9.3
-- WAS : Apache Tomcat 9.0.71
+- WAS
+    - Apache Tomcat 9.0.71
 - AI
     - Python 3.9
     - TensorFlow 2.12.0
@@ -48,8 +53,10 @@
 
 ## EC2
 
-1. Docker 23.0.4 설치
-2. Docker Compose 2.17.2 설치
+1. install Docker 23.0.4
+
+2. install Docker Compose 2.17.2
+
 3. git clone
     
     ```bash
