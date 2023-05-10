@@ -69,7 +69,7 @@ fun searchBar(navController: NavController){
             .fillMaxWidth()
             .height(100.dp)
             .padding(20.dp)
-            .border(color = Color.Black, width = 1.5.dp, shape = CircleShape)
+            .border(color = Color.DarkGray, width = 1.5.dp, shape = CircleShape)
             .shadow(
                 shape = CircleShape,
                 elevation = 5.dp,
@@ -121,14 +121,13 @@ fun searchBar(navController: NavController){
 
 @Composable
 fun topBar(navController: NavController, title: String){
-
+ Column() {
     Row (
         modifier = Modifier
             .background(color = Color(0XFFF5F5F5))
             .fillMaxWidth()
-            .height(100.dp)
-            .padding(20.dp)
-            .padding(top=20.dp),
+            .height(60.dp)
+            .padding(15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
 
@@ -140,11 +139,13 @@ fun topBar(navController: NavController, title: String){
                 }
             }
         )
-        Text(title, fontSize = 25.sp, fontWeight = FontWeight.Light)
+        Text(title, fontSize = 20.sp, fontWeight = FontWeight.Light)
         Image(painter = painterResource(R.drawable.home), contentDescription = "홈으로", modifier = Modifier
             .clickable { navController.navigate("main") }
         )
     }
+    Divider(startIndent = 0.dp, thickness = 1.dp, color = Color.hsl(0f,0f,0.5f,0.5f))
+ }
 }
 
 @Preview(showBackground = true)
