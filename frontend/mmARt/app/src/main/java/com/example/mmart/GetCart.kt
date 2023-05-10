@@ -4,6 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -40,6 +41,8 @@ fun GetCart(navController: NavController){
     val userId = 1
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
     var resultCart: CartContent? by remember { mutableStateOf(null) }
     var resultCode: String? by remember { mutableStateOf(null) }
     var resultUser: UserInfo? by remember { mutableStateOf(null) }
@@ -82,7 +85,8 @@ fun GetCart(navController: NavController){
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(560.dp)
-                            .padding(20.dp, 0.dp)
+                            .padding(20.dp, 0.dp),
+                        state = listState,
                     ) {
                         items(resultCart!!.itemList) {
                                 item ->
@@ -319,7 +323,10 @@ fun GetCart(navController: NavController){
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             FloatingActionButton(onClick = {
-
+                coroutineScope.launch {
+                    // Animate scroll to the first item
+                    listState.animateScrollToItem(index = 0)
+                }
             }) {
                 Image(
                     painter = painterResource(R.drawable.top),
