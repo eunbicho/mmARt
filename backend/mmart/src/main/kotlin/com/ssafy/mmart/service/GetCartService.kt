@@ -183,7 +183,7 @@ class GetCartService @Autowired constructor(
     }
 
     fun setGetCarts(temp: MutableMap<Int, Int>): GetCartRes {
-        val getCartRes = GetCartRes(mutableListOf(), 0)
+        val getCartRes = GetCartRes(mutableListOf(), 0, 0, 0)
         if (temp.isNotEmpty()) {
             temp.keys.forEach { hashKey ->
                 val item = itemRepository.findById(hashKey).orElseThrow(::ItemNotFoundException)
@@ -215,7 +215,9 @@ class GetCartService @Autowired constructor(
                         temp[hashKey]!!
                     )
                 )
+                getCartRes.priceTotal += item.price * temp[hashKey]!!
                 getCartRes.total += eachPrice * temp[hashKey]!!
+                getCartRes.discountTotal = getCartRes.priceTotal - getCartRes.total
             }
         }
         return getCartRes

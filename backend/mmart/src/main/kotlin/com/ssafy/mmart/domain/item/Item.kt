@@ -20,7 +20,7 @@ data class Item (
     val price : Int,
 
     @Column(name = "inventory")
-    val inventory : Int,
+    var inventory : Int,
 
     @Column(name = "barcode")
     val barcode : String,
