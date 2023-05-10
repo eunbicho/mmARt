@@ -1,0 +1,2 @@
+FROM elasticsearch:7.16.1
+RUN bin/elasticsearch-plugin install analysis-nori # elasticsearch안에서 nori 설치하기
