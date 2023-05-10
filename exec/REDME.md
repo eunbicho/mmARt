@@ -22,6 +22,7 @@
 - DB
     - MySQL 8
     - Redis 7
+    - Elasticsearch 7.16.1
     - AWS S3
 - Server
     - AWS EC2
@@ -49,7 +50,6 @@
     - Spring Boot Gradle(Kotlin) 2.7.11
         - Spring Data JPA
         - Spring Data Redis
-        - Spring Security
 
 ## EC2
 
