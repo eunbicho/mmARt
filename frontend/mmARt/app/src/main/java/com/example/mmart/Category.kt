@@ -30,7 +30,13 @@ fun Category(navController: NavController, categoryId: Int?){
 
     // 카테고리 별 아이템 조회
     LaunchedEffect(true) {
-        result = coroutineScope.async { api.getCategories(userId, categoryId!!) }.await().result
+        try {
+            result = coroutineScope.async { api.getCategories(userId, categoryId!!) }.await().result
+        } catch (e: Exception){
+            println("카테고리 별 상품 조회 에러-----------")
+            e.printStackTrace()
+            println("---------------------------------")
+        }
     }
 
     fun categoryName(): String{
