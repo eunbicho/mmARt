@@ -4,7 +4,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -183,7 +182,7 @@ fun GotCart(navController: NavController){
                                                 .size(30.dp)
                                                 .clickable {
                                                     val tempQuantity = quantity.text.toInt() + 1
-                                                    updateGotCart(item.itemIdx, tempQuantity)
+                                                    updateGetCart(item.itemIdx, tempQuantity)
                                                     quantity = TextFieldValue("${tempQuantity}")
 
                                                 },
@@ -224,7 +223,7 @@ fun GotCart(navController: NavController){
                                                 .size(30.dp)
                                                 .clickable {
                                                     val tempQuantity = quantity.text.toInt() - 1
-                                                    updateGotCart(item.itemIdx, tempQuantity)
+                                                    updateGetCart(item.itemIdx, tempQuantity)
                                                     quantity = TextFieldValue("${tempQuantity}")
                                                 },
                                             contentDescription = "-",
@@ -234,7 +233,7 @@ fun GotCart(navController: NavController){
                                         painter = painterResource(R.drawable.delete),
                                         modifier = Modifier
                                             .size(30.dp)
-                                            .clickable { deleteGotCart(item.itemIdx) },
+                                            .clickable { deleteGetCart(item.itemIdx) },
                                         contentDescription = "삭제",
                                     )
                                 }
