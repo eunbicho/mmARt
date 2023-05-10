@@ -1,35 +1,36 @@
 package com.example.mmart
 
-import android.text.style.LineHeightSpan
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.mmart.ui.theme.*
 
 import kotlinx.coroutines.*
 import java.text.DecimalFormat
@@ -45,6 +46,9 @@ fun GotCart(navController: NavController){
     var resultUser: UserInfo? by remember { mutableStateOf(null) }
 
     var showQrcode by remember { mutableStateOf(false)}
+    var quantityError by remember { mutableStateOf(false)}
+    var inventoryError by remember { mutableStateOf(false)}
+
 
     // 한 번만 실행
     LaunchedEffect(true) {
@@ -55,6 +59,17 @@ fun GotCart(navController: NavController){
         resultUser = userRes.result
     }
 
+    fun checkQuantity(prev: Int, curr: TextFieldValue, item: ItemInfo): Int{
+        if (curr.text.equals("") || curr.text.toInt() < 1){
+            quantityError = true
+            return prev
+        } else if (curr.text.toInt() > item.inventory) {
+            inventoryError = true
+            return prev
+        }
+        return curr.text.toInt()
+    }
+
     Column {
         topBar(navController = navController, "장봤구니")
 
@@ -62,14 +77,18 @@ fun GotCart(navController: NavController){
         if(resultCart != null){
             if (resultCode == "SUCCESS") {
                 if (resultCart!!.itemList.isNotEmpty()) {
+                    var priceTotal = 0
+                    var discountTotal = 0
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(600.dp)
-                            .padding(20.dp)
+                            .height(560.dp)
+                            .padding(20.dp, 0.dp)
                     ) {
                         items(resultCart!!.itemList) {
                                 item ->
+                            priceTotal += item.price
+                            discountTotal += if (item.isCoupon) item.price - item.couponPrice else 0
                             var quantity by remember { mutableStateOf(TextFieldValue("${item.quantity}")) }
                             Card(
                                 modifier = Modifier
@@ -77,11 +96,12 @@ fun GotCart(navController: NavController){
                                     .padding(10.dp)
                                     .clip(RoundedCornerShape(30.dp))
                                     .border(
-                                        color = Color.DarkGray,
+                                        color = Dark_gray,
                                         width = 1.5.dp,
                                         shape = RoundedCornerShape(30.dp)
                                     ),
-                                backgroundColor = Color.hsl(194f,0.5f,0.9f),
+                                backgroundColor = Light_blue,
+                                contentColor = Dark_gray,
                                 elevation = 5.dp,
                             ) {
                                 Row(
@@ -96,7 +116,7 @@ fun GotCart(navController: NavController){
                                             .size(60.dp)
                                             .clip(RoundedCornerShape(10.dp))
                                             .border(
-                                                color = Color.DarkGray,
+                                                color = Dark_gray,
                                                 width = 1.5.dp,
                                                 shape = RoundedCornerShape(10.dp)
                                             )
@@ -110,7 +130,7 @@ fun GotCart(navController: NavController){
                                     ) {
                                         Text(
                                             text = "${item.itemName}",
-                                            fontSize = 12.sp,
+                                            fontSize = 15.sp,
                                             fontWeight = FontWeight.Medium,
                                             modifier = Modifier
                                                 .padding(0.dp, 10.dp)
@@ -128,8 +148,8 @@ fun GotCart(navController: NavController){
                                             } else {
                                                 Text(
                                                     text = "${DecimalFormat("#,###").format(item.price)}원",
-                                                    color = Color.LightGray,
-                                                    fontSize = 15.sp,
+                                                    color = Main_gray,
+                                                    fontSize = 12.sp,
                                                     fontWeight = FontWeight.Medium,
                                                     textDecoration = TextDecoration.LineThrough,
                                                 )
@@ -139,7 +159,9 @@ fun GotCart(navController: NavController){
                                                 ) {
                                                     Image(
                                                         painter = painterResource(R.drawable.onsale),
-                                                        modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 0.dp),
+                                                        modifier = Modifier
+                                                            .padding(0.dp, 0.dp, 5.dp, 0.dp)
+                                                            .shadow(1.dp),
                                                         contentDescription = "할인중",
                                                         contentScale = ContentScale.Inside,
                                                     )
@@ -155,49 +177,58 @@ fun GotCart(navController: NavController){
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        OutlinedButton(
-                                            onClick = {
-//                                                quantity += 1
-                                                      },
-                                            modifier = Modifier.size(30.dp),
-                                            shape = CircleShape,
-                                        ) {
-                                            Text(
-                                                text = "+",
-                                                overflow = TextOverflow.Visible,
-                                            )
-                                        }
-//                                        Box (
-//                                            modifier = Modifier
-//                                                .size(30.dp)
-//                                                .clip(RoundedCornerShape(10.dp))
-//                                                .background(Color.LightGray),
-//                                            contentAlignment = Alignment.Center,
-//                                        ){
-//                                        }
-                                        TextField(
+                                        Image(
+                                            painter = painterResource(R.drawable.quantity_plus),
+                                            modifier = Modifier
+                                                .size(30.dp)
+                                                .clickable {
+                                                    val tempQuantity = quantity.text.toInt() + 1
+                                                    updateGotCart(item.itemIdx, tempQuantity)
+                                                    quantity = TextFieldValue("${tempQuantity}")
+
+                                                },
+                                            contentDescription = "+",
+                                        )
+                                        BasicTextField(
+                                            value = quantity,
+                                            onValueChange = {
+                                                if ( it.text == "" || it.text.toInt() <1 ) {
+                                                    quantityError = true
+                                                } else if ( it.text.toInt() > item.inventory ) {
+                                                    inventoryError = true
+                                                } else {
+                                                    quantity = it
+                                                }
+                                                            },
                                             modifier = Modifier
                                                 .size(30.dp)
                                                 .clip(RoundedCornerShape(10.dp))
-                                                .background(Color.LightGray),
-                                            value = quantity,
-                                            onValueChange = { temp -> quantity = temp },
+                                                .background(Color.White),
+                                            textStyle = TextStyle(textAlign = TextAlign.Center),
                                             keyboardOptions = KeyboardOptions(
                                                 keyboardType = KeyboardType.Number
-                                            )
+                                            ),
+                                            singleLine = true,
+                                            cursorBrush = SolidColor(Light_gray),
+                                            decorationBox = { innerTextField ->
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                ) { innerTextField() }
+                                            }
                                         )
-                                        OutlinedButton(
-                                            onClick = {
-//                                                quantity -= 1
-                                                      },
-                                            modifier = Modifier.size(30.dp),
-                                            shape = CircleShape,
-                                        ) {
-                                            Text(
-                                                text = "-",
-                                                overflow = TextOverflow.Visible,
-                                                )
-                                        }
+
+                                        Image(
+                                            painter = painterResource(R.drawable.quantity_minus),
+                                            modifier = Modifier
+                                                .size(30.dp)
+                                                .clickable {
+                                                    val tempQuantity = quantity.text.toInt() - 1
+                                                    updateGotCart(item.itemIdx, tempQuantity)
+                                                    quantity = TextFieldValue("${tempQuantity}")
+                                                },
+                                            contentDescription = "-",
+                                        )
                                     }
                                     Image(
                                         painter = painterResource(R.drawable.delete),
@@ -210,7 +241,73 @@ fun GotCart(navController: NavController){
                             }
                         }
                     }
-                    Text(text = "합계 : ${DecimalFormat("#,###").format(resultCart!!.total)}원")
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp, 0.dp)
+                    ) {
+                        Divider(thickness = 2.dp, color = Dark_gray)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(
+                                text = "총 상품 가격",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Main_gray,
+                            )
+                            Text(
+                                text = "${DecimalFormat("#,###").format(priceTotal)}원",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Main_gray,
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(
+                                text = "총 할인 금액",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Main_blue,
+                            )
+                            Text(
+                                text = "${DecimalFormat("#,###").format(discountTotal)}원",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Main_blue,
+                            )
+                        }
+                        Divider(thickness = 1.dp, color = Light_gray)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(
+                                text = "총 결제 금액",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Dark_gray,
+                            )
+                            Text(
+                                text = "${DecimalFormat("#,###").format(resultCart!!.total)}원",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Dark_gray,
+                            )
+                        }
+                    }
                 } else {
                     Text("장봤구니가 비어있습니다.")
                 }
@@ -218,15 +315,26 @@ fun GotCart(navController: NavController){
                 Text("장봤구니를 찾을 수 없습니다.")
             }
         }
-        Row() {
+        Row(
+            modifier = Modifier.padding(10.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            FloatingActionButton(onClick = {
 
-            Button(onClick = { navController.navigate("main") }) {
-                Text(text = "메인으로")
+            }) {
+                Image(
+                    painter = painterResource(R.drawable.top),
+                    contentDescription = "TOP",
+                )
             }
 
-            Button(onClick = { showQrcode = true }) {
-                Text(text = "결제하기")
+            FloatingActionButton(onClick = { showQrcode = true }) {
+                Image(
+                    painter = painterResource(R.drawable.pay),
+                    contentDescription = "PAY",
+                )
             }
+
         }
     }
 
@@ -236,10 +344,10 @@ fun GotCart(navController: NavController){
             content = {
                 Card (
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = 8.dp
+                    elevation = 10.dp
                 ){
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text("아래 QR코드를 키오스크에 인식해주세요.")
@@ -258,8 +366,71 @@ fun GotCart(navController: NavController){
             }
         )
     }
+
+    if (quantityError) {
+        Dialog(
+            onDismissRequest = { quantityError = false },
+            content = {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    elevation = 10.dp
+                ){
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text("수량을 다시 한번 확인해주세요.")
+                        Button(
+                            onClick = { quantityError = false }
+                        ){
+                            Text(text = "닫기")
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    if (inventoryError) {
+        Dialog(
+            onDismissRequest = { inventoryError = false },
+            content = {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    elevation = 10.dp
+                ){
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text("지점 보유 재고를 초과하였습니다.")
+                        Button(
+                            onClick = { inventoryError = false }
+                        ){
+                            Text(text = "닫기")
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+
+
+}
+
+fun updateGotCart(itemIdx: Int, quantity: Int) {
+    println("${itemIdx}, ${quantity}")
 }
 
 fun deleteGotCart(itemIdx: Int) {
     println(itemIdx)
 }
+
+//@Preview(showBackground = true)
+//@Composable
+//fun GotCartPreview(){
+//    GotCart(rememberNavController())
+//}
