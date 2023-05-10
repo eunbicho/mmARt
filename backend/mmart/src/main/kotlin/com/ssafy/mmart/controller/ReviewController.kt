@@ -3,6 +3,7 @@ package com.ssafy.mmart.controller
 import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.review.Review
 import com.ssafy.mmart.domain.review.dto.ReviewReq
+import com.ssafy.mmart.domain.review.dto.ReviewRes
 import com.ssafy.mmart.service.ReviewService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -20,32 +21,32 @@ class ReviewController @Autowired constructor(
     val reviewService: ReviewService,
 ){
     @GetMapping
-    fun getReview(@RequestParam reviewIdx: Int): ResultResponse<Review?> {
+    fun getReview(@RequestParam reviewIdx: Int): ResultResponse<ReviewRes?> {
         return ResultResponse.success(reviewService.getReview(reviewIdx))
     }
 
     @GetMapping("/user")
-    fun getUserReviews(@RequestParam userIdx: Int): ResultResponse<List<Review>?> {
+    fun getUserReviews(@RequestParam userIdx: Int): ResultResponse<List<ReviewRes>?> {
         return ResultResponse.success(reviewService.getUserReviews(userIdx))
     }
 
     @GetMapping("/item")
-    fun getItemReviews(@RequestParam itemIdx: Int): ResultResponse<List<Review>?> {
+    fun getItemReviews(@RequestParam itemIdx: Int): ResultResponse<List<ReviewRes>?> {
         return ResultResponse.success(reviewService.getItemReviews(itemIdx))
     }
 
     @PostMapping
-    fun createReview(@RequestParam userIdx: Int, @RequestParam paymentDetailIdx: Int, @RequestBody reviewReq: ReviewReq): ResultResponse<Review?> {
+    fun createReview(@RequestParam userIdx: Int, @RequestParam paymentDetailIdx: Int, @RequestBody reviewReq: ReviewReq): ResultResponse<ReviewRes?> {
         return ResultResponse.success(reviewService.createReview(userIdx, paymentDetailIdx, reviewReq))
     }
 
     @PutMapping
-    fun updateReview(@RequestParam userIdx: Int, @RequestParam reviewIdx: Int, @RequestBody reviewReq: ReviewReq): ResultResponse<Review?> {
+    fun updateReview(@RequestParam userIdx: Int, @RequestParam reviewIdx: Int, @RequestBody reviewReq: ReviewReq): ResultResponse<ReviewRes?> {
         return ResultResponse.success(reviewService.updateReview(userIdx, reviewIdx, reviewReq))
     }
 
     @DeleteMapping
-    fun deleteReview(@RequestParam reviewIdx: Int, @RequestParam userIdx: Int): ResultResponse<Review?> {
+    fun deleteReview(@RequestParam reviewIdx: Int, @RequestParam userIdx: Int): ResultResponse<ReviewRes?> {
         return ResultResponse.success(reviewService.deleteReview(reviewIdx, userIdx))
     }
 }

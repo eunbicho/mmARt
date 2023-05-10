@@ -1,5 +1,6 @@
 package com.ssafy.mmart.service
 
+import com.ssafy.mmart.domain.user.User
 import com.ssafy.mmart.domain.user.dto.LoginUserReq
 import com.ssafy.mmart.domain.user.dto.UserReq
 import com.ssafy.mmart.domain.user.dto.UserRes
@@ -16,21 +17,22 @@ class UserService @Autowired constructor(
     val amazonS3Service: AmazonS3Service,
     val userRepository: UserRepository,
 ) {
+    fun setUser(user: User): UserRes?{
+        return UserRes(user.userIdx!!, user.email, user.password, user.name)
+    }
     fun getUser(userIdx: Int): UserRes? {
-        val result = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-        return UserRes(result.userIdx!!, result.email, result.password, result.name)
+        return setUser(userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException())
+
     }
 
     fun getUserByEmail(email: String): UserRes? {
-        val result = userRepository.findByEmail(email) ?: throw UserNotFoundException()
-        return UserRes(result.userIdx!!, result.email, result.password, result.name)
+        return setUser(userRepository.findByEmail(email) ?: throw UserNotFoundException())
     }
 
     fun createUser(userReq: UserReq): UserRes? {
         val oldUser = userRepository.findByEmail(userReq.email)
         if (oldUser == null) {
-            val result = userRepository.save(userReq.toEntity(amazonS3Service.getQRCodeImage(userReq.email)!!))
-            return UserRes(result.userIdx!!, result.email, result.password, result.name)
+            return setUser(userRepository.save(userReq.toEntity(amazonS3Service.getQRCodeImage(userReq.email)!!)))
         } else {
             throw EmailDuplicateException()
         }
@@ -40,14 +42,14 @@ class UserService @Autowired constructor(
     fun deleteUser(userIdx: Int): UserRes? {
         val result = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
         userRepository.deleteById(userIdx)
-        return UserRes(result.userIdx!!, result.email, result.password, result.name)
+        return setUser(result)
     }
 
     fun logInUser(loginUserReq: LoginUserReq): UserRes? {
 
         val result = userRepository.findByEmailAndPassword(loginUserReq.email, loginUserReq.password)
         if (result != null)
-            return UserRes(result.userIdx!!, result.email, result.password, result.name)
+            return setUser(result)
         else
             throw UserNotFoundException()
     }
