@@ -105,7 +105,10 @@ fun Search(navController: NavController, searchWord: String){
     }
     Column() {
         // 상단바
-        topBar(navController = navController, "검색 결과")
+        topBar(navController = navController, "상품 검색")
+
+        // 검색
+        searchBar(navController)
 
         if(hits != null){
             // 검색 결과가 있을 때

@@ -31,7 +31,14 @@ fun MyPage(navController: NavController){
 
     LaunchedEffect(true) {
         // 유저 정보 조회
-       result = coroutineScope.async { api.getUser(userId!!) }.await().result
+        try {
+            result = coroutineScope.async { api.getUser(userId!!) }.await().result
+        } catch (e: Exception){
+            println("마이페이지 유저 조회 에러-------------")
+            e.printStackTrace()
+            println("---------------------------------")
+        }
+
     }
 
     Column() {
