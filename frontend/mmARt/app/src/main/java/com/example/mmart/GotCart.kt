@@ -79,8 +79,6 @@ fun GotCart(navController: NavController){
         if(resultCart != null){
             if (resultCode == "SUCCESS") {
                 if (resultCart!!.itemList.isNotEmpty()) {
-                    var priceTotal = 0
-                    var discountTotal = 0
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -90,8 +88,6 @@ fun GotCart(navController: NavController){
                     ) {
                         items(resultCart!!.itemList) {
                                 item ->
-                            priceTotal += item.price
-                            discountTotal += if (item.isCoupon) item.price - item.couponPrice else 0
                             var quantity by remember { mutableStateOf(TextFieldValue("${item.quantity}")) }
                             Card(
                                 modifier = Modifier
@@ -186,7 +182,7 @@ fun GotCart(navController: NavController){
                                                 .size(30.dp)
                                                 .clickable {
                                                     val tempQuantity = quantity.text.toInt() + 1
-                                                    updateGetCart(item.itemIdx, tempQuantity)
+                                                    updateGotCart(item.itemIdx, tempQuantity)
                                                     quantity = TextFieldValue("${tempQuantity}")
 
                                                 },
@@ -227,7 +223,7 @@ fun GotCart(navController: NavController){
                                                 .size(30.dp)
                                                 .clickable {
                                                     val tempQuantity = quantity.text.toInt() - 1
-                                                    updateGetCart(item.itemIdx, tempQuantity)
+                                                    updateGotCart(item.itemIdx, tempQuantity)
                                                     quantity = TextFieldValue("${tempQuantity}")
                                                 },
                                             contentDescription = "-",
@@ -237,7 +233,7 @@ fun GotCart(navController: NavController){
                                         painter = painterResource(R.drawable.delete),
                                         modifier = Modifier
                                             .size(30.dp)
-                                            .clickable { deleteGetCart(item.itemIdx) },
+                                            .clickable { deleteGotCart(item.itemIdx) },
                                         contentDescription = "삭제",
                                     )
                                 }
@@ -263,7 +259,7 @@ fun GotCart(navController: NavController){
                                 color = Main_gray,
                             )
                             Text(
-                                text = "${DecimalFormat("#,###").format(priceTotal)}원",
+                                text = "${DecimalFormat("#,###").format(resultCart!!.priceTotal)}원",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Main_gray,
@@ -283,7 +279,7 @@ fun GotCart(navController: NavController){
                                 color = Main_blue,
                             )
                             Text(
-                                text = "${DecimalFormat("#,###").format(discountTotal)}원",
+                                text = "${DecimalFormat("#,###").format(resultCart!!.discountTotal)}원",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Main_blue,
@@ -311,36 +307,41 @@ fun GotCart(navController: NavController){
                             )
                         }
                     }
+
+                    Row(
+                        modifier = Modifier.padding(20.dp, 10.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                // Animate scroll to the first item
+                                listState.animateScrollToItem(index = 0)
+                            }},
+                            backgroundColor = Light_gray,
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.top),
+                                contentDescription = "TOP",
+                            )
+                        }
+
+                        FloatingActionButton(
+                            onClick = { showQrcode = true },
+                            backgroundColor = Light_gray,
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.pay),
+                                contentDescription = "PAY",
+                            )
+                        }
+                    }
                 } else {
                     Text("장봤구니가 비어있습니다.")
                 }
             } else {
                 Text("장봤구니를 찾을 수 없습니다.")
             }
-        }
-        Row(
-            modifier = Modifier.padding(10.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            FloatingActionButton(onClick = {
-                coroutineScope.launch {
-                    // Animate scroll to the first item
-                    listState.animateScrollToItem(index = 0)
-                }
-            }) {
-                Image(
-                    painter = painterResource(R.drawable.top),
-                    contentDescription = "TOP",
-                )
-            }
-
-            FloatingActionButton(onClick = { showQrcode = true }) {
-                Image(
-                    painter = painterResource(R.drawable.pay),
-                    contentDescription = "PAY",
-                )
-            }
-
         }
     }
 

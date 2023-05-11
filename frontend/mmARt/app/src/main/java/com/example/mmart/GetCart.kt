@@ -33,6 +33,7 @@ import coil.compose.AsyncImage
 import com.example.mmart.ui.theme.*
 
 import kotlinx.coroutines.*
+import okhttp3.internal.wait
 import java.text.DecimalFormat
 
 @Composable
@@ -61,6 +62,21 @@ fun GetCart(navController: NavController){
         resultUser = userRes.result
     }
 
+    fun updateGetCart(itemIdx: Int, quantity: Int) {
+        println("${itemIdx}, ${quantity}")
+
+    }
+
+    fun deleteGetCart(itemIdx: Int) {
+        println(itemIdx)
+        try {
+            coroutineScope.async { api.getCartDelete(userId, itemIdx) }
+        } catch (e: Exception) {
+            println("!!!!!!!!!!!!!!")
+            e.printStackTrace()
+        }
+    }
+
     fun checkQuantity(prev: Int, curr: TextFieldValue, item: ItemInfo): Int{
         if (curr.text.equals("") || curr.text.toInt() < 1){
             quantityError = true
@@ -79,8 +95,6 @@ fun GetCart(navController: NavController){
         if(resultCart != null){
             if (resultCode == "SUCCESS") {
                 if (resultCart!!.itemList.isNotEmpty()) {
-                    var priceTotal = 0
-                    var discountTotal = 0
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -90,8 +104,6 @@ fun GetCart(navController: NavController){
                     ) {
                         items(resultCart!!.itemList) {
                                 item ->
-                            priceTotal += item.price
-                            discountTotal += if (item.isCoupon) item.price - item.couponPrice else 0
                             var quantity by remember { mutableStateOf(TextFieldValue("${item.quantity}")) }
                             Card(
                                 modifier = Modifier
@@ -263,7 +275,7 @@ fun GetCart(navController: NavController){
                                 color = Main_gray,
                             )
                             Text(
-                                text = "${DecimalFormat("#,###").format(priceTotal)}원",
+                                text = "${DecimalFormat("#,###").format(resultCart!!.priceTotal)}원",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Main_gray,
@@ -283,7 +295,7 @@ fun GetCart(navController: NavController){
                                 color = Main_blue,
                             )
                             Text(
-                                text = "${DecimalFormat("#,###").format(discountTotal)}원",
+                                text = "${DecimalFormat("#,###").format(resultCart!!.discountTotal)}원",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Main_blue,
@@ -311,36 +323,40 @@ fun GetCart(navController: NavController){
                             )
                         }
                     }
+                    Row(
+                        modifier = Modifier.padding(20.dp, 10.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    // Animate scroll to the first item
+                                    listState.animateScrollToItem(index = 0)
+                                }},
+                            backgroundColor = Light_gray,
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.top),
+                                contentDescription = "TOP",
+                            )
+                        }
+
+                        FloatingActionButton(
+                            onClick = { showQrcode = true },
+                            backgroundColor = Light_gray,
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.pay),
+                                contentDescription = "PAY",
+                            )
+                        }
+                    }
                 } else {
                     Text("장볼구니가 비어있습니다.")
                 }
             } else {
                 Text("장볼구니를 찾을 수 없습니다.")
             }
-        }
-        Row(
-            modifier = Modifier.padding(10.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            FloatingActionButton(onClick = {
-                coroutineScope.launch {
-                    // Animate scroll to the first item
-                    listState.animateScrollToItem(index = 0)
-                }
-            }) {
-                Image(
-                    painter = painterResource(R.drawable.top),
-                    contentDescription = "TOP",
-                )
-            }
-
-            FloatingActionButton(onClick = { showQrcode = true }) {
-                Image(
-                    painter = painterResource(R.drawable.pay),
-                    contentDescription = "PAY",
-                )
-            }
-
         }
     }
 
@@ -422,17 +438,6 @@ fun GetCart(navController: NavController){
             }
         )
     }
-
-
-
-}
-
-fun updateGetCart(itemIdx: Int, quantity: Int) {
-    println("${itemIdx}, ${quantity}")
-}
-
-fun deleteGetCart(itemIdx: Int) {
-    println(itemIdx)
 }
 
 //@Preview(showBackground = true)
