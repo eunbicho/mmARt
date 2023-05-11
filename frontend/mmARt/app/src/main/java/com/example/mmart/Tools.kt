@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.compose.rememberNavController
+import com.example.mmart.ui.theme.Dark_gray
+import com.example.mmart.ui.theme.Main_gray
 import com.example.mmart.ui.theme.Main_yellow
 import com.example.mmart.ui.theme.mainFont
 import com.google.gson.Gson
@@ -69,7 +71,7 @@ fun searchBar(navController: NavController){
             .fillMaxWidth()
             .height(100.dp)
             .padding(20.dp)
-            .border(color = Color.Black, width = 1.5.dp, shape = CircleShape)
+            .border(color = Dark_gray, width = 1.5.dp, shape = CircleShape)
             .shadow(
                 shape = CircleShape,
                 elevation = 5.dp,
@@ -78,7 +80,7 @@ fun searchBar(navController: NavController){
             ),
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Main_yellow,
-            textColor = Color.Black
+            textColor = Dark_gray,
         ),
         singleLine = true,
         textStyle = TextStyle(fontFamily = mainFont, fontSize = 15.sp),
@@ -121,14 +123,13 @@ fun searchBar(navController: NavController){
 
 @Composable
 fun topBar(navController: NavController, title: String){
-
+ Column() {
     Row (
         modifier = Modifier
             .background(color = Color(0XFFF5F5F5))
             .fillMaxWidth()
-            .height(100.dp)
-            .padding(20.dp)
-            .padding(top=20.dp),
+            .height(60.dp)
+            .padding(15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
 
@@ -140,11 +141,13 @@ fun topBar(navController: NavController, title: String){
                 }
             }
         )
-        Text(title, fontSize = 25.sp, fontWeight = FontWeight.Light)
+        Text(title, fontSize = 20.sp, fontWeight = FontWeight.Light)
         Image(painter = painterResource(R.drawable.home), contentDescription = "홈으로", modifier = Modifier
             .clickable { navController.navigate("main") }
         )
     }
+    Divider(startIndent = 0.dp, thickness = 1.dp, color = Main_gray)
+ }
 }
 
 @Preview(showBackground = true)
