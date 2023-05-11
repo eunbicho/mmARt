@@ -25,7 +25,7 @@ class ReviewService @Autowired constructor(
     val itemService: ItemService
 ){
     fun setReviewRes(review: Review):ReviewRes?{
-        return ReviewRes(review.reviewIdx!!, review.content!!,review.star,userService.setUser(review.user)!!,itemService.setItemRes(review.item)!!)
+        return ReviewRes(review.reviewIdx!!, review.content!!,review.star,userService.setUser(review.user)!!,itemService.setItemRes(review.item)!!,review.createTime.toString())
     }
     fun getReview(reviewIdx: Int): ReviewRes? {
         return setReviewRes(reviewRepository.findByIdOrNull(reviewIdx) ?: throw ReviewNotFoundException())
@@ -33,24 +33,18 @@ class ReviewService @Autowired constructor(
 
     fun getUserReviews(userIdx: Int): List<ReviewRes>? {
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
-        var list = mutableListOf<ReviewRes>()
-        val temp = reviewRepository.findAllByUser_UserIdx(userIdx)
-        if (temp != null) {
-            temp.forEach { review ->
-                list.add(setReviewRes(review)!!)
-            }
+        val list = mutableListOf<ReviewRes>()
+        reviewRepository.findAllByUser_UserIdxOrderByCreateTimeDesc(userIdx)?.forEach { review ->
+            list.add(setReviewRes(review)!!)
         }
         return list
     }
 
     fun getItemReviews(itemIdx: Int): List<ReviewRes>? {
         itemRepository.findById(itemIdx).orElseThrow(::ItemNotFoundException)
-        var list = mutableListOf<ReviewRes>()
-        val temp = reviewRepository.findAllByItem_ItemIdx(itemIdx)
-        if (temp != null) {
-            temp.forEach { review ->
-                list.add(setReviewRes(review)!!)
-            }
+        val list = mutableListOf<ReviewRes>()
+        reviewRepository.findAllByItem_ItemIdxOrderByCreateTimeDesc(itemIdx)?.forEach { review ->
+            list.add(setReviewRes(review)!!)
         }
         return list
     }

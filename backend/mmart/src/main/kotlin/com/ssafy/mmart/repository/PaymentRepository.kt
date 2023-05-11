@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface PaymentRepository : JpaRepository<Payment, Int> {
-    fun findAllByUser_UserIdx(userIdx: Int): List<Payment>?
+    fun findAllByUser_UserIdxOrderByDateDesc(userIdx: Int): List<Payment>?
 }
