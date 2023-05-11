@@ -4,10 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 // http request
 interface APIS {
@@ -23,6 +20,9 @@ interface APIS {
     // 장볼구니 조회
     @GET("getcarts/{userId}")
     suspend fun getCartsRead(@Path("userId") userId: Int): CartResult
+
+    @DELETE("getcarts")
+    suspend fun getCartDelete(@Query("userId") userId: Int, @Query("itemIdx") itemIdx: Int): CartResult
 
     // 장봤구니 조회
     @GET("gotcarts/{userId}")
@@ -44,8 +44,8 @@ interface APIS {
 //    @POST()
 
     companion object {
-//        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
-        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
+        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
+//        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
 
         fun create(): APIS {
             val gson : Gson = GsonBuilder().setLenient().create();
@@ -101,6 +101,8 @@ data class CartResult(
 
 data class CartContent(
     val itemList: List<ItemInfo>,
+    val priceTotal: Int,
+    val discountTotal: Int,
     val total: Int,
 )
 
