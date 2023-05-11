@@ -8,5 +8,6 @@ data class PaymentDetailRes (
     val discount: Int,
     val totalPrice: Int,
     val itemRes: GetItemRes,
+    val isWriteReview:Boolean,
 ) {
 }
