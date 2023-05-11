@@ -69,7 +69,7 @@ def find_shortest_path(locations: Locations):
     # 최단거리, 최단경로 초기화.
     shortest_distance = -1
     temp_path = []
-    if l <= 5:
+    if l <= 13:
         shortest_distance, temp_path = held_karp(complete_graph,INF)
     else:
         # 입력 형태를 맞추기 위해, distance matrix인 complete_graph를 numpy array로 변환해줌.
