@@ -84,7 +84,6 @@ def make_distance_matrix(INF):
     make_edge(distance_matrix,43,44,distances)
     make_edge(distance_matrix,43,46,distances)
     make_edge(distance_matrix,44,50,distances)
-    make_edge(distance_matrix,44,50,distances)
     make_edge(distance_matrix,45,48,distances)
     make_edge(distance_matrix,46,49,distances)
     make_edge(distance_matrix,47,51,distances)
