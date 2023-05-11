@@ -143,7 +143,7 @@ fun topBar(navController: NavController, title: String){
         )
         Text(title, fontSize = 20.sp, fontWeight = FontWeight.Light)
         Image(painter = painterResource(R.drawable.home), contentDescription = "홈으로", modifier = Modifier
-            .clickable { navController.navigate("main") }
+            .clickable { navController.popBackStack(navController.graph.startDestinationId, false) }
         )
     }
     Divider(startIndent = 0.dp, thickness = 1.dp, color = Main_gray)
