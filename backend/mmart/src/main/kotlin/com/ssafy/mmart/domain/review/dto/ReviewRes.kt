@@ -1,6 +1,7 @@
 package com.ssafy.mmart.domain.review.dto
 
 import com.ssafy.mmart.domain.item.Item
+import com.ssafy.mmart.domain.item.dto.GetItemRes
 import com.ssafy.mmart.domain.paymentDetail.PaymentDetail
 import com.ssafy.mmart.domain.review.Review
 import com.ssafy.mmart.domain.user.User
@@ -11,5 +12,6 @@ data class ReviewRes (
     var content: String,
     var star: Int,
     val user : UserRes,
+    val item : GetItemRes,
 ) {
 }
