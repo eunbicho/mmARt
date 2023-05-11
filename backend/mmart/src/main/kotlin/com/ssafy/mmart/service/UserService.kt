@@ -18,7 +18,7 @@ class UserService @Autowired constructor(
     val userRepository: UserRepository,
 ) {
     fun setUser(user: User): UserRes?{
-        return UserRes(user.userIdx!!, user.email, user.password, user.name)
+        return UserRes(user.userIdx!!, user.email, user.password, user.name,user.qrcode)
     }
     fun getUser(userIdx: Int): UserRes? {
         return setUser(userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException())
