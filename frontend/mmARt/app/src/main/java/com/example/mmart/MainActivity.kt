@@ -113,7 +113,7 @@ class MainActivity : ComponentActivity() {
 }
 
 // 유저 아이디
-var userId = 2
+var userId = 1
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter") // Scaffold의 padding value 사용 안 할 때
 @Composable

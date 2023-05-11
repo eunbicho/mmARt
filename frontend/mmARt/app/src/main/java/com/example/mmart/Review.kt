@@ -103,7 +103,6 @@ fun Review(navController: NavController){
                             ) {
                                 AsyncImage(model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${review.item.thumbnail}", contentDescription = "상품 썸네일")
                                 Text(review.item.itemName)
-                                Text("${review.paymentDetail.quantity}개 ${review.paymentDetail.totalPrice}")
                             }
 
                             // 별점
