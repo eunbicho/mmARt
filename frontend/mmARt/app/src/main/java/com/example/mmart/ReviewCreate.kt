@@ -22,9 +22,11 @@ fun ReviewCreate(navController: NavController, paymentDetailIdx: Int){
     // 결제 정보
     var paymentDetail: PaymentDetail? by remember { mutableStateOf(null) }
     // 별점
-    var reviewStar: Int by remember { mutableStateOf(1) }
+    var reviewStar: Int by remember { mutableStateOf(0) }
     // 내용
     var reviewContent: String by remember { mutableStateOf("") }
+    // 별점 확인 모달
+    var starCheck: Boolean by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
         // 결제 정보 조회
@@ -38,9 +40,9 @@ fun ReviewCreate(navController: NavController, paymentDetailIdx: Int){
     }
 
     fun reviewCreate() {
-        val reviewBody = ReviewBody(
-            reviewStar,
-            reviewContent
+        val reviewBody = mapOf(
+            "star" to reviewStar,
+            "content" to reviewContent
         )
 
         // 리뷰 작성
@@ -68,7 +70,6 @@ fun ReviewCreate(navController: NavController, paymentDetailIdx: Int){
             ) {
                 AsyncImage(model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${paymentDetail!!.item.thumbnail}", contentDescription = "상품 썸네일")
                 Text(paymentDetail!!.item.itemName)
-                Text("${paymentDetail!!.quantity}개 ${paymentDetail!!.totalPrice}")
             }
 
             Row(){
@@ -93,13 +94,27 @@ fun ReviewCreate(navController: NavController, paymentDetailIdx: Int){
 
             // 확인 및 취소 버튼
             Row(){
-                Button(onClick = { reviewCreate() }) {
+                Button(onClick = {
+                    if(reviewStar != 0){reviewCreate()}else{ starCheck = true} }) {
                     Text("확인")
                 }
                 Button(onClick = { navController.popBackStack() }) {
                     Text("취소")
                 }
             }
+        }
+        if(starCheck){
+            AlertDialog(
+                onDismissRequest = { starCheck = false },
+                title = { Text("별점 확인") },
+                text = { Text("별점을 선택해 주세요.") },
+                // 확인 버튼
+                confirmButton = {
+                    Button(onClick = { starCheck = false }) {
+                        Text("확인")
+                    }
+                }
+            )
         }
     }
 }
