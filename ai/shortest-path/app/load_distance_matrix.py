@@ -29,19 +29,29 @@ def load_distance_matrix(INF):
     #     distance_matrix[i][i]=0
 
 
-    # 2-opt test
-    # 현재 작업 중인 디렉토리를 확인합니다.
-    cwd = os.getcwd()
+    # # 2-opt test
+    # # 현재 작업 중인 디렉토리를 확인합니다.
+    # cwd = os.getcwd()
 
-    # 파일 경로를 지정합니다.
-    file_path = os.path.join(cwd, 'app/TSP-02-Coordinates.txt')
+    # # 파일 경로를 지정합니다.
+    # file_path = os.path.join(cwd, 'app/TSP-02-Coordinates.txt')
 
-    coordinates = pd.read_csv(file_path, sep = '\t')
-    coordinates = coordinates.values
+    # coordinates = pd.read_csv(file_path, sep = '\t')
+    # coordinates = coordinates.values
 
-    distance_matrix = build_distance_matrix(coordinates)
+    # distance_matrix = build_distance_matrix(coordinates)
     
 
     # real
+        # 현재 작업 중인 디렉토리를 확인합니다.
+    cwd = os.getcwd()
+
+    # 파일 경로를 지정합니다.
+    file_path = os.path.join(cwd, 'app/map_coordinates.txt')
+
+    coordinates = pd.read_csv(file_path, sep = ' ')
+    coordinates = coordinates.values
+
+    distance_matrix = build_distance_matrix(coordinates)
 
     return distance_matrix
