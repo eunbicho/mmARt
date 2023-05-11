@@ -24,9 +24,9 @@ class PaymentService @Autowired constructor(
     val paymentDetailRepository: PaymentDetailRepository,
     val gotCartService: GotCartService,
 ){
-    fun getPayments(userIdx: Int): List<Payment>? {
+    fun getPayments(userIdx: Int): List<Payment>? {//date 역순으로 주기
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
-        return paymentRepository.findAllByUser_UserIdx(userIdx)
+        return paymentRepository.findAllByUser_UserIdxOrderByDateDesc(userIdx)
     }
 
     fun createPayment(userIdx: Int): Payment? {
