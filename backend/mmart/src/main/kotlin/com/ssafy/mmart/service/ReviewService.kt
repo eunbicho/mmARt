@@ -21,10 +21,11 @@ class ReviewService @Autowired constructor(
     val userRepository: UserRepository,
     val itemRepository: ItemRepository,
     val paymentDetailRepository: PaymentDetailRepository,
-    val userService: UserService
+    val userService: UserService,
+    val itemService: ItemService
 ){
     fun setReviewRes(review: Review):ReviewRes?{
-        return ReviewRes(review.reviewIdx!!, review.content!!,review.star,userService.setUser(review.user)!!)
+        return ReviewRes(review.reviewIdx!!, review.content!!,review.star,userService.setUser(review.user)!!,itemService.setItemRes(review.item)!!)
     }
     fun getReview(reviewIdx: Int): ReviewRes? {
         return setReviewRes(reviewRepository.findByIdOrNull(reviewIdx) ?: throw ReviewNotFoundException())
