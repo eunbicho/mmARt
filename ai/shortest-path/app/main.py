@@ -7,6 +7,7 @@ from app.floyd_warshall import floyd_warshall_initialize
 from app.held_karp import held_karp
 from app.two_opt import local_search_2_opt
 from app.util import distance_calc
+from app.make_distance_matrix import make_distance_matrix
 
 from copy import deepcopy
 
@@ -21,7 +22,7 @@ class Locations(BaseModel):
 INF = 10**5
 
 # distance matrix 초기화.
-DISTANCE_MATRIX = load_distance_matrix(INF)
+DISTANCE_MATRIX = make_distance_matrix(INF)
 
 # 총 vertex 개수.
 V = len(DISTANCE_MATRIX)
