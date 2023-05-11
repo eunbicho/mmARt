@@ -26,12 +26,13 @@ fun Category(navController: NavController, categoryId: Int?){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
-    var result: List<ItemInfo>? by remember { mutableStateOf(null) }
+    // 아이템 리스트
+    var items: List<ItemInfo>? by remember { mutableStateOf(null) }
 
     // 카테고리 별 아이템 조회
     LaunchedEffect(true) {
         try {
-            result = coroutineScope.async { api.getCategories(userId, categoryId!!) }.await().result
+            items = coroutineScope.async { api.getCategories(userId, categoryId!!) }.await().result
         } catch (e: Exception){
             println("카테고리 별 상품 조회 에러-----------")
             e.printStackTrace()
@@ -56,14 +57,14 @@ fun Category(navController: NavController, categoryId: Int?){
     Column() {
 
         // result가 null이 아닐 경우만
-        if (result != null) {
+        if (items != null) {
 
             // 상단바
             topBar(navController = navController, categoryName())
 
             LazyColumn(
             ){
-                items(result!!){
+                items(items!!){
                         item ->
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
