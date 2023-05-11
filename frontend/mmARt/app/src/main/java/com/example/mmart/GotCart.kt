@@ -33,6 +33,7 @@ import coil.compose.AsyncImage
 import com.example.mmart.ui.theme.*
 
 import kotlinx.coroutines.*
+import okhttp3.internal.wait
 import java.text.DecimalFormat
 
 @Composable
@@ -43,9 +44,9 @@ fun GotCart(navController: NavController){
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    var resultCart: CartContent? by remember { mutableStateOf(null) }
-    var resultCode: String? by remember { mutableStateOf(null) }
-    var resultUser: UserInfo? by remember { mutableStateOf(null) }
+    var reload: Boolean by remember { mutableStateOf(false) }
+    var cartRes: CartContent? by remember { mutableStateOf(null) }
+    var userRes: UserInfo? by remember { mutableStateOf(null) }
 
     var showQrcode by remember { mutableStateOf(false)}
     var quantityError by remember { mutableStateOf(false)}
@@ -53,12 +54,31 @@ fun GotCart(navController: NavController){
 
 
     // 한 번만 실행
-    LaunchedEffect(true) {
-        val cartRes = coroutineScope.async { api.gotCartsRead(userId) }.await()
-        resultCart = cartRes.result
-        resultCode = cartRes.resultCode
-        val userRes = coroutineScope.async { api.getUser(userId) }.await()
-        resultUser = userRes.result
+    LaunchedEffect(reload) {
+        try {
+            cartRes = coroutineScope.async { api.getGotCarts(userId) }.await().result
+            userRes = coroutineScope.async { api.getUser(userId) }.await().result
+        } catch (e: Exception) {
+            println("장봤구니 조회 에러------------------")
+            e.printStackTrace()
+            println("---------------------------------")
+        }
+    }
+
+    fun updateGotCart(itemIdx: Int, quantity: Int) {
+        println("${itemIdx}, ${quantity}")
+
+    }
+
+    fun deleteGotCart(itemIdx: Int) {
+        println(itemIdx)
+        try {
+            coroutineScope.async { api.deleteGotCart(userId, itemIdx) }
+        } catch (e: Exception) {
+            println("!!!!!!!!!!!!!!")
+            e.printStackTrace()
+        }
+        reload = !reload
     }
 
     fun checkQuantity(prev: Int, curr: TextFieldValue, item: ItemInfo): Int{
@@ -76,9 +96,8 @@ fun GotCart(navController: NavController){
         topBar(navController = navController, "장봤구니")
 
         // result가 null이 아닐 경우만
-        if(resultCart != null){
-            if (resultCode == "SUCCESS") {
-                if (resultCart!!.itemList.isNotEmpty()) {
+        if(cartRes != null){
+                if (cartRes!!.itemList.isNotEmpty()) {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -86,7 +105,7 @@ fun GotCart(navController: NavController){
                             .padding(20.dp, 0.dp),
                         state = listState,
                     ) {
-                        items(resultCart!!.itemList) {
+                        items(cartRes!!.itemList) {
                                 item ->
                             var quantity by remember { mutableStateOf(TextFieldValue("${item.quantity}")) }
                             Card(
@@ -259,7 +278,7 @@ fun GotCart(navController: NavController){
                                 color = Main_gray,
                             )
                             Text(
-                                text = "${DecimalFormat("#,###").format(resultCart!!.priceTotal)}원",
+                                text = "${DecimalFormat("#,###").format(cartRes!!.priceTotal)}원",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Main_gray,
@@ -279,7 +298,7 @@ fun GotCart(navController: NavController){
                                 color = Main_blue,
                             )
                             Text(
-                                text = "${DecimalFormat("#,###").format(resultCart!!.discountTotal)}원",
+                                text = "${DecimalFormat("#,###").format(cartRes!!.discountTotal)}원",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Main_blue,
@@ -300,7 +319,7 @@ fun GotCart(navController: NavController){
                                 color = Dark_gray,
                             )
                             Text(
-                                text = "${DecimalFormat("#,###").format(resultCart!!.total)}원",
+                                text = "${DecimalFormat("#,###").format(cartRes!!.total)}원",
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Dark_gray,
@@ -319,6 +338,7 @@ fun GotCart(navController: NavController){
                                 listState.animateScrollToItem(index = 0)
                             }},
                             backgroundColor = Light_gray,
+                            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.top),
@@ -329,6 +349,7 @@ fun GotCart(navController: NavController){
                         FloatingActionButton(
                             onClick = { showQrcode = true },
                             backgroundColor = Light_gray,
+                            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.pay),
@@ -337,11 +358,16 @@ fun GotCart(navController: NavController){
                         }
                     }
                 } else {
-                    Text("장봤구니가 비어있습니다.")
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text("장봤구니가 비어있습니다.")
+
+                    }
                 }
-            } else {
-                Text("장봤구니를 찾을 수 없습니다.")
-            }
+
         }
     }
 
@@ -359,9 +385,9 @@ fun GotCart(navController: NavController){
                     ) {
                         Text("아래 QR코드를 키오스크에 인식해주세요.")
                         AsyncImage(
-                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${resultUser?.qrcode}",
+                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${userRes?.qrcode}",
                             modifier = Modifier.fillMaxWidth(),
-                            contentDescription = resultUser?.name
+                            contentDescription = userRes?.name
                         )
                         Button(onClick = {
                             showQrcode = false

@@ -19,17 +19,21 @@ interface APIS {
 
     // 장볼구니 조회
     @GET("getcarts/{userIdx}")
-    suspend fun getCartsRead(@Path("userIdx") userIdx: Int): CartResult
+    suspend fun getGetCarts(@Path("userIdx") userIdx: Int): CartResult
 
+    // 장볼구니에서 아이템 삭제
     @DELETE("getcarts")
-    suspend fun getCartDelete(@Query("userId") userId: Int, @Query("itemIdx") itemIdx: Int): CartResult
-
+    suspend fun deleteGetCart(@Query("userIdx") userIdx: Int, @Query("itemIdx") itemIdx: Int)
 
     // 장봤구니 조회
     @GET("gotcarts/{userIdx}")
-    suspend fun gotCartsRead(@Path("userIdx") userIdx: Int): CartResult
+    suspend fun getGotCarts(@Path("userIdx") userIdx: Int): CartResult
 
-   // 상품 상세 조회
+    // 장봤구니에서 아이템 삭제
+    @DELETE("gotcarts")
+    suspend fun deleteGotCart(@Query("userIdx") userIdx: Int, @Query("itemIdx") itemIdx: Int)
+
+    // 상품 상세 조회
     @GET("items/{itemIdx}")
     suspend fun getItemInfo(@Path("itemIdx") itemIdx: Int): ItemDetailResult
 
@@ -74,10 +78,11 @@ interface APIS {
     suspend fun deleteReview(@Query("userIdx") userIdx: Int, @Query("reviewIdx") reviewIdx: Int)
 
     companion object {
-        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
+//        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
+        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
 
         fun create(): APIS {
-            val gson : Gson =   GsonBuilder().setLenient().create();
+            val gson : Gson = GsonBuilder().setLenient().create();
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
