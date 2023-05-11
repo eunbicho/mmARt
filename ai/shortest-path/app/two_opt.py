@@ -41,7 +41,7 @@ def local_search_2_opt(distance_matrix, city_tour, recursive_seeding = -1, verbo
         
         # i를 1에서 시작함으로써 시작 위치를 고정.         
         for i in range(1, len(city_list[0]) - 2):
-            # j를 length-2까지 함으로써, 마지막 위치는 고정. 그에 맞게 i도 length-3까지 반복 진행.
+            # j를 length-2까지 함으로써, 마지막 위치는 고정. 그에 맞게 i도 length-2까지 반복 진행.
             for j in range(i+1, len(city_list[0]) - 1):
                 best_route[0][i:j+1] = list(reversed(best_route[0][i:j+1]))
                 # 본 프로젝트에서는 시작위치가 마트 입구, 끝 위치가 계산대.           
