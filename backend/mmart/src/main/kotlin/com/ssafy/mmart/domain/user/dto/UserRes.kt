@@ -7,6 +7,7 @@ data class UserRes(
     var email: String,
     var password: String,
     var name: String,
+    var qrcode: String,
 ) {
 //    fun toEntity(user: User): UserRes = UserRes(
 //        userIdx = user.userIdx!!,
