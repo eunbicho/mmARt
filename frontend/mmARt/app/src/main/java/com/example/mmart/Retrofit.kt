@@ -50,12 +50,12 @@ interface APIS {
     suspend fun getPaymentDetails(@Query("userIdx") userIdx: Int, @Query("paymentIdx") paymentIdx: Int): PaymentDetailsResult
 
     // 결제 내역 개별 상세 조회 (리뷰 작성용)
-    @GET("payments/detail")
+    @GET("payments/detail/{paymentDetailIdx}")
     suspend fun getPaymentDetail(@Path("paymentDetailIdx") paymentDetailIdx: Int): PaymentDetailResult
 
     // 리뷰 작성
     @POST("reviews")
-    suspend fun createReview(@Query("paymentDetailIdx") paymentIdx: Int, @Query("userIdx") userIdx: Int, @Body body: ReviewBody)
+    suspend fun createReview(@Query("userIdx") userIdx: Int, @Query("paymentDetailIdx") paymentIdx: Int, @Body body: Any)
 
     // 유저 별 리뷰 조회
     @GET("reviews/user")

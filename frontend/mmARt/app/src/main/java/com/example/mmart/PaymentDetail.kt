@@ -47,6 +47,7 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int){
                 items(paymentDetails!!){
                         paymentDetail ->
                     Column() {
+                        // 상품 정보
                         Row(){
                             AsyncImage(model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${paymentDetail.item.thumbnail}", contentDescription = "상품 썸네일")
                             Column() {
@@ -54,12 +55,20 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int){
                                 Text("${paymentDetail.quantity}개  ${paymentDetail.totalPrice}")
                             }
                         }
+                        // 작성된 리뷰가 없을 경우
                         if(!paymentDetail.isWriteReview){
                             Button(onClick = { navController.navigate("reviewCreate/${paymentDetail.paymentDetailIdx}") }) {
                                 Text("리뷰 작성하기")
                             }
                         }
 
+                        Divider(
+                            color = Color.Black,
+                            thickness = 1.dp,
+                            modifier = Modifier
+                                .fillMaxWidth(1f)
+                                .padding(10.dp)
+                        )
                     }
 
                 }
