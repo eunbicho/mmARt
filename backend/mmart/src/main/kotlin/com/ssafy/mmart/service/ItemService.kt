@@ -13,9 +13,11 @@ import com.ssafy.mmart.domain.itemDetailImage.dto.GetItemImageDetailRes
 import com.ssafy.mmart.domain.itemItemCoupon.QItemItemCoupon.itemItemCoupon
 import com.ssafy.mmart.domain.payment.QPayment.payment
 import com.ssafy.mmart.domain.paymentDetail.QPaymentDetail.paymentDetail
+import com.ssafy.mmart.exception.not_found.ItemNotFoundException
 import com.ssafy.mmart.repository.ItemCouponRepository
 import com.ssafy.mmart.repository.ItemDetailRepository
 import com.ssafy.mmart.repository.ItemItemCouponRepository
+import com.ssafy.mmart.repository.ItemRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -26,7 +28,7 @@ class ItemService @Autowired constructor(
     val jpaQueryFactory: JPAQueryFactory,
     val itemDetailRepository: ItemDetailRepository,
     val couponRepository: ItemCouponRepository,
-    val itemItemCouponRepository: ItemItemCouponRepository,
+    val itemRepository: ItemRepository,
 ) {
     //유저의 구매내역에 따라 검색 부분 리스트는 수정해야함(부가)
     fun setItemRes(item: Item): GetItemRes? {
@@ -90,11 +92,9 @@ class ItemService @Autowired constructor(
     }
 
     fun getItemByBarcode(barcode: String): GetItemRes? {
+        val result = itemRepository.findByBarcode(barcode)?: throw ItemNotFoundException()
         return setItemRes(
-            jpaQueryFactory
-                .selectFrom(item)
-                .where(item.barcode.eq(barcode))
-                .fetchOne()!!
+            result
         )
     }
 
