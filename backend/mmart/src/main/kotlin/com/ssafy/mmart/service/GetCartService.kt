@@ -29,6 +29,7 @@ class GetCartService @Autowired constructor(
     var categoryRepository: CategoryRepository,
     var itemItemCouponRepository: ItemItemCouponRepository,
     var couponRepository: ItemCouponRepository,
+    var itemDetailRepository: ItemDetailRepository,
 ) {
     //카테고리는 인덱스를 마이너스로, 인벤토리는 0으로 쓰기
     val getCart = "GETCART"
@@ -212,7 +213,11 @@ class GetCartService @Autowired constructor(
                         isCoupon,
                         eachPrice,
                         item.placeInfo,
-                        temp[hashKey]!!
+                        temp[hashKey]!!,
+                        item.inventory,
+                        item.barcode,
+                        item.weight,
+                        itemDetailRepository.findByItem(item)!!.content
                     )
                 )
                 getCartRes.priceTotal += item.price * temp[hashKey]!!
