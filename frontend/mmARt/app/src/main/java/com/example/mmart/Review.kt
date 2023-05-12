@@ -1,6 +1,5 @@
 package com.example.mmart
 
-import android.text.style.BackgroundColorSpan
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -91,15 +90,19 @@ fun Review(navController: NavController) {
                         ) {
 
                             // 구매 상품 정보
-                            Row(modifier = Modifier.clickable { navController.navigate("item/${review.item.itemIdx}") }
-                                .padding(start = 15.dp, top = 15.dp)) {
+                            Row(modifier = Modifier
+                                .clickable { navController.navigate("item/${review.item.itemIdx}") }
+                                .padding(start = 15.dp, top = 15.dp)
+                            ) {
                                 AsyncImage(
                                     model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${review.item.thumbnail}",
                                     contentDescription = "상품 썸네일",
                                     modifier = Modifier.size(75.dp)
                                 )
                                 Column(
-                                    Modifier.align(Alignment.CenterVertically).padding(start = 10.dp)
+                                    Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(start = 10.dp)
                                 ) {
                                     Text(
                                         review.item.itemName,
@@ -146,8 +149,8 @@ fun Review(navController: NavController) {
                                     modifier = Modifier.padding(start = 5.dp, end = 10.dp, bottom = 10.dp),
                                     border = BorderStroke(color = Main_blue, width = 2.dp),
                                     onClick = { navController.navigate("reviewUpdate/${review.reviewIdx}") },
-                                    elevation =  ButtonDefaults.elevation(2.dp)
-                                ){
+                                    elevation = ButtonDefaults.elevation(2.dp)
+                                ) {
                                     Text("수정하기", color = Main_gray)
 
                                 }
@@ -155,8 +158,8 @@ fun Review(navController: NavController) {
                                     modifier = Modifier.padding(start = 5.dp, end = 15.dp, bottom = 10.dp),
                                     border = BorderStroke(color = Main_yellow, width = 2.dp),
                                     onClick = { navController.navigate("reviewUpdate/${review.reviewIdx}") },
-                                    elevation =  ButtonDefaults.elevation(2.dp)
-                                ){
+                                    elevation = ButtonDefaults.elevation(2.dp)
+                                ) {
                                     Text("삭제하기", color = Main_gray)
                                 }
                             }
