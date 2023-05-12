@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                         route = "category/{categoryIdx}",
                         arguments = listOf(navArgument("categoryIdx") { type = NavType.IntType })
                     ) { backStackEntry ->
-                        Category(navController, backStackEntry.arguments?.getInt("categoryIdx"))
+                        Category(navController, backStackEntry.arguments!!.getInt("categoryIdx"))
                     }
                     // 바코드 스캔
                     composable(route = "barcodeScan") {
