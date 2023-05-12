@@ -37,6 +37,10 @@ interface APIS {
     @GET("items/{itemIdx}")
     suspend fun getItemInfo(@Path("itemIdx") itemIdx: Int): ItemDetailResult
 
+    // 장볼구니 추가
+    @POST("getcarts")
+    suspend fun addGetCart(@Body body: Any)
+
     // 상품 별 리뷰 조회
     @GET("reviews/item")
     suspend fun getItemReview(@Query("itemIdx") itemIdx: Int): ReviewsResult

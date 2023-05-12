@@ -99,7 +99,6 @@ fun Search(navController: NavController, searchWord: String){
             e.printStackTrace()
             println("---------------------------------")
         }
-
     }
     Column() {
         // 상단바

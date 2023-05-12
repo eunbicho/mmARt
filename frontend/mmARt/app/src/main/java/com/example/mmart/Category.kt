@@ -22,7 +22,7 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.*
 
 @Composable
-fun Category(navController: NavController, categoryId: Int?){
+fun Category(navController: NavController, categoryIdx: Int){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
@@ -32,7 +32,7 @@ fun Category(navController: NavController, categoryId: Int?){
     // 카테고리 별 아이템 조회
     LaunchedEffect(true) {
         try {
-            items = coroutineScope.async { api.getCategories(userId, categoryId!!) }.await().result
+            items = coroutineScope.async { api.getCategories(userId, categoryIdx) }.await().result
         } catch (e: Exception){
             println("카테고리 별 상품 조회 에러-----------")
             e.printStackTrace()
@@ -40,8 +40,7 @@ fun Category(navController: NavController, categoryId: Int?){
         }
     }
 
-    fun categoryName(): String{
-        return when(categoryId) {
+    val categoryName = when(categoryIdx) {
             1 -> "가공식품"
             2 -> "신선식품"
             3 -> "일상용품"
@@ -52,7 +51,6 @@ fun Category(navController: NavController, categoryId: Int?){
             8 -> "스포츠"
             else -> "카테고리"
         }
-    }
 
     Column() {
 
@@ -60,7 +58,7 @@ fun Category(navController: NavController, categoryId: Int?){
         if (items != null) {
 
             // 상단바
-            topBar(navController = navController, categoryName())
+            topBar(navController = navController, categoryName)
 
             LazyColumn(
             ){
