@@ -137,6 +137,7 @@ fun topBar(navController: NavController, title: String){
  }
 }
 
+// 하단 버튼바 1개짜리
 @Composable
 fun floatingBtn(
     listState: LazyListState,
@@ -166,6 +167,7 @@ fun floatingBtn(
     }
 }
 
+// 하단 버튼바 2개짜리
 @Composable
 fun floatingBtns(
     listState: LazyListState,

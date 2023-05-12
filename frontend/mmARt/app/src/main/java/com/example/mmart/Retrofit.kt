@@ -21,6 +21,10 @@ interface APIS {
     @GET("getcarts/{userIdx}")
     suspend fun getGetCarts(@Path("userIdx") userIdx: Int): CartResult
 
+    // 장볼구니 수정
+    @PUT("getcarts")
+    suspend fun updateGetCart(@Body cartReq: Any): CartResult
+
     // 장볼구니에서 아이템 삭제
     @DELETE("getcarts")
     suspend fun deleteGetCart(@Query("userIdx") userIdx: Int, @Query("itemIdx") itemIdx: Int)
@@ -28,6 +32,10 @@ interface APIS {
     // 장봤구니 조회
     @GET("gotcarts/{userIdx}")
     suspend fun getGotCarts(@Path("userIdx") userIdx: Int): CartResult
+
+    // 장봤구니 수정
+    @PUT("gotcarts")
+    suspend fun updateGotCart(@Body cartReq: Any): CartResult
 
     // 장봤구니에서 아이템 삭제
     @DELETE("gotcarts")
@@ -82,8 +90,8 @@ interface APIS {
     suspend fun deleteReview(@Query("userIdx") userIdx: Int, @Query("reviewIdx") reviewIdx: Int)
 
     companion object {
-        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
-//        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
+//        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
+        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
 
         fun create(): APIS {
             val gson : Gson = GsonBuilder().setLenient().create();
