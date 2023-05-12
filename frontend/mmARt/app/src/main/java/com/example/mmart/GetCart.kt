@@ -329,13 +329,7 @@ fun GetCart(navController: NavController) {
                         )
                     }
                 }
-                floatingBtn(
-                    coroutineScope = coroutineScope,
-                    listState = listState,
-                    secondBtn = R.drawable.pay,
-                    secondBtnName = "PAY",
-                    secondEvent = { findMap = true }
-                )
+                floatingBtn(listState)
             } else {
                 blankView("장볼구니가 비어있습니다.")
             }

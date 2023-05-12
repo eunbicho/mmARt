@@ -1,6 +1,5 @@
 package com.example.mmart
 
-import android.app.appsearch.SearchResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,7 +18,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -29,21 +27,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mmart.ui.theme.*
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 // 검색바
 @OptIn(ExperimentalComposeUiApi::class)
@@ -149,14 +136,13 @@ fun topBar(navController: NavController, title: String){
     Divider(startIndent = 0.dp, thickness = 1.dp, color = Main_gray)
  }
 }
+
 @Composable
 fun floatingBtn(
-    coroutineScope: CoroutineScope,
-    listState: LazyListState?,
-    secondBtn: Int,
-    secondBtnName: String,
-    secondEvent: () -> Unit
+    listState: LazyListState,
 ){
+    val coroutineScope = rememberCoroutineScope()
+
     Row(
         modifier = Modifier
             .padding(20.dp, 10.dp)
@@ -166,8 +152,39 @@ fun floatingBtn(
         FloatingActionButton(
             onClick = {
                 coroutineScope.launch {
-                    // Animate scroll to the first item
-                    listState?.animateScrollToItem(index = 0)
+                    listState.animateScrollToItem(index = 0)
+                }},
+            backgroundColor = Light_gray,
+            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
+        ) {
+            Image(
+                painter = painterResource(R.drawable.top),
+                contentDescription = "TOP",
+            )
+        }
+
+    }
+}
+
+@Composable
+fun floatingBtns(
+    listState: LazyListState,
+    secondBtn: Int,
+    secondBtnName: String,
+    secondEvent: () -> Unit
+){
+    val coroutineScope = rememberCoroutineScope()
+
+    Row(
+        modifier = Modifier
+            .padding(20.dp, 10.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        FloatingActionButton(
+            onClick = {
+                coroutineScope.launch {
+                    listState.animateScrollToItem(index = 0)
                 }},
             backgroundColor = Light_gray,
             modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
