@@ -45,7 +45,7 @@ fun Payment(navController: NavController){
 
         if(payments != null) {
             if(payments!!.isEmpty()){
-                Text("결제 내역이 없습니다.")
+                blankView("결제 내역이 없습니다.")
             } else {
                 LazyColumn(){
                     items(payments!!){

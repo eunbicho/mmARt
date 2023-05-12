@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,13 +31,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.compose.rememberNavController
-import com.example.mmart.ui.theme.Dark_gray
-import com.example.mmart.ui.theme.Main_gray
-import com.example.mmart.ui.theme.Main_yellow
-import com.example.mmart.ui.theme.mainFont
+import com.example.mmart.ui.theme.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -148,6 +148,69 @@ fun topBar(navController: NavController, title: String){
     }
     Divider(startIndent = 0.dp, thickness = 1.dp, color = Main_gray)
  }
+}
+@Composable
+fun floatingBtn(
+    coroutineScope: CoroutineScope,
+    listState: LazyListState?,
+    secondBtn: Int,
+    secondBtnName: String,
+    secondEvent: () -> Unit
+){
+    Row(
+        modifier = Modifier
+            .padding(20.dp, 10.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        FloatingActionButton(
+            onClick = {
+                coroutineScope.launch {
+                    // Animate scroll to the first item
+                    listState?.animateScrollToItem(index = 0)
+                }},
+            backgroundColor = Light_gray,
+            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
+        ) {
+            Image(
+                painter = painterResource(R.drawable.top),
+                contentDescription = "TOP",
+            )
+        }
+
+        FloatingActionButton(
+            onClick = secondEvent,
+            backgroundColor = Light_gray,
+            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
+        ) {
+            Image(
+                painter = painterResource(secondBtn),
+                contentDescription = secondBtnName,
+            )
+        }
+    }
+}
+
+@Composable
+fun blankView(msg: String) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(msg)
+    }
+}
+
+@Composable
+fun loadingView(){
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+
+    }
 }
 
 @Preview(showBackground = true)
