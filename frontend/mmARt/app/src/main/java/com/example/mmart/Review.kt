@@ -1,16 +1,15 @@
 package com.example.mmart
 
+import android.text.style.BackgroundColorSpan
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
@@ -21,6 +20,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.mmart.ui.theme.Main_blue
+import com.example.mmart.ui.theme.Main_gray
+import com.example.mmart.ui.theme.Main_yellow
 import kotlinx.coroutines.async
 
 @Composable
@@ -66,7 +68,9 @@ fun Review(navController: NavController) {
         reload = !reload
     }
 
-    Column {
+    Column(
+        modifier = Modifier.padding(bottom = 23.dp)
+    ) {
         // 상단바
         topBar(navController, "리뷰 내역 조회")
 
@@ -79,37 +83,48 @@ fun Review(navController: NavController) {
             } else {
                 LazyColumn {
                     items(reviews!!) { review ->
-
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 10.dp, start = 10.dp, end = 10.dp)
-                                .border(width = (1.8).dp, color = Color.Black, shape = RoundedCornerShape(10.dp))
+                                .padding(top = 23.dp, start = 23.dp, end = 23.dp)
+                                .border(width = (1.8).dp, color = Main_gray, shape = RoundedCornerShape(11.dp))
                         ) {
 
                             // 구매 상품 정보
-                            Row(
-                                modifier = Modifier
-                                    .clickable { navController.navigate("item/${review.item.itemIdx}") }
-                                    .padding(start = 10.dp, top = 10.dp)
-                            ) {
+                            Row(modifier = Modifier.clickable { navController.navigate("item/${review.item.itemIdx}") }
+                                .padding(start = 15.dp, top = 15.dp)) {
                                 AsyncImage(
                                     model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${review.item.thumbnail}",
                                     contentDescription = "상품 썸네일",
                                     modifier = Modifier.size(75.dp)
-                                    )
-                                Text(
-                                    review.item.itemName,
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 5.dp)
                                 )
+                                Column(
+                                    Modifier.align(Alignment.CenterVertically).padding(start = 10.dp)
+                                ) {
+                                    Text(
+                                        review.item.itemName,
+                                        Modifier.padding(bottom = 5.dp)
+                                    )
+                                    Text(
+                                        review.date.split("T")[0],
+                                        Modifier.padding(top = 5.dp),
+                                        color = Main_gray
+                                    )
+                                }
+
                             }
+
+                            Divider(
+                                color = Color.LightGray,
+                                thickness = 1.dp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(15.dp)
+                            )
 
                             // 별점
                             Row(
-                                modifier = Modifier
-                                    .padding(top = 10.dp, start = 10.dp)
+                                modifier = Modifier.padding(start = 15.dp)
                             ) {
                                 repeat(review.star) {
                                     Icon(Icons.Filled.Star, "별점", tint = Color.Yellow)
@@ -120,52 +135,51 @@ fun Review(navController: NavController) {
                             }
                             // 리뷰 내용
                             Text(
-                                modifier = Modifier
-                                    .padding(start = 10.dp, top = 10.dp),
-                                text = review.content
+                                modifier = Modifier.padding(start = 15.dp, top = 15.dp), text = review.content
                             )
 
                             // 수정, 삭제 버튼
                             Row(
-                                modifier = Modifier
-                                    .align(Alignment.End)
-                                    .padding(top = 5.dp)
+                                modifier = Modifier.align(Alignment.End).padding(top = 5.dp)
                             ) {
-                                Button(onClick = { navController.navigate("reviewUpdate/${review.reviewIdx}") }) {
-                                    Text("수정하기")
+                                OutlinedButton(
+                                    modifier = Modifier.padding(start = 5.dp, end = 10.dp, bottom = 10.dp),
+                                    border = BorderStroke(color = Main_blue, width = 2.dp),
+                                    onClick = { navController.navigate("reviewUpdate/${review.reviewIdx}") },
+                                    elevation =  ButtonDefaults.elevation(2.dp)
+                                ){
+                                    Text("수정하기", color = Main_gray)
+
                                 }
-                                Button(
-                                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp),
-                                    onClick = { isDelete = review.reviewIdx }
-                                ) {
-                                    Text("삭제하기")
+                                OutlinedButton(
+                                    modifier = Modifier.padding(start = 5.dp, end = 15.dp, bottom = 10.dp),
+                                    border = BorderStroke(color = Main_yellow, width = 2.dp),
+                                    onClick = { navController.navigate("reviewUpdate/${review.reviewIdx}") },
+                                    elevation =  ButtonDefaults.elevation(2.dp)
+                                ){
+                                    Text("삭제하기", color = Main_gray)
                                 }
                             }
                         }
-
                         // 삭제 확인 다이얼로그
                         if (isDelete == review.reviewIdx) {
-                            AlertDialog(
-                                onDismissRequest = { isDelete = null },
+                            AlertDialog(onDismissRequest = { isDelete = null },
                                 title = { Text("삭제 확인") },
                                 text = { Text("해당 리뷰를 삭제하시겠습니까?") },
                                 // 삭제 확인 버튼
                                 dismissButton = {
-                                    Button(
-                                        onClick = {
-                                            reviewDelete(review.reviewIdx)
-                                        }
-                                    ) {
+                                    OutlinedButton(onClick = {
+                                        reviewDelete(review.reviewIdx)
+                                    }) {
                                         Text("삭제")
                                     }
                                 },
                                 // 취소 버튼
                                 confirmButton = {
-                                    Button(onClick = { isDelete = null }) {
+                                    OutlinedButton(onClick = { isDelete = null }) {
                                         Text("취소")
                                     }
-                                }
-                            )
+                                })
                         }
                     }
                 }
