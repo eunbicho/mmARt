@@ -329,8 +329,7 @@ fun GotCart(navController: NavController) {
                         )
                     }
                 }
-                floatingBtn(
-                    coroutineScope = coroutineScope,
+                floatingBtns(
                     listState = listState,
                     secondBtn = R.drawable.pay,
                     secondBtnName = "PAY",
