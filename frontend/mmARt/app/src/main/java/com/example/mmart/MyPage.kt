@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.graphics.Color
@@ -82,10 +83,11 @@ fun MyPage(navController: NavController){
                 .fillMaxWidth()
                 .padding(15.dp)
                 .clickable { navController.navigate("payment") },
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ){
             Text(text = "결제 내역 조회", fontSize = 20.sp, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-            Icon(Icons.Filled.ArrowForward, "결제 내역 조회 이동", modifier = Modifier.size(30.dp))
+            Icon(Icons.Default.KeyboardArrowRight, "결제 내역 조회 이동", modifier = Modifier.size(50.dp))
         }
 
         Divider(
@@ -102,10 +104,11 @@ fun MyPage(navController: NavController){
                 .fillMaxWidth()
                 .padding(15.dp)
                 .clickable { navController.navigate("review") },
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ){
             Text(text = "리뷰 내역 조회", fontSize = 20.sp, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-            Icon(Icons.Filled.ArrowForward, "리뷰 내역 조회 이동", modifier = Modifier.size(30.dp))
+            Icon(Icons.Default.KeyboardArrowRight, "리뷰 내역 조회 이동", modifier = Modifier.size(50.dp))
         }
 
         Divider(
