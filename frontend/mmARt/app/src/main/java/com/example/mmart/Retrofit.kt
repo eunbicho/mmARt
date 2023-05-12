@@ -180,7 +180,7 @@ data class ReviewDetail(
     val paymentDetail: PaymentDetail,
     val user: UserInfo,
     val item: ItemInfo,
-    val createTime: List<Int>
+    val date: String
 )
 
 // 리뷰 body (작성, 수정용)
