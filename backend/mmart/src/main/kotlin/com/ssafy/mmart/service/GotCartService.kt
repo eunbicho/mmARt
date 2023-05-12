@@ -10,10 +10,7 @@ import com.ssafy.mmart.domain.itemCoupon.QItemCoupon
 import com.ssafy.mmart.domain.itemItemCoupon.QItemItemCoupon
 import com.ssafy.mmart.exception.conflict.GotCartEmptyException
 import com.ssafy.mmart.exception.not_found.*
-import com.ssafy.mmart.repository.ItemCouponRepository
-import com.ssafy.mmart.repository.ItemItemCouponRepository
-import com.ssafy.mmart.repository.ItemRepository
-import com.ssafy.mmart.repository.UserRepository
+import com.ssafy.mmart.repository.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.HashOperations
 import org.springframework.data.redis.core.RedisTemplate
@@ -29,6 +26,7 @@ class GotCartService @Autowired constructor(
     val itemCouponRepository: ItemCouponRepository,
     val itemItemCouponRepository: ItemItemCouponRepository,
     private val jpaQueryFactory: JPAQueryFactory,
+    private val itemDetailRepository: ItemDetailRepository,
 ){
     val gotCart = "GOTCART"
     val gotCartOps: HashOperations<String, Int, MutableMap<Int, Int>> = redisTemplate.opsForHash()
@@ -66,7 +64,11 @@ class GotCartService @Autowired constructor(
                     tempItem.thumbnail!!,
                     isCoupon,
                     tempPrice,
-                    tempQuantity
+                    tempQuantity,
+                    tempItem.inventory,
+                    tempItem.barcode,
+                    tempItem.weight,
+                    itemDetailRepository.findByItem(tempItem)!!.content
                 )
             )
             priceTotal += tempItem.price * tempQuantity
