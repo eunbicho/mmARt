@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ReviewRepository : JpaRepository<Review, Int> {
-    fun findAllByUser_UserIdx(userIdx: Int): List<Review>?
-    fun findAllByItem_ItemIdx(itemIdx: Int): List<Review>?
+    fun findAllByUser_UserIdxOrderByCreateTimeDesc(userIdx: Int): List<Review>?
+    fun findAllByItem_ItemIdxOrderByCreateTimeDesc(itemIdx: Int): List<Review>?
     fun findByPaymentDetail(paymentDetail: PaymentDetail): Review?
+    fun existsByPaymentDetail_PaymentDetailIdxAndItem_ItemIdx(paymentDetailIdx: Int,itemIdx: Int):Boolean
 }

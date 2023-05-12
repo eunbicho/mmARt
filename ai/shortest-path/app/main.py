@@ -7,6 +7,7 @@ from app.floyd_warshall import floyd_warshall_initialize
 from app.held_karp import held_karp
 from app.two_opt import local_search_2_opt
 from app.util import distance_calc
+from app.make_distance_matrix import make_distance_matrix
 
 from copy import deepcopy
 
@@ -21,7 +22,7 @@ class Locations(BaseModel):
 INF = 10**5
 
 # distance matrix 초기화.
-DISTANCE_MATRIX = load_distance_matrix(INF)
+DISTANCE_MATRIX = make_distance_matrix(INF)
 
 # 총 vertex 개수.
 V = len(DISTANCE_MATRIX)
@@ -68,7 +69,7 @@ def find_shortest_path(locations: Locations):
     # 최단거리, 최단경로 초기화.
     shortest_distance = -1
     temp_path = []
-    if l <= 5:
+    if l <= 13:
         shortest_distance, temp_path = held_karp(complete_graph,INF)
     else:
         # 입력 형태를 맞추기 위해, distance matrix인 complete_graph를 numpy array로 변환해줌.
