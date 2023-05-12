@@ -3,6 +3,7 @@ package com.example.mmart
 import android.media.Image
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -48,7 +49,11 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int){
                         paymentDetail ->
                     Column() {
                         // 상품 정보
-                        Row(){
+                        Row(
+                            modifier = Modifier.clickable {
+                                navController.navigate("item/${paymentDetail.item.itemIdx}")
+                            }
+                        ){
                             AsyncImage(model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${paymentDetail.item.thumbnail}", contentDescription = "상품 썸네일")
                             Column() {
                                 Text(paymentDetail.item.itemName)
@@ -57,7 +62,11 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int){
                         }
                         // 작성된 리뷰가 없을 경우
                         if(!paymentDetail.isWriteReview){
-                            Button(onClick = { navController.navigate("reviewCreate/${paymentDetail.paymentDetailIdx}") }) {
+                            Button(
+                                onClick = {
+                                    navController.navigate("reviewCreate/${paymentDetail.paymentDetailIdx}")
+                                }
+                            ) {
                                 Text("리뷰 작성하기")
                             }
                         }
