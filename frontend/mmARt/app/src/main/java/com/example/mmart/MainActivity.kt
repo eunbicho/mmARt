@@ -23,11 +23,28 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.Navigation.findNavController
 import com.example.mmart.ui.theme.mainTypography
+import com.unity3d.player.UnityPlayerActivity
 
 class MainActivity : ComponentActivity() {
+    fun a(){
+        startActivity(Intent(this, UnityPlayerActivity::class.java))
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val intent = Intent(this, UnityPlayerActivity::class.java)
+
+//        Button(onClick = {
+////                navController.navigate("unity")
+////                Intent test = new Intent(this, UnityPlayerActivity::class.java)
+////                startActivity(Intent(this, UnityPlayerActivity::class.java))
+//        }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
+
+//        findViewById<MaterialButton>(R.id.button).setOnClickListener {
+
+//        }
         setContent {
             MaterialTheme(typography = mainTypography) {
                 val navController = rememberNavController()
@@ -60,9 +77,10 @@ class MainActivity : ComponentActivity() {
                         MyPage(navController)
                     }
                     // 유니티 테스트
-                    //                composable(route = "unity"){
-                    //                    UnityTest(navController)
-                    //                }
+                    composable(route = "unity"){
+                        UnityFragment()
+
+                    }
                     // 상품 상세
                     composable(
                         route = "item/{itemIdx}",
@@ -109,6 +127,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+
+
     }
 }
 
@@ -118,6 +139,8 @@ var userId = 1
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter") // Scaffold의 padding value 사용 안 할 때
 @Composable
 fun Main(navController: NavController) {
+    val b = MainActivity()
+    val mContext = LocalContext.current
 
     // 카테고리 별 상품보기
     fun category(categoryId: Int){
@@ -304,7 +327,13 @@ fun Main(navController: NavController) {
                     }
                 }
             }
-            Button(onClick = {  }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
+            Button(onClick = {
+                             mContext.startActivity(Intent(mContext, UnityPlayerActivity::class.java))
+//                b.a()
+//                navController.navigate("unity")
+//                Intent test = new Intent(this, UnityPlayerActivity::class.java)Intent test = new Intent(this, UnityPlayerActivity::class.java)
+//                startActivity(Intent(this, UnityPlayerActivity::class.java))
+            }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
 //          Button(onClick = { navController.navigate("unity") }){ Text(text = "유니티테스트") }
         }
 
