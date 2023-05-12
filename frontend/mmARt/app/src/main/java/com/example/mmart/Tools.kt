@@ -1,11 +1,11 @@
 package com.example.mmart
 
-import android.app.appsearch.SearchResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,7 +18,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -28,20 +27,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.compose.rememberNavController
-import com.example.mmart.ui.theme.Main_yellow
-import com.example.mmart.ui.theme.mainFont
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import kotlinx.coroutines.async
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import com.example.mmart.ui.theme.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 // 검색바
 @OptIn(ExperimentalComposeUiApi::class)
@@ -69,7 +58,7 @@ fun searchBar(navController: NavController){
             .fillMaxWidth()
             .height(100.dp)
             .padding(20.dp)
-            .border(color = Color.DarkGray, width = 1.5.dp, shape = CircleShape)
+            .border(color = Dark_gray, width = 1.5.dp, shape = CircleShape)
             .shadow(
                 shape = CircleShape,
                 elevation = 5.dp,
@@ -78,7 +67,7 @@ fun searchBar(navController: NavController){
             ),
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Main_yellow,
-            textColor = Color.Black
+            textColor = Dark_gray,
         ),
         singleLine = true,
         textStyle = TextStyle(fontFamily = mainFont, fontSize = 15.sp),
@@ -141,11 +130,104 @@ fun topBar(navController: NavController, title: String){
         )
         Text(title, fontSize = 20.sp, fontWeight = FontWeight.Light)
         Image(painter = painterResource(R.drawable.home), contentDescription = "홈으로", modifier = Modifier
-            .clickable { navController.navigate("main") }
+            .clickable { navController.popBackStack(navController.graph.startDestinationId, false) }
         )
     }
-    Divider(startIndent = 0.dp, thickness = 1.dp, color = Color.hsl(0f,0f,0.5f,0.5f))
+    Divider(startIndent = 0.dp, thickness = 1.dp, color = Main_gray)
  }
+}
+
+@Composable
+fun floatingBtn(
+    listState: LazyListState,
+){
+    val coroutineScope = rememberCoroutineScope()
+
+    Row(
+        modifier = Modifier
+            .padding(20.dp, 10.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        FloatingActionButton(
+            onClick = {
+                coroutineScope.launch {
+                    listState.animateScrollToItem(index = 0)
+                }},
+            backgroundColor = Light_gray,
+            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
+        ) {
+            Image(
+                painter = painterResource(R.drawable.top),
+                contentDescription = "TOP",
+            )
+        }
+
+    }
+}
+
+@Composable
+fun floatingBtns(
+    listState: LazyListState,
+    secondBtn: Int,
+    secondBtnName: String,
+    secondEvent: () -> Unit
+){
+    val coroutineScope = rememberCoroutineScope()
+
+    Row(
+        modifier = Modifier
+            .padding(20.dp, 10.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        FloatingActionButton(
+            onClick = {
+                coroutineScope.launch {
+                    listState.animateScrollToItem(index = 0)
+                }},
+            backgroundColor = Light_gray,
+            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
+        ) {
+            Image(
+                painter = painterResource(R.drawable.top),
+                contentDescription = "TOP",
+            )
+        }
+
+        FloatingActionButton(
+            onClick = secondEvent,
+            backgroundColor = Light_gray,
+            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
+        ) {
+            Image(
+                painter = painterResource(secondBtn),
+                contentDescription = secondBtnName,
+            )
+        }
+    }
+}
+
+@Composable
+fun blankView(msg: String) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(msg)
+    }
+}
+
+@Composable
+fun loadingView(){
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+
+    }
 }
 
 @Preview(showBackground = true)
