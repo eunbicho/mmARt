@@ -40,6 +40,7 @@ fun ReviewCreate(navController: NavController, paymentDetailIdx: Int){
         // 결제 정보 조회
         try {
             paymentDetail = coroutineScope.async { api.getPaymentDetail(paymentDetailIdx) }.await().result
+            println(paymentDetail.toString())
         } catch (e: Exception){
             println("리뷰 작성 - 결제 정보 조회 에러-------")
             e.printStackTrace()
@@ -69,48 +70,6 @@ fun ReviewCreate(navController: NavController, paymentDetailIdx: Int){
     Column() {
         // 상단바
         topBar(navController, "리뷰 작성")
-
-//        if(paymentDetail != null){
-//
-//            // 상품 정보
-//            Row(
-//                modifier = Modifier.clickable { navController.navigate("item/${paymentDetail!!.item.itemIdx}") }
-//            ) {
-//                AsyncImage(model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${paymentDetail!!.item.thumbnail}", contentDescription = "상품 썸네일")
-//                Text(paymentDetail!!.item.itemName)
-//            }
-//
-//            Row(){
-//                listOf(1, 2, 3, 4, 5).forEach {
-//                    Icon(
-//                        imageVector = Icons.Filled.Star,
-//                        contentDescription = "별점",
-//                        tint = if (it <= reviewStar) Color.Yellow else Color.LightGray,
-//                        modifier = Modifier
-//                            .clickable { reviewStar = it}
-//                    )
-//                }
-//
-//            }
-//
-//            // 내용 입력
-//
-//            OutlinedTextField(
-//                value = reviewContent,
-//                onValueChange = { reviewContent = it },
-//            )
-//
-//            // 확인 및 취소 버튼
-//            Row(){
-//                Button(onClick = {
-//                    if(reviewStar != 0){reviewCreate()}else{ starCheck = true} }) {
-//                    Text("확인")
-//                }
-//                Button(onClick = { navController.popBackStack() }) {
-//                    Text("취소")
-//                }
-//            }
-//        }
         if (paymentDetail != null) {
             Box(
                 modifier = Modifier
@@ -144,7 +103,8 @@ fun ReviewCreate(navController: NavController, paymentDetailIdx: Int){
                                     modifier = Modifier.padding(bottom = 5.dp)
                                 )
                                 Text(
-                                    text = paymentDetail!!.createTime.toString(),
+//                                    text = paymentDetail!!.createTime.toString(),
+                                    text = "${paymentDetail!!.createTime[0]}. ${paymentDetail!!.createTime[1]}. ${paymentDetail!!.createTime[2]}",
                                     color = Main_gray,
                                     modifier = Modifier.padding(top = 5.dp)
                                 )
