@@ -138,7 +138,7 @@ fun Review(navController: NavController) {
                             }
                             // 리뷰 내용
                             Text(
-                                modifier = Modifier.padding(start = 15.dp, top = 15.dp), text = review.content
+                                modifier = Modifier.padding(start = 15.dp, top = 15.dp, end = 15.dp), text = review.content
                             )
 
                             // 수정, 삭제 버튼

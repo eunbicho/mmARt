@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -77,7 +78,7 @@ fun ReviewUpdate(navController: NavController, reviewIdx: Int) {
                     modifier = Modifier
                         .align(Alignment.Center)
                         .border(shape = RoundedCornerShape(11.dp), border = BorderStroke((1.8).dp, Main_gray))
-                        .padding(start = 15.dp, top = 15.dp)
+                        .padding(start = 15.dp, top = 15.dp, end = 15.dp)
                 ) {
                     Column {
                         // 상품 정보
@@ -110,7 +111,7 @@ fun ReviewUpdate(navController: NavController, reviewIdx: Int) {
                         Divider(
                             color = Color.LightGray,
                             thickness = 1.dp,
-                            modifier = Modifier.fillMaxWidth().padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
+                            modifier = Modifier.fillMaxWidth().padding(top = 15.dp, bottom = 15.dp)
                         )
 
                         Row {
@@ -126,7 +127,10 @@ fun ReviewUpdate(navController: NavController, reviewIdx: Int) {
                         // 내용 입력
 
                         OutlinedTextField(
-                            modifier = Modifier.padding(top = 15.dp),
+                            modifier = Modifier
+                                .padding(top = 15.dp)
+                                .fillMaxWidth()
+                                .border(width = (1.8).dp, color = Color.Transparent),
                             value = reviewContent,
                             onValueChange = { reviewContent = it },
                         )
@@ -144,7 +148,7 @@ fun ReviewUpdate(navController: NavController, reviewIdx: Int) {
                                 Text("확인", color = Main_gray)
                             }
                             OutlinedButton(
-                                modifier = Modifier.padding(start = 5.dp, end = 15.dp, bottom = 10.dp),
+                                modifier = Modifier.padding(start = 5.dp, bottom = 10.dp),
                                 elevation = ButtonDefaults.elevation(2.dp),
                                 border = BorderStroke(color = Main_yellow, width = 2.dp),
                                 onClick = { navController.popBackStack() }
