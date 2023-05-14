@@ -1,6 +1,7 @@
 package com.example.mmart
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,15 +27,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.Navigation.findNavController
 import com.example.mmart.ui.theme.mainTypography
-import com.unity3d.player.UnityPlayerActivity
+//import com.unity3d.player.UnityPlayerActivity
 
 class MainActivity : ComponentActivity() {
     fun a(){
-        startActivity(Intent(this, UnityPlayerActivity::class.java))
+//        startActivity(Intent(this, UnityPlayerActivity::class.java))
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val intent = Intent(this, UnityPlayerActivity::class.java)
+//        val intent = Intent(this, UnityPlayerActivity::class.java)
 
 //        Button(onClick = {
 ////                navController.navigate("unity")
@@ -48,7 +49,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme(typography = mainTypography) {
                 val navController = rememberNavController()
+
                 NavHost(navController = navController, startDestination = "main") {
+                    // 로그인
+                    composable(route = "login") {
+                        Login(navController)
+                    }
+                    // 회원 가입
+                    composable(route = "signUp") {
+                        SignUp(navController)
+                    }
                     // 메인 화면
                     composable(route = "main") {
                         Main(navController)
@@ -123,6 +133,13 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument("reviewIdx") { type = NavType.IntType })
                     ) { backStackEntry ->
                         ReviewUpdate(navController, backStackEntry.arguments!!.getInt("reviewIdx"))
+                    }
+                }
+
+                // 로그인 안됐을 시 로그인
+                if (savedInstanceState == null) {
+                    navController.navigate("login"){
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }
                 }
             }
@@ -328,7 +345,7 @@ fun Main(navController: NavController) {
                 }
             }
             Button(onClick = {
-                             mContext.startActivity(Intent(mContext, UnityPlayerActivity::class.java))
+//                             mContext.startActivity(Intent(mContext, UnityPlayerActivity::class.java))
 //                b.a()
 //                navController.navigate("unity")
 //                Intent test = new Intent(this, UnityPlayerActivity::class.java)Intent test = new Intent(this, UnityPlayerActivity::class.java)

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -40,18 +41,23 @@ import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.mmart.ui.theme.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.selects.select
 import okhttp3.internal.wait
+import androidx.lifecycle.lifecycleScope
+
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -125,32 +131,38 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
             "quantity" to quantity,
             "userIdx" to userId
         )
-        try {
-            coroutineScope.async { api.addGetCart(body) }
-            goGetCart = true
-        } catch (e: Exception){
-            println("장볼구니 추가 에러------------------")
-            e.printStackTrace()
-            println("---------------------------------")
+        coroutineScope.launch{
+            try {
+               val resultCode = api.addGetCart(body).resultCode
+                if(resultCode == "SUCCESS"){
+                    goGetCart = true
+                }
+            } catch (e: Exception){
+                println("장볼구니 추가 에러------------------")
+                e.printStackTrace()
+                println("---------------------------------")
+                }
         }
     }
 
     // 리뷰 삭제
     fun reviewDelete(reviewIdx: Int) {
         // 리뷰 삭제
-        try{
-            coroutineScope.async { api.deleteReview(userId, reviewIdx) }
-        } catch (e: Exception){
-            println("아이템 - 리뷰 삭제 에러-------------")
-            e.printStackTrace()
-            println("---------------------------------")
+        coroutineScope.launch{
+            try{
+                val resultCode = api.deleteReview(userId, reviewIdx).resultCode
+                if(resultCode == "SUCCESS"){
+                    // 모달 끄기
+                    isDelete = null
+                    // 리로드
+                    reload = !reload
+                }
+            } catch (e: Exception){
+                println("아이템 - 리뷰 삭제 에러-------------")
+                e.printStackTrace()
+                println("---------------------------------")
+            }
         }
-
-        // 모달 끄기
-        isDelete = null
-
-        // 리로드
-        reload = !reload
     }
 
     Column() {
@@ -198,11 +210,14 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp)
+                        .padding(horizontal = 10.dp)
                         .padding(bottom = 10.dp)
                 ) {
                     // 수량 조절
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(0.3f)
+                    ) {
                         IconButton(
                             onClick = { quantity-- },
                             enabled = 1 < quantity
@@ -225,18 +240,21 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     }
 
                     // 총 금액, 장볼구니 추가 버튼
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
                         // 수량 * 가격
                         if(item!!.isCoupon){ // 쿠폰 있을 경우
-                            Text("총 금액: ${item!!.couponPrice * quantity}원", modifier= Modifier.padding(10.dp))
+                            Text("${item!!.couponPrice * quantity}원", modifier= Modifier.padding(10.dp))
                         } else { // 쿠폰 없을 경우
-                            Text("총 금액: ${item!!.price * quantity}원", modifier= Modifier.padding(10.dp))
+                            Text("${item!!.price * quantity}원", modifier= Modifier.padding(10.dp))
                         }
 
                         // 장바구니 추가 버튼
                         Button(
-                            onClick = { addGetCart() },
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_blue)
+                            onClick = {  addGetCart() },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_blue),
                         ) {
                             Text("장볼구니", color = Color.White)
                         }
@@ -249,8 +267,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item!!.content}",
                     contentDescription = "상품 상세 정보",
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
+                        .fillMaxSize()
                         .padding(20.dp)
                 )
             }
@@ -368,7 +385,10 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
     ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetContent = {
-            Row() {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth().padding(5.dp)
+            ) {
                 TextField(
                     value = numberInput,
                     onValueChange = { numberInput=it },
@@ -382,10 +402,11 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                         // 포커스 (바로 키보드 열기위해)
                         .focusRequester(focusRequester)
                 )
-                Button(onClick = {
-                    numberCheck()
-                }) {
-                    Text("확인")
+                OutlinedButton(
+                    onClick = {numberCheck()},
+                    elevation = ButtonDefaults.elevation(1.dp),
+                ) {
+                    Text("확인", color = Color.Black)
                 }
             }
 
@@ -398,11 +419,14 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     },
                     text = { Text("수량을 확인하여 주십시오") },
                     confirmButton = {
-                        Button(onClick = {
+                        OutlinedButton(
+                            onClick = {
                             wrongNumber = false
                             keyboardController?.show()
-                        }) {
-                            Text("확인")
+                            },
+                            elevation = ButtonDefaults.elevation(1.dp)
+                        ) {
+                            Text("확인", color = Color.Black)
                         }
                     }
                 )
@@ -459,6 +483,25 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
 @Preview(showBackground = true)
 @Composable
 fun DetailPreview(){
-    Text("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", overflow = TextOverflow.Ellipsis, maxLines = 1)
+    var isWrong = true
+    AlertDialog(
+        onDismissRequest = { isWrong = false },
+        text = { Text("아이디, 비밀번호 확인 후\n\n다시 로그인 해주세요", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(), fontSize = 18.sp) },
+        confirmButton = {
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                OutlinedButton(
+                    onClick = { isWrong = false },
+                    elevation = ButtonDefaults.elevation(1.dp)
+                ) {
+                    Text("확인", color = Color.Black)
+                }
+            }
+        },
+        modifier = Modifier.border(1.dp, Color.Black, RoundedCornerShape(10.dp)),
+        shape = RoundedCornerShape(10.dp)
+    )
 }
 

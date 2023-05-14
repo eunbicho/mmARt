@@ -3,11 +3,13 @@ package com.example.mmart
 import android.media.Image
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -38,6 +40,8 @@ fun MyPage(navController: NavController){
     val coroutineScope = rememberCoroutineScope()
     // 유저 정보
     var user: UserInfo? by remember { mutableStateOf(null) }
+    // 로그아웃 모달
+    var isLogout: Boolean by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
         // 유저 정보 조회
@@ -63,7 +67,7 @@ fun MyPage(navController: NavController){
             ) {
                 Text("${user!!.name}님", fontSize = 30.sp)
                 Text("로그아웃", fontSize = 15.sp, fontWeight = FontWeight.Light, modifier = Modifier
-                    .clickable { /* 로그아웃 */ }
+                    .clickable { isLogout = true }
                     .height(IntrinsicSize.Min)
                 )
             }
@@ -119,12 +123,39 @@ fun MyPage(navController: NavController){
                 .padding(15.dp)
         )
 
-//        // 최근 구매한 상품
-//        Text("최근 구매 상품", fontSize = 20.sp)
-//        Row(){
-//
-//        }
-
+    }
+    if (isLogout) {
+        AlertDialog(
+            onDismissRequest = { isLogout = false },
+            text = { Text("로그아웃 하시겠습니까?", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(), fontSize = 18.sp) },
+            confirmButton = {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom=10.dp),
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            userId = 0
+                            navController.navigate("login"){
+                                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                            } },
+                        elevation = ButtonDefaults.elevation(1.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    ) {
+                        Text("확인", color = Color.Black)
+                    }
+                    OutlinedButton(
+                        onClick = { isLogout = false },
+                        elevation = ButtonDefaults.elevation(1.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    ) {
+                        Text("취소", color = Color.Black)
+                    }
+                }
+            },
+            modifier = Modifier.border(1.dp, Color.Black, RoundedCornerShape(10.dp)),
+            shape = RoundedCornerShape(10.dp)
+        )
     }
 }
 
