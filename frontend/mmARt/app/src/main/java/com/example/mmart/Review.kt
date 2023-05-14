@@ -19,9 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.mmart.ui.theme.Main_blue
-import com.example.mmart.ui.theme.Main_gray
-import com.example.mmart.ui.theme.Main_yellow
+import com.example.mmart.ui.theme.*
 import kotlinx.coroutines.async
 
 @Composable
@@ -41,6 +39,7 @@ fun Review(navController: NavController) {
         // 리뷰 조회
         try {
             reviews = coroutineScope.async { api.getUserReview(userId) }.await().result
+            println(reviews.toString())
         } catch (e: Exception) {
             println("리뷰 조회 에러---------------------")
             e.printStackTrace()
@@ -109,8 +108,8 @@ fun Review(navController: NavController) {
                                         Modifier.padding(bottom = 5.dp)
                                     )
                                     Text(
-                                        review.date.split("T")[0],
-                                        Modifier.padding(top = 5.dp),
+                                        text = review.date.split("T")[0],
+                                        modifier = Modifier.padding(top = 5.dp),
                                         color = Main_gray
                                     )
                                 }
@@ -147,7 +146,7 @@ fun Review(navController: NavController) {
                             ) {
                                 OutlinedButton(
                                     modifier = Modifier.padding(start = 5.dp, end = 10.dp, bottom = 10.dp),
-                                    border = BorderStroke(color = Main_blue, width = 2.dp),
+                                    border = BorderStroke(color = Vivid_blue, width = 2.dp),
                                     onClick = { navController.navigate("reviewUpdate/${review.reviewIdx}") },
                                     elevation = ButtonDefaults.elevation(2.dp)
                                 ) {
@@ -156,7 +155,7 @@ fun Review(navController: NavController) {
                                 }
                                 OutlinedButton(
                                     modifier = Modifier.padding(start = 5.dp, end = 15.dp, bottom = 10.dp),
-                                    border = BorderStroke(color = Main_yellow, width = 2.dp),
+                                    border = BorderStroke(color = Vivid_yellow, width = 2.dp),
                                     onClick = { isDelete = review.reviewIdx },
                                     elevation = ButtonDefaults.elevation(2.dp)
                                 ) {
