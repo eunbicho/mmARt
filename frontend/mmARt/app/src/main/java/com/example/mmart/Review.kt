@@ -157,7 +157,7 @@ fun Review(navController: NavController) {
                                 OutlinedButton(
                                     modifier = Modifier.padding(start = 5.dp, end = 15.dp, bottom = 10.dp),
                                     border = BorderStroke(color = Main_yellow, width = 2.dp),
-                                    onClick = { navController.navigate("reviewUpdate/${review.reviewIdx}") },
+                                    onClick = { isDelete = review.reviewIdx },
                                     elevation = ButtonDefaults.elevation(2.dp)
                                 ) {
                                     Text("삭제하기", color = Main_gray)
@@ -171,16 +171,21 @@ fun Review(navController: NavController) {
                                 text = { Text("해당 리뷰를 삭제하시겠습니까?") },
                                 // 삭제 확인 버튼
                                 dismissButton = {
-                                    OutlinedButton(onClick = {
-                                        reviewDelete(review.reviewIdx)
-                                    }) {
-                                        Text("삭제")
+                                    OutlinedButton(
+                                        border = BorderStroke(color = Main_blue, width = 2.dp),
+                                        elevation = ButtonDefaults.elevation(2.dp),
+                                        onClick = { reviewDelete(review.reviewIdx) })
+                                    {
+                                        Text("삭제", color = Main_gray)
                                     }
                                 },
                                 // 취소 버튼
                                 confirmButton = {
-                                    OutlinedButton(onClick = { isDelete = null }) {
-                                        Text("취소")
+                                    OutlinedButton(
+                                        border = BorderStroke(color = Main_yellow, width = 2.dp),
+                                        elevation = ButtonDefaults.elevation(2.dp),
+                                        onClick = { isDelete = null }) {
+                                        Text("취소", color = Main_gray)
                                     }
                                 })
                         }
