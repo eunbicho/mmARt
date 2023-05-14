@@ -75,8 +75,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.3.0")
 
     // 유니티 연결
-    implementation project(':unityLibrary')
-    implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
+//    implementation project(':unityLibrary')
+//    implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
 //    implementation project(':unityLibrary')
 //    implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
 }
