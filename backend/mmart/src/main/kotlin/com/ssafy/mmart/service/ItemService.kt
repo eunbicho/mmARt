@@ -1,5 +1,6 @@
 package com.ssafy.mmart.service
 
+import com.google.gson.Gson
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.ssafy.mmart.domain.favoriteCategory.QFavorite.favorite
@@ -16,10 +17,18 @@ import com.ssafy.mmart.domain.paymentDetail.QPaymentDetail.paymentDetail
 import com.ssafy.mmart.exception.not_found.ItemNotFoundException
 import com.ssafy.mmart.repository.ItemCouponRepository
 import com.ssafy.mmart.repository.ItemDetailRepository
-import com.ssafy.mmart.repository.ItemItemCouponRepository
 import com.ssafy.mmart.repository.ItemRepository
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
 import java.time.LocalDateTime
 
 
@@ -132,6 +141,45 @@ class ItemService @Autowired constructor(
         result.addAll(temp2)
         return setItemListRes(result)
     }
+    fun getItemBySearch(keyword : String): List<GetItemRes>? {
+        val result: MutableList<Item> = mutableListOf()
+        val url = "http://k8a405.p.ssafy.io:8200/_search"  // 요청을 보낼 URL
+        // 요청에 필요한 데이터를 객체에 담습니다.
+
+
+        val requestBody = """
+        {
+            "query": {
+                "match": {
+                    "item_name.nori": "$keyword"
+                }
+            }
+        }
+    """.trimIndent()
+
+        val client = OkHttpClient()
+        val mediaType = "application/json".toMediaType()
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody.toRequestBody(mediaType))
+            .build()
+
+        val response = client.newCall(request).execute()
+        val gson = Gson()
+        val searchResult = gson.fromJson(response.body?.string(), SearchResult::class.java)
+
+//        // 파싱된 객체 사용 예시
+//        println("Took: ${searchResult.took}")
+//        println("Timed Out: ${searchResult.timed_out}")
+//        println("Total Hits: ${searchResult.hits.total.value}")
+
+        // hits에 포함된 아이템 출력
+        searchResult.hits.hits.forEach { hit ->
+            result.add(itemRepository.findById(hit._source.item_idx).get())
+        }
+        response.close()
+        return setItemListRes(result)
+    }
 
     fun getItemsFrequent(userIdx: Int): List<GetItemRes>? {
         return setItemListRes(jpaQueryFactory
@@ -181,4 +229,46 @@ class ItemService @Autowired constructor(
             .limit(10)
             .fetch())
     }
+
 }
+
+data class SearchResult(
+    val took: Int,
+    val timed_out: Boolean,
+    val _shards: Shards,
+    val hits: Hits
+)
+
+data class Shards(
+    val total: Int,
+    val successful: Int,
+    val skipped: Int,
+    val failed: Int
+)
+
+data class Hits(
+    val total: Total,
+    val max_score: Double,
+    val hits: List<Hit>
+)
+
+data class Total(
+    val value: Int,
+    val relation: String
+)
+
+data class Hit(
+    val _index: String,
+    val _type: String,
+    val _id: String,
+    val _score: Double,
+    val _source: Itemss
+)
+
+data class Itemss(
+    val item_idx: Int,
+    val item_name: String,
+    val inventory: String,
+    val price: String,
+    val thumbnail: String
+)
