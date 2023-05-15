@@ -128,7 +128,7 @@ fun SignUp(navController: NavController){
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 30.dp),
         verticalArrangement = Arrangement.Center
     ) {
         Image(painter = painterResource(R.drawable.logo), contentDescription = "로고", modifier = Modifier.padding(vertical = 20.dp))
