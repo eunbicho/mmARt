@@ -2,6 +2,7 @@ package com.ssafy.mmart.controller
 
 import com.ssafy.mmart.domain.ResultResponse
 import com.ssafy.mmart.domain.review.Review
+import com.ssafy.mmart.domain.review.dto.ItemReviewRes
 import com.ssafy.mmart.domain.review.dto.ReviewReq
 import com.ssafy.mmart.domain.review.dto.ReviewRes
 import com.ssafy.mmart.service.ReviewService
@@ -31,7 +32,7 @@ class ReviewController @Autowired constructor(
     }
 
     @GetMapping("/item")
-    fun getItemReviews(@RequestParam itemIdx: Int): ResultResponse<List<ReviewRes>?> {
+    fun getItemReviews(@RequestParam itemIdx: Int): ResultResponse<ItemReviewRes?> {
         return ResultResponse.success(reviewService.getItemReviews(itemIdx))
     }
 
