@@ -6,66 +6,69 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
-import com.example.mmart.ui.theme.Main_yellow
-import com.example.mmart.ui.theme.mainFont
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.mmart.ui.theme.Main_blue
-import androidx.compose.material.Typography
 import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.Navigation.findNavController
 import com.example.mmart.ui.theme.mainTypography
+//import com.unity3d.player.UnityPlayerActivity
 
 class MainActivity : ComponentActivity() {
+    fun a(){
+//        startActivity(Intent(this, UnityPlayerActivity::class.java))
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        val intent = Intent(this, UnityPlayerActivity::class.java)
+
+//        Button(onClick = {
+////                navController.navigate("unity")
+////                Intent test = new Intent(this, UnityPlayerActivity::class.java)
+////                startActivity(Intent(this, UnityPlayerActivity::class.java))
+//        }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
+
+//        findViewById<MaterialButton>(R.id.button).setOnClickListener {
+
+//        }
         setContent {
             MaterialTheme(typography = mainTypography) {
                 val navController = rememberNavController()
+
                 NavHost(navController = navController, startDestination = "main") {
+                    // 로그인
+                    composable(route = "login") {
+                        Login(navController)
+                    }
+                    // 회원 가입
+                    composable(route = "signUp") {
+                        SignUp(navController)
+                    }
                     // 메인 화면
                     composable(route = "main") {
                         Main(navController)
                     }
                     //카테고리 별 상품 보기
                     composable(
-                        route = "category/{categoryId}",
-                        arguments = listOf(navArgument("categoryId") { type = NavType.IntType })
+                        route = "category/{categoryIdx}",
+                        arguments = listOf(navArgument("categoryIdx") { type = NavType.IntType })
                     ) { backStackEntry ->
-                        Category(navController, backStackEntry.arguments?.getInt("categoryId"))
+                        Category(navController, backStackEntry.arguments!!.getInt("categoryIdx"))
                     }
                     // 바코드 스캔
                     composable(route = "barcodeScan") {
@@ -84,15 +87,16 @@ class MainActivity : ComponentActivity() {
                         MyPage(navController)
                     }
                     // 유니티 테스트
-                    //                composable(route = "unity"){
-                    //                    UnityTest(navController)
-                    //                }
+                    composable(route = "unity"){
+                        UnityFragment()
+
+                    }
                     // 상품 상세
                     composable(
-                        route = "item/{itemId}",
-                        arguments = listOf(navArgument("itemId") { type = NavType.IntType })
+                        route = "item/{itemIdx}",
+                        arguments = listOf(navArgument("itemIdx") { type = NavType.IntType })
                     ) { backStackEntry ->
-                        ItemDetail(navController, backStackEntry.arguments?.getInt("itemId"))
+                        ItemDetail(navController, backStackEntry.arguments?.getInt("itemIdx"))
                     }
                     // 검색 결과
                     composable(
@@ -101,6 +105,42 @@ class MainActivity : ComponentActivity() {
                     ) { backStackEntry ->
                         Search(navController, backStackEntry.arguments!!.getString("searchWord")!!)
                     }
+                    // 마이페이지 - 결제 내역 조회
+                    composable(route = "payment") {
+                        Payment(navController)
+                    }
+                    // 마이페이지 - 결제 내역 조회 - 상세 조회
+                    composable(
+                        route = "payment/{paymentIdx}",
+                        arguments = listOf(navArgument("paymentIdx") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        PaymentDetail(navController, backStackEntry.arguments!!.getInt("paymentIdx"))
+                    }
+                    // 마이페이지 - 결제 내역 조회 - 상세 조회 - 리뷰 작성
+                    composable(
+                        route = "reviewCreate/{paymentDetailIdx}",
+                        arguments = listOf(navArgument("paymentDetailIdx") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        ReviewCreate(navController, backStackEntry.arguments!!.getInt("paymentDetailIdx"))
+                    }
+                    // 마이페이지 - 리뷰 내역 조회
+                    composable(route = "review") {
+                        Review(navController)
+                    }
+                    // 마이페이지 - 리뷰 내역 조회 - 리뷰 수정
+                    composable(
+                        route = "reviewUpdate/{reviewIdx}",
+                        arguments = listOf(navArgument("reviewIdx") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        ReviewUpdate(navController, backStackEntry.arguments!!.getInt("reviewIdx"))
+                    }
+                }
+
+                // 로그인 안됐을 시 로그인
+                if (userId == 0) {
+                    navController.navigate("login"){
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    }
                 }
             }
         }
@@ -108,11 +148,13 @@ class MainActivity : ComponentActivity() {
 }
 
 // 유저 아이디
-var userId = 1
+var userId = 0
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter") // Scaffold의 padding value 사용 안 할 때
 @Composable
 fun Main(navController: NavController) {
+    val b = MainActivity()
+    val mContext = LocalContext.current
 
     // 카테고리 별 상품보기
     fun category(categoryId: Int){
@@ -299,7 +341,13 @@ fun Main(navController: NavController) {
                     }
                 }
             }
-            Button(onClick = {  }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
+            Button(onClick = {
+//                             mContext.startActivity(Intent(mContext, UnityPlayerActivity::class.java))
+//                b.a()
+//                navController.navigate("unity")
+//                Intent test = new Intent(this, UnityPlayerActivity::class.java)Intent test = new Intent(this, UnityPlayerActivity::class.java)
+//                startActivity(Intent(this, UnityPlayerActivity::class.java))
+            }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
 //          Button(onClick = { navController.navigate("unity") }){ Text(text = "유니티테스트") }
         }
 
