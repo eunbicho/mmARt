@@ -43,7 +43,6 @@ import java.text.DecimalFormat
 
 @Composable
 fun GetCart(navController: NavController) {
-    val userId = 1
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()

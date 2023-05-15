@@ -229,7 +229,7 @@ fun loadingView(){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
+        Text("로딩")
     }
 }
 
