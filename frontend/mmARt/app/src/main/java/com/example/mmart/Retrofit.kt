@@ -73,6 +73,11 @@ interface APIS {
     @GET("payments")
     suspend fun getPayments(@Query("userIdx") userIdx: Int): PaymentsResult
 
+    // 결제 내역 개별 조회
+    @GET("payments/{paymentIdx}")
+    suspend fun getPayment(@Path("paymentIdx") paymentIdx: Int, @Query("userIdx") userIdx: Int): PaymentResult
+
+
     // 결제 내역 상세 조회
     @GET("payments/detail")
     suspend fun getPaymentDetails(@Query("userIdx") userIdx: Int, @Query("paymentIdx") paymentIdx: Int): PaymentDetailsResult
@@ -223,6 +228,11 @@ data class PaymentDetail(
 data class PaymentsResult(
     val resultCode: String,
     val result: List<Payment>
+)
+
+data class PaymentResult(
+    val resultCode: String,
+    val result: Payment
 )
 
 data class Payment(
