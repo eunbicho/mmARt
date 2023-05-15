@@ -52,4 +52,9 @@ class ItemController @Autowired constructor(
     fun getItemsDiscount(): ResultResponse<List<GetItemRes>?> {
         return ResultResponse.success(itemService.getItemsDiscount())
     }
+
+    @GetMapping("/search")
+    fun getItemBySearch(@RequestParam keyword : String): ResultResponse<List<GetItemRes>?> {
+        return ResultResponse.success(itemService.getItemBySearch(keyword))
+    }
 }
