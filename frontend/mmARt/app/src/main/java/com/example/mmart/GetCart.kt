@@ -98,6 +98,12 @@ fun GetCart(navController: NavController) {
 
     Column {
         topBar(navController = navController, "장볼구니")
+        Row(
+            modifier = Modifier
+                .padding(0.dp, 20.dp, 0.dp, 0.dp)
+        ) {
+            searchBar(navController = navController)
+        }
 
         // result가 null이 아닐 경우만
         if(cartRes != null){
@@ -105,7 +111,7 @@ fun GetCart(navController: NavController) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(560.dp)
+                        .height(480.dp)
                         .padding(20.dp, 0.dp),
                     state = listState,
                 ) {
@@ -204,7 +210,7 @@ fun GetCart(navController: NavController) {
                                             updateGetCart(item.itemIdx, tempQuantity)
                                             quantity = TextFieldValue(tempQuantity.toString())
                                         },
-                                        enabled = quantity!!.text.trim().isNotEmpty() && item.inventory > quantity!!.text.trim().toInt(),
+                                        enabled = quantity!!.text.trim().isNotEmpty() && quantity!!.text.trim().toIntOrNull() != null && item.inventory > quantity!!.text.trim().toInt(),
                                         modifier = Modifier.size(30.dp)
                                     ) {
                                         Image(
@@ -227,7 +233,7 @@ fun GetCart(navController: NavController) {
                                         ),
                                         keyboardActions = KeyboardActions(
                                             onDone = {
-                                                if ( quantity == null || quantity?.text == "" || quantity!!.text.trim().toInt() < 1 ) {
+                                                if ( quantity == null || quantity!!.text.trim().isNullOrEmpty() || quantity!!.text.trim().toIntOrNull() == null || quantity!!.text.trim().toInt() < 1 ) {
                                                     quantityError = true
                                                     quantity = TextFieldValue(item.quantity.toString())
                                                 } else if ( quantity!!.text.trim().toInt() > item.inventory ) {
@@ -256,7 +262,7 @@ fun GetCart(navController: NavController) {
                                             updateGetCart(item.itemIdx, tempQuantity)
                                             quantity = TextFieldValue(tempQuantity.toString())
                                         },
-                                        enabled = quantity!!.text.trim().isNotEmpty() && 1 < quantity!!.text.trim().toInt(),
+                                        enabled = quantity!!.text.trim().isNotEmpty() && quantity!!.text.trim().toIntOrNull() != null && 1 < quantity!!.text.trim().toInt(),
                                         modifier = Modifier.size(30.dp)
                                     ) {
                                         Image(

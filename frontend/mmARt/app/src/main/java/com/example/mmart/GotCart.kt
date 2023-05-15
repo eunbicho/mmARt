@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.mmart.ui.theme.*
@@ -204,7 +205,7 @@ fun GotCart(navController: NavController) {
                                             updateGotCart(item.itemIdx, tempQuantity)
                                             quantity = TextFieldValue(tempQuantity.toString())
                                         },
-                                        enabled = quantity!!.text.trim().isNotEmpty() && item.inventory > quantity!!.text.trim().toInt(),
+                                        enabled = quantity!!.text.trim().isNotEmpty() && quantity!!.text.trim().toIntOrNull() != null && item.inventory > quantity!!.text.trim().toInt(),
                                         modifier = Modifier.size(30.dp)
                                     ) {
                                         Image(
@@ -227,7 +228,7 @@ fun GotCart(navController: NavController) {
                                         ),
                                         keyboardActions = KeyboardActions(
                                             onDone = {
-                                                if ( quantity == null || quantity?.text == "" || quantity!!.text.trim().toInt() < 1 ) {
+                                                if ( quantity == null || quantity!!.text.trim().isNullOrEmpty() || quantity!!.text.trim().toIntOrNull() == null || quantity!!.text.trim().toInt() < 1 ) {
                                                     quantityError = true
                                                     quantity = TextFieldValue(item.quantity.toString())
                                                 } else if ( quantity!!.text.trim().toInt() > item.inventory ) {
@@ -256,7 +257,7 @@ fun GotCart(navController: NavController) {
                                             updateGotCart(item.itemIdx, tempQuantity)
                                             quantity = TextFieldValue(tempQuantity.toString())
                                         },
-                                        enabled = quantity!!.text.trim().isNotEmpty() && 1 < quantity!!.text.trim().toInt(),
+                                        enabled = quantity!!.text.trim().isNotEmpty() && quantity!!.text.trim().toIntOrNull() != null && 1 < quantity!!.text.trim().toInt(),
                                         modifier = Modifier.size(30.dp)
                                     ) {
                                         Image(
