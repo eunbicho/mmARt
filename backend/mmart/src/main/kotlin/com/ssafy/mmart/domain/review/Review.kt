@@ -21,6 +21,10 @@ data class Review (
     @Column(name = "star")
     var star : Int,
 
+    @Column(name = "isPositive")
+    val isPositive: Boolean = true,
+
+
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name="itemIdx")
