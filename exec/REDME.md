@@ -91,7 +91,7 @@
     ```
     spring.datasource.username={MYSQL_USERNAME}
     spring.datasource.password={MYSQL_PASSWORD}
-    spring.datasource.url=jdbc:mysql://{MYSQL_CONTAINER}:{MYSQL_PORT}/{MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    spring.datasource.url=jdbc:mysql://{MYSQL_CONTAINER_NAME}:{MYSQL_PORT}/{MYSQL_DATABASE_NAME}?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
     spring.jpa.hibernate.ddl-auto=update
 
@@ -99,6 +99,11 @@
     spring.jpa.show-sql=true
 
     spring.mvc.pathmatch.matching-strategy=ant_path_matcher
+    spring.thymeleaf.prefix=classpath:static
+    spring.thymeleaf.check-template-location= true
+    spring.thymeleaf.suffix= .html
+    spring.thymeleaf.mode= HTML
+    spring.thymeleaf.cache= false
 
     cloud.aws.s3.bucket={S3_BUCKET_NAME}
     cloud.aws.credentials.access-key={S3_ACCESS_KEY}
@@ -129,3 +134,5 @@
 [클라우드 스토리지 | 웹 스토리지| Amazon Web Services](https://aws.amazon.com/ko/s3/?did=ap_card&trk=ap_card)
 
 ## DB dump
+
+
