@@ -1,6 +1,7 @@
 package com.ssafy.mmart.service
 
 import com.ssafy.mmart.domain.review.Review
+import com.ssafy.mmart.domain.review.dto.ItemReviewRes
 import com.ssafy.mmart.domain.review.dto.ReviewReq
 import com.ssafy.mmart.domain.review.dto.ReviewRes
 import com.ssafy.mmart.exception.bad_request.BadAccessException
@@ -40,13 +41,20 @@ class ReviewService @Autowired constructor(
         return list
     }
 
-    fun getItemReviews(itemIdx: Int): List<ReviewRes>? {
+    fun getItemReviews(itemIdx: Int): ItemReviewRes? {
         itemRepository.findById(itemIdx).orElseThrow(::ItemNotFoundException)
         val list = mutableListOf<ReviewRes>()
+        var total = 0;
+        var positive = 0;
+
         reviewRepository.findAllByItem_ItemIdxOrderByCreateTimeDesc(itemIdx)?.forEach { review ->
+            total++
             list.add(setReviewRes(review)!!)
+            if (review.isPositive)
+                positive++
+
         }
-        return list
+        return ItemReviewRes(reviewRes = list, pos = if(total!=0) 100.0 * positive / total  else -1.0)
     }
 
     fun createReview(userIdx: Int, paymentDetailIdx: Int, reviewReq: ReviewReq): ReviewRes? {
