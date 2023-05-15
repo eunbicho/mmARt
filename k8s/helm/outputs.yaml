@@ -33,6 +33,13 @@ To connect to your database:
   2. To connect to primary service (read/write):
 
       mysql -h mysql.default.svc.cluster.local -uroot -p"$MYSQL_ROOT_PASSWORD"
+
+volumeMounts:
+        - mountPath: /bitnami/mysql
+          name: data
+        - mountPath: /opt/bitnami/mysql/conf/my.cnf
+          name: config
+          subPath: my.cnf
 ---
 NAME: redis
 LAST DEPLOYED: Wed May  3 00:57:13 2023
