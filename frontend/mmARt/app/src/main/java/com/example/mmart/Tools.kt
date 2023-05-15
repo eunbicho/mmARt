@@ -56,8 +56,8 @@ fun searchBar(navController: NavController){
         shape = CircleShape,
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            .padding(20.dp)
+            .height(60.dp)
+            .padding(20.dp, 0.dp)
             .border(color = Dark_gray, width = 1.5.dp, shape = CircleShape)
             .shadow(
                 shape = CircleShape,
@@ -213,7 +213,8 @@ fun floatingBtns(
 @Composable
 fun blankView(msg: String) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
