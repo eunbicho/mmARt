@@ -75,7 +75,7 @@ fun Review(navController: NavController) {
         if (reviews != null) {
             // 작성한 리뷰가 없을 때
             if (reviews!!.isEmpty()) {
-                Text("작성한 리뷰가 없습니다.")
+                blankView("작성한 리뷰가 없습니다.")
 
                 // 작성한 리뷰가 있을 때
             } else {
@@ -85,7 +85,11 @@ fun Review(navController: NavController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 23.dp, start = 23.dp, end = 23.dp)
-                                .border(width = (1.8).dp, color = Main_gray, shape = RoundedCornerShape(11.dp))
+                                .border(
+                                    width = (1.8).dp,
+                                    color = Main_gray,
+                                    shape = RoundedCornerShape(11.dp)
+                                )
                         ) {
 
                             // 구매 상품 정보
@@ -142,7 +146,9 @@ fun Review(navController: NavController) {
 
                             // 수정, 삭제 버튼
                             Row(
-                                modifier = Modifier.align(Alignment.End).padding(top = 5.dp)
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .padding(top = 5.dp)
                             ) {
                                 OutlinedButton(
                                     modifier = Modifier.padding(start = 5.dp, end = 10.dp, bottom = 10.dp),
