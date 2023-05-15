@@ -11,20 +11,40 @@
     <meta property="og:site_name" content="mmAR+" />
     <meta property="og:locale" content="ko-KR" />
 <!--    <meta property="og:image" content="https://snapstory401.s3.ap-northeast-2.amazonaws.com/meta/web-meta.png" />-->
-    <link rel="icon" href="/static/mmart-icon.ico" />
+    <link rel="icon" href="/static/mmart-logo.ico" />
     <link rel="stylesheet" href="/static/index.css">
     <title>mmAR+</title>
 </head>
 <body id="body">
-<p>키오스크입니당</p>
-<div id="main">
+<div id="pay-main">
+    <img src="/static/mmart-logo.png" alt="mmAR+ main">
     <form id="qrcode" onsubmit="return false;">
         <input type="text" name="email" placeholder="QR코드를 인식해주세요." autofocus>
     </form>
-    <div id="paymentList">
+</div>
+<div id="pay-list">
+    <img src="/static/mmart-horizontal.png" alt="mmAR+ pay">
+    <div id="pay-list-main">
+        <ul id="items">
 
+        </ul>
+        <div id="price-to-pay">
+            <ul id="price">
+                <li class="price-title" style="color: #999999">총 상품 금액</li>
+                <li class="price-detail" id="price1" style="color: #999999"></li>
+                <hr>
+                <li class="price-title" style="color: #72CCFF">총 할인 금액</li>
+                <li class="price-detail" id="price2" style="color: #72CCFF"></li>
+                <hr>
+                <li class="price-title" style="color: #545454">총 결제 금액</li>
+                <li class="price-detail" id="price3" style="color: #545454"></li>
+            </ul>
+            <button id="go-to-pay">
+                <img src="/static/pay.png" alt="go to pay">
+                <p>결제하기</p>
+            </button>
+        </div>
     </div>
-    <button id="goToPay">결제하기</button>
 </div>
 
 
@@ -51,31 +71,43 @@
     // adjustLayout() // Call the function initially to adjust the layout on page load
     // window.addEventListener("resize", adjustLayout) // Add an event listener to adjust the layout on window resize
 
-    const BASE_URL = "http://localhost:8080/api/v1"
-    // const BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1"
+    // const BASE_URL = "http://localhost:8080/api/v1"
+    const BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1"
 
-    const inputQrcode = document.querySelector("#qrcode")
-    const paymentList = document.querySelector("#paymentList")
-    const payBtn = document.querySelector("#goToPay")
-    payBtn.style.display = "none"
+    const payMain = document.querySelector("#pay-main")
+    const payList = document.querySelector("#pay-list")
+    payList.style.display = "none"
+
+    const itemLists = document.querySelector("#items")
+    const price1 = document.querySelector("#price1")
+    const price2 = document.querySelector("#price2")
+    const price3 = document.querySelector("#price3")
+    const payBtn = document.querySelector("#go-to-pay")
 
     let userIdx = 0
     let gotCartRes = []
 
-    inputQrcode.addEventListener("submit", e => {
-        console.log(e.target.email.value)
+    payMain.addEventListener("submit", e => {
+        // console.log(e.target.email.value)
         axios
             .get(`${BASE_URL}/gotcarts?email=${e.target.email.value}`)
             .then( res => {
                 console.log(res.data.result)
-                inputQrcode.style.display = "none"
-                userIdx = res.data.result.userIdx
                 gotCartRes = res.data.result.gotCartRes
-                return res.data.result.gotCartRes.itemList
+                if (gotCartRes.itemList.length === 0 ) {
+                    alert("장봤구니에 담긴 상품이 없습니다.")
+                } else {
+                    userIdx = res.data.result.userIdx
+                    payMain.style.display = "none"
+                    return res.data.result.gotCartRes
+                }
             })
-            .then( items => {
-                    getGotCarts(items)
-                    payBtn.style.display = "inline"
+            .then( gotCartRes => {
+                if (gotCartRes.itemList.length > 0 ) payList.style.display = "flex"
+                price1.innerHTML = `${gotCartRes.priceTotal.toLocaleString('ko-KR')}원`
+                price2.innerHTML = `${gotCartRes.discountTotal.toLocaleString('ko-KR')}원`
+                price3.innerHTML = `${gotCartRes.total.toLocaleString('ko-KR')}원`
+                getGotCarts(gotCartRes.itemList)
             })
             .catch( err => {
                 alert("QR코드를 다시 인식해주세요.")
@@ -86,15 +118,28 @@
     })
 
     function getGotCarts(items) {
-        let ul = document.createElement("ul")
-        let li = document.createElement("li")
 
-        paymentList.appendChild(ul)
+        items.forEach( (item, index) => {
+            let itemName = document.createElement("li")
+            let itemPrice = document.createElement("li")
+            let divider = document.createElement("hr")
 
-        items.forEach( item => {
-            li.innerHTML += item.itemName
-            ul.appendChild(li)
-            li = document.createElement("li")
+            itemName.innerHTML = item.itemName
+            itemName.classList.add("item-name")
+            itemLists.appendChild(itemName)
+
+            itemPrice.innerHTML = `&emsp; &emsp; &emsp; ${item.quantity} ${item.price.toLocaleString('ko-KR')}`
+            itemPrice.classList.add("item-price")
+            itemLists.appendChild(itemPrice)
+
+            if (item.isCoupon) {
+                let itemCoupon = document.createElement("li")
+                itemCoupon.innerHTML += `&emsp; ${item.couponPrice.toLocaleString('ko-KR')}`
+                itemCoupon.classList.add("item-price", "item-coupon")
+                itemLists.appendChild(itemCoupon)
+            }
+            divider.style.marginInlineStart = "20px"
+            if (index < items.length - 1) itemLists.appendChild(divider)
         })
     }
 
@@ -107,6 +152,8 @@
             .then( res => {
                 console.log(res)
                 alert("결제가 완료되었습니다.")
+                payList.style.display = "none"
+                payMain.style.display = "flex"
             })
             .catch( err => {
                 console.log(err)
