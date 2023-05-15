@@ -1,17 +1,170 @@
 @font-face {
-    font-family: "Gmarken Sans Bold";
+    font-family: "Gmarket Sans Bold";
     src: url("/static/GmarketSansBold.otf");
 }
 @font-face {
-    font-family: "Gmarken Sans Medium";
+    font-family: "Gmarket Sans Medium";
     src: url("/static/GmarketSansMedium.otf");
 }
 @font-face {
-    font-family: "Gmarken Sans Light";
+    font-family: "Gmarket Sans Light";
     src: url("/static/GmarketSansLight.otf");
+}
+
+::-webkit-scrollbar {
+    background: none;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    margin: 30px;
+}
+
+* {
+    font-family: "Gmarket Sans Bold", sans-serif;
 }
 
 body {
     background-color: #72CCFF;
-    font-family: "Gmarken Sans Bold";
+    text-align: -webkit-center;
+}
+
+#pay-main {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 15vh;
+    gap: 5vh;
+}
+
+input[type=text] {
+    width: 300px;
+    height: 40px;
+    font-size: 15px;
+    font-family: "Gmarket Sans Medium", sans-serif;
+    text-align: center;
+    border: gray solid 2px;
+    border-radius: 30px;
+    outline: none;
+    background-color: white;
+}
+
+#pay-list {
+    /*display: flex;*/
+    flex-direction: column;
+    width: 80vw;
+}
+
+#pay-list > img {
+    width: 20vw;
+    padding: 20px;
+}
+
+#pay-list-main {
+    display: flex;
+    flex-direction: row;
+    gap: 2vw;
+}
+
+#items {
+    width: 48vw;
+    height: 80vh;
+    background: white;
+    border: 2px solid #545454;
+    border-radius: 30px;
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+}
+
+li {
+    padding: 2vh;
+    list-style-type: none;
+}
+
+.item-name {
+    font-size: 18px;
+    font-family: 'Gmarket Sans Medium', sans-serif;
+    color: #545454;
+    text-align: left;
+    padding-top: 40px;
+    padding-bottom: 10px;
+    padding-left: 60px;
+}
+
+.item-price {
+    font-family: 'Gmarket Sans Light', sans-serif;
+    font-size: 15px;
+    text-align: right;
+    padding-top: 0;
+    padding-bottom: 10px;
+    padding-right: 60px;
+    text-align-last: justify;
+}
+
+.item-coupon {
+    font-size: 18px;
+    font-family: 'Gmarket Sans Medium', sans-serif;
+    color: #72CCFF;
+    padding-top: 0;
+    padding-bottom: 10px;
+}
+
+#price-to-pay {
+    width: 30vw;
+    height: 80vh;
+    display: flex;
+    gap: 1vh;
+    flex-direction: column;
+}
+
+.price-title {
+    text-align: left;
+    font-size: 24px;
+    font-family: 'Gmarket Sans Medium', sans-serif;
+}
+
+.price-detail {
+    text-align: right;
+    font-size: 32px;
+    font-family: 'Gmarket Sans Bold', sans-serif;
+}
+
+#price {
+    background: white;
+    border: 2px solid #545454;
+    border-radius: 30px;
+    padding: 5vw;
+    margin: 0;
+}
+
+#go-to-pay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 18vh;
+    font-size: 48px;
+    font-family: "Gmarket Sans Bold", sans-serif;
+    color: white;
+    border: 2px solid #545454;
+    border-radius: 30px;
+    background-color: #FEEF00;
+}
+
+#go-to-pay > img {
+    height: 54px;
+    padding-right: 12px;
+}
+
+#go-to-pay > p {
+    margin: 0;
+    display: inline;
+    -webkit-text-stroke: 2.5px #545454;
+    text-shadow: 4px 4px 0 #545454;
 }
