@@ -180,13 +180,17 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     modifier = Modifier.padding(20.dp)
                 )
 
-                // 상품명, 가격
+                // 상품명, 매장 수량, 가격
                 Column(
                     modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)
                 ){
                     // 상품명
                     Text(item!!.itemName, fontSize = 25.sp, modifier = Modifier.padding(5.dp))
 
+                    Row(){
+                        // 매장 수량
+                        
+                    }
                     // 가격
                     if(item!!.isCoupon){ // 쿠폰 있을 경우
                         Row(

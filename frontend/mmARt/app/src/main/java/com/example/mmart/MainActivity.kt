@@ -137,21 +137,18 @@ class MainActivity : ComponentActivity() {
                 }
 
                 // 로그인 안됐을 시 로그인
-                if (savedInstanceState == null) {
+                if (userId == 0) {
                     navController.navigate("login"){
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }
                 }
             }
         }
-
-
-
     }
 }
 
 // 유저 아이디
-var userId = 1
+var userId = 0
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter") // Scaffold의 padding value 사용 안 할 때
 @Composable
