@@ -27,7 +27,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.Navigation.findNavController
 import com.example.mmart.ui.theme.mainTypography
-import com.unity3d.player.UnityPlayerActivity
+//import com.unity3d.player.UnityPlayerActivity
 
 class MainActivity : ComponentActivity() {
     fun a(){
@@ -49,7 +49,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme(typography = mainTypography) {
                 val navController = rememberNavController()
+
                 NavHost(navController = navController, startDestination = "main") {
+                    // 로그인
+                    composable(route = "login") {
+                        Login(navController)
+                    }
+                    // 회원 가입
+                    composable(route = "signUp") {
+                        SignUp(navController)
+                    }
                     // 메인 화면
                     composable(route = "main") {
                         Main(navController)
@@ -126,16 +135,20 @@ class MainActivity : ComponentActivity() {
                         ReviewUpdate(navController, backStackEntry.arguments!!.getInt("reviewIdx"))
                     }
                 }
+
+                // 로그인 안됐을 시 로그인
+                if (userId == 0) {
+                    navController.navigate("login"){
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    }
+                }
             }
         }
-
-
-
     }
 }
 
 // 유저 아이디
-var userId = 1
+var userId = 0
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter") // Scaffold의 padding value 사용 안 할 때
 @Composable
@@ -329,7 +342,7 @@ fun Main(navController: NavController) {
                 }
             }
             Button(onClick = {
-                             mContext.startActivity(Intent(mContext, UnityPlayerActivity::class.java))
+//                             mContext.startActivity(Intent(mContext, UnityPlayerActivity::class.java))
 //                b.a()
 //                navController.navigate("unity")
 //                Intent test = new Intent(this, UnityPlayerActivity::class.java)Intent test = new Intent(this, UnityPlayerActivity::class.java)

@@ -10,11 +10,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,9 +21,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -43,10 +43,10 @@ import java.text.DecimalFormat
 
 @Composable
 fun GetCart(navController: NavController) {
-    val userId = 1
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    val textFocus = LocalFocusManager.current
 
     var reload: Boolean by remember { mutableStateOf(false) }
     var cartRes: CartContent? by remember { mutableStateOf(null) }
@@ -70,8 +70,19 @@ fun GetCart(navController: NavController) {
     }
 
     fun updateGetCart(itemIdx: Int, quantity: Int) {
-        println("${itemIdx}, ${quantity}")
-
+        try {
+            val cartReq = mapOf(
+                "itemIdx" to itemIdx,
+                "quantity" to quantity,
+                "userIdx" to userId,
+            )
+            coroutineScope.async { api.updateGetCart(cartReq) }
+        } catch (e: Exception) {
+            println("----------UPDATE ERROR--------")
+            e.printStackTrace()
+            println("------------------------------")
+        }
+        reload = !reload
     }
 
     fun deleteGetCart(itemIdx: Int) {
@@ -85,19 +96,14 @@ fun GetCart(navController: NavController) {
         reload = !reload
     }
 
-    fun checkQuantity(prev: Int, curr: TextFieldValue, item: ItemInfo): Int{
-        if (curr.text.equals("") || curr.text.toInt() < 1){
-            quantityError = true
-            return prev
-        } else if (curr.text.toInt() > item.inventory) {
-            inventoryError = true
-            return prev
-        }
-        return curr.text.toInt()
-    }
-
     Column {
         topBar(navController = navController, "장볼구니")
+        Row(
+            modifier = Modifier
+                .padding(0.dp, 20.dp, 0.dp, 0.dp)
+        ) {
+            searchBar(navController = navController)
+        }
 
         // result가 null이 아닐 경우만
         if(cartRes != null){
@@ -105,13 +111,13 @@ fun GetCart(navController: NavController) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(560.dp)
+                        .height(480.dp)
                         .padding(20.dp, 0.dp),
                     state = listState,
                 ) {
                     items(cartRes!!.itemList) {
                             item ->
-                        var quantity by remember { mutableStateOf(TextFieldValue("${item.quantity}")) }
+                        var quantity: TextFieldValue? by remember { mutableStateOf(TextFieldValue("${item.quantity}")) }
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -198,36 +204,47 @@ fun GetCart(navController: NavController) {
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Image(
-                                        painter = painterResource(R.drawable.quantity_plus),
-                                        modifier = Modifier
-                                            .size(30.dp)
-                                            .clickable {
-                                                val tempQuantity = quantity.text.toInt() + 1
-                                                updateGetCart(item.itemIdx, tempQuantity)
-                                                quantity = TextFieldValue("${tempQuantity}")
-
-                                            },
-                                        contentDescription = "+",
-                                    )
-                                    BasicTextField(
-                                        value = quantity,
-                                        onValueChange = {
-                                            if ( it.text == "" || it.text.toInt() <1 ) {
-                                                quantityError = true
-                                            } else if ( it.text.toInt() > item.inventory ) {
-                                                inventoryError = true
-                                            } else {
-                                                quantity = it
-                                            }
+                                    IconButton(
+                                        onClick = {
+                                            val tempQuantity = quantity!!.text.trim().toInt() + 1
+                                            updateGetCart(item.itemIdx, tempQuantity)
+                                            quantity = TextFieldValue(tempQuantity.toString())
                                         },
+                                        enabled = quantity!!.text.trim().isNotEmpty() && quantity!!.text.trim().toIntOrNull() != null && item.inventory > quantity!!.text.trim().toInt(),
+                                        modifier = Modifier.size(30.dp)
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.quantity_plus),
+                                            contentDescription = "+",
+                                        )
+                                    }
+
+                                    BasicTextField(
+                                        value = quantity!!,
+                                        onValueChange = { quantity = it },
                                         modifier = Modifier
                                             .size(30.dp)
                                             .clip(RoundedCornerShape(10.dp))
                                             .background(Color.White),
                                         textStyle = TextStyle(textAlign = TextAlign.Center),
                                         keyboardOptions = KeyboardOptions(
-                                            keyboardType = KeyboardType.Number
+                                            keyboardType = KeyboardType.Number,
+                                            imeAction = ImeAction.Done
+                                        ),
+                                        keyboardActions = KeyboardActions(
+                                            onDone = {
+                                                if ( quantity == null || quantity!!.text.trim().isNullOrEmpty() || quantity!!.text.trim().toIntOrNull() == null || quantity!!.text.trim().toInt() < 1 ) {
+                                                    quantityError = true
+                                                    quantity = TextFieldValue(item.quantity.toString())
+                                                } else if ( quantity!!.text.trim().toInt() > item.inventory ) {
+                                                    inventoryError = true
+                                                    quantity =
+                                                        TextFieldValue(item.quantity.toString())
+                                                } else {
+                                                    updateGetCart(item.itemIdx, quantity!!.text.trim().toInt())
+                                                }
+                                                textFocus.clearFocus()
+                                            },
                                         ),
                                         singleLine = true,
                                         cursorBrush = SolidColor(Light_gray),
@@ -239,18 +256,22 @@ fun GetCart(navController: NavController) {
                                         }
                                     )
 
-                                    Image(
-                                        painter = painterResource(R.drawable.quantity_minus),
-                                        modifier = Modifier
-                                            .size(30.dp)
-                                            .clickable {
-                                                val tempQuantity = quantity.text.toInt() - 1
-                                                updateGetCart(item.itemIdx, tempQuantity)
-                                                quantity = TextFieldValue("${tempQuantity}")
-                                            },
-                                        contentDescription = "-",
-                                    )
+                                    IconButton(
+                                        onClick = {
+                                            val tempQuantity = quantity!!.text.trim().toInt() - 1
+                                            updateGetCart(item.itemIdx, tempQuantity)
+                                            quantity = TextFieldValue(tempQuantity.toString())
+                                        },
+                                        enabled = quantity!!.text.trim().isNotEmpty() && quantity!!.text.trim().toIntOrNull() != null && 1 < quantity!!.text.trim().toInt(),
+                                        modifier = Modifier.size(30.dp)
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.quantity_minus),
+                                            contentDescription = "-",
+                                        )
+                                    }
                                 }
+
                                 Image(
                                     painter = painterResource(R.drawable.delete),
                                     modifier = Modifier

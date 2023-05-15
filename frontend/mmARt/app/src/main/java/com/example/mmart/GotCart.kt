@@ -10,11 +10,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,9 +21,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -43,15 +43,16 @@ import java.text.DecimalFormat
 
 @Composable
 fun GotCart(navController: NavController) {
-    val userId = 1
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    val textFocus = LocalFocusManager.current
 
     var reload: Boolean by remember { mutableStateOf(false) }
     var cartRes: CartContent? by remember { mutableStateOf(null) }
     var userRes: UserInfo? by remember { mutableStateOf(null) }
 
+    var goToPay by remember { mutableStateOf(false)}
     var showQrcode by remember { mutableStateOf(false)}
     var quantityError by remember { mutableStateOf(false)}
     var inventoryError by remember { mutableStateOf(false)}
@@ -70,8 +71,19 @@ fun GotCart(navController: NavController) {
     }
 
     fun updateGotCart(itemIdx: Int, quantity: Int) {
-        println("${itemIdx}, ${quantity}")
-
+        try {
+            val cartReq = mapOf(
+                "itemIdx" to itemIdx,
+                "quantity" to quantity,
+                "userIdx" to userId,
+            )
+            coroutineScope.async { api.updateGotCart(cartReq) }
+        } catch (e: Exception) {
+            println("----------UPDATE ERROR--------")
+            e.printStackTrace()
+            println("------------------------------")
+        }
+        reload = !reload
     }
 
     fun deleteGotCart(itemIdx: Int) {
@@ -83,17 +95,6 @@ fun GotCart(navController: NavController) {
             println("------------------------------")
         }
         reload = !reload
-    }
-
-    fun checkQuantity(prev: Int, curr: TextFieldValue, item: ItemInfo): Int{
-        if (curr.text.equals("") || curr.text.toInt() < 1){
-            quantityError = true
-            return prev
-        } else if (curr.text.toInt() > item.inventory) {
-            inventoryError = true
-            return prev
-        }
-        return curr.text.toInt()
     }
 
     Column {
@@ -111,7 +112,7 @@ fun GotCart(navController: NavController) {
                 ) {
                     items(cartRes!!.itemList) {
                             item ->
-                        var quantity by remember { mutableStateOf(TextFieldValue("${item.quantity}")) }
+                        var quantity: TextFieldValue? by remember { mutableStateOf(TextFieldValue(item.quantity.toString())) }
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -198,36 +199,47 @@ fun GotCart(navController: NavController) {
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Image(
-                                        painter = painterResource(R.drawable.quantity_plus),
-                                        modifier = Modifier
-                                            .size(30.dp)
-                                            .clickable {
-                                                val tempQuantity = quantity.text.toInt() + 1
-                                                updateGotCart(item.itemIdx, tempQuantity)
-                                                quantity = TextFieldValue("${tempQuantity}")
-
-                                            },
-                                        contentDescription = "+",
-                                    )
-                                    BasicTextField(
-                                        value = quantity,
-                                        onValueChange = {
-                                            if ( it.text == "" || it.text.toInt() <1 ) {
-                                                quantityError = true
-                                            } else if ( it.text.toInt() > item.inventory ) {
-                                                inventoryError = true
-                                            } else {
-                                                quantity = it
-                                            }
+                                    IconButton(
+                                        onClick = {
+                                            val tempQuantity = quantity!!.text.trim().toInt() + 1
+                                            updateGotCart(item.itemIdx, tempQuantity)
+                                            quantity = TextFieldValue(tempQuantity.toString())
                                         },
+                                        enabled = quantity!!.text.trim().isNotEmpty() && quantity!!.text.trim().toIntOrNull() != null && item.inventory > quantity!!.text.trim().toInt(),
+                                        modifier = Modifier.size(30.dp)
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.quantity_plus),
+                                            contentDescription = "+",
+                                        )
+                                    }
+
+                                    BasicTextField(
+                                        value = quantity!!,
+                                        onValueChange = { quantity = it },
                                         modifier = Modifier
                                             .size(30.dp)
                                             .clip(RoundedCornerShape(10.dp))
                                             .background(Color.White),
                                         textStyle = TextStyle(textAlign = TextAlign.Center),
                                         keyboardOptions = KeyboardOptions(
-                                            keyboardType = KeyboardType.Number
+                                            keyboardType = KeyboardType.Number,
+                                            imeAction = ImeAction.Done
+                                        ),
+                                        keyboardActions = KeyboardActions(
+                                            onDone = {
+                                                if ( quantity == null || quantity!!.text.trim().isNullOrEmpty() || quantity!!.text.trim().toIntOrNull() == null || quantity!!.text.trim().toInt() < 1 ) {
+                                                    quantityError = true
+                                                    quantity = TextFieldValue(item.quantity.toString())
+                                                } else if ( quantity!!.text.trim().toInt() > item.inventory ) {
+                                                    inventoryError = true
+                                                    quantity =
+                                                        TextFieldValue(item.quantity.toString())
+                                                } else {
+                                                    updateGotCart(item.itemIdx, quantity!!.text.trim().toInt())
+                                                }
+                                                textFocus.clearFocus()
+                                            },
                                         ),
                                         singleLine = true,
                                         cursorBrush = SolidColor(Light_gray),
@@ -239,18 +251,22 @@ fun GotCart(navController: NavController) {
                                         }
                                     )
 
-                                    Image(
-                                        painter = painterResource(R.drawable.quantity_minus),
-                                        modifier = Modifier
-                                            .size(30.dp)
-                                            .clickable {
-                                                val tempQuantity = quantity.text.toInt() - 1
-                                                updateGotCart(item.itemIdx, tempQuantity)
-                                                quantity = TextFieldValue("${tempQuantity}")
-                                            },
-                                        contentDescription = "-",
-                                    )
+                                    IconButton(
+                                        onClick = {
+                                            val tempQuantity = quantity!!.text.trim().toInt() - 1
+                                            updateGotCart(item.itemIdx, tempQuantity)
+                                            quantity = TextFieldValue(tempQuantity.toString())
+                                        },
+                                        enabled = quantity!!.text.trim().isNotEmpty() && quantity!!.text.trim().toIntOrNull() != null && 1 < quantity!!.text.trim().toInt(),
+                                        modifier = Modifier.size(30.dp)
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.quantity_minus),
+                                            contentDescription = "-",
+                                        )
+                                    }
                                 }
+
                                 Image(
                                     painter = painterResource(R.drawable.delete),
                                     modifier = Modifier
@@ -333,41 +349,148 @@ fun GotCart(navController: NavController) {
                     listState = listState,
                     secondBtn = R.drawable.pay,
                     secondBtnName = "PAY",
-                    secondEvent = { showQrcode = true }
+                    secondEvent = { goToPay = true }
                 )
             } else {
-                blankView("장봤구니가 비어있습니다.")
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        "장봤구니가 비어있습니다.",
+                        modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp),
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable { navController.navigate("main") }
+                        ) {
+                            Image(painter = painterResource(R.drawable.main), contentDescription = "홈으로", Modifier.size(80.dp))
+                            Text("홈으로", Modifier.padding(5.dp))
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable { navController.navigate("payment") }
+                        ) {
+                            Image(painter = painterResource(R.drawable.payment), contentDescription = "결제내역으로", Modifier.size(80.dp))
+                            Text("결제내역으로", Modifier.padding(5.dp))
+                        }
+                    }
+                }
             }
-
         }
+    }
+
+    if (goToPay) {
+        Dialog(
+            onDismissRequest = { goToPay = false },
+            content = {
+                Box(
+                    modifier = Modifier
+                        .border(
+                            width = 3.dp,
+                            color = Dark_gray,
+                            shape = RoundedCornerShape(40.dp)
+                        )
+                        .shadow(10.dp, shape = RoundedCornerShape(40.dp))
+                        .background(color = Color.White, shape = RoundedCornerShape(40.dp))
+                ){
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "결제하시겠습니까?",
+                            modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp),
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        Row(
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .clickable { goToPay = false }
+                            ) {
+                                Image(painter = painterResource(R.drawable.previous), contentDescription = "이전으로", Modifier.size(80.dp))
+                                Text("이전으로", Modifier.padding(5.dp))
+                            }
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .clickable {
+                                        showQrcode = true
+                                        goToPay = false
+                                    }
+                            ) {
+                                Image(painter = painterResource(R.drawable.pay), contentDescription = "결제하기", Modifier.size(80.dp))
+                                Text("결제하기", Modifier.padding(5.dp))
+                            }
+                        }
+                    }
+                }
+            }
+        )
     }
 
     if (showQrcode) {
         Dialog(
             onDismissRequest = { showQrcode = false },
             content = {
-                Card (
-                    modifier = Modifier.fillMaxWidth(),
-                    elevation = 10.dp
+                Box (
+                    modifier = Modifier.fillMaxWidth()
+                    .border(
+                        width = 3.dp,
+                        color = Dark_gray,
+                        shape = RoundedCornerShape(40.dp)
+                        )
+                    .shadow(10.dp, shape = RoundedCornerShape(40.dp))
+                    .background(color = Main_yellow, shape = RoundedCornerShape(40.dp)),
                 ){
                     Column(
-                        modifier = Modifier.padding(20.dp),
+                        modifier = Modifier.padding(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text("아래 QR코드를 키오스크에 인식해주세요.")
+                        Text(
+                            "아래 QR코드를\n키오스크에 인식해주세요.",
+                            modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 0.dp),
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center
+                        )
                         AsyncImage(
                             model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${userRes?.qrcode}",
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().padding(10.dp),
                             contentDescription = userRes?.name
                         )
-                        Button(onClick = {
-                            showQrcode = false
-                        }) {
-                            Text("닫기")
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .clickable {
+                                    reload = !reload
+                                    showQrcode = false
+                                }
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.paydone),
+                                contentDescription = "닫기",
+                                modifier = Modifier.size(160.dp)
+                            )
                         }
                     }
                 }
             }
+
         )
     }
 

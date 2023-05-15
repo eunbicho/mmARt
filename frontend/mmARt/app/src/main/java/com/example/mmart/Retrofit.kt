@@ -9,6 +9,18 @@ import retrofit2.http.*
 // http request
 interface APIS {
 
+    // 로그인
+    @POST("users/login")
+    suspend fun login(@Body body: Any): UserResult
+
+    // 회원가입
+    @POST("users")
+    suspend fun signUp(@Body body: Any): UserResult
+
+    // 중복확인
+    @GET("users")
+    suspend fun duplicationCheck(@Query("email") email: String): UserResult
+
     // 카테고리 별 아이템
     @GET("items/categories")
     suspend fun getCategories(@Query("userIdx") userIdx: Int, @Query("categoryIdx") categoryIdx: Int): ItemsResult
@@ -21,6 +33,10 @@ interface APIS {
     @GET("getcarts/{userIdx}")
     suspend fun getGetCarts(@Path("userIdx") userIdx: Int): CartResult
 
+    // 장볼구니 수정
+    @PUT("getcarts")
+    suspend fun updateGetCart(@Body cartReq: Any): CartResult
+
     // 장볼구니에서 아이템 삭제
     @DELETE("getcarts")
     suspend fun deleteGetCart(@Query("userIdx") userIdx: Int, @Query("itemIdx") itemIdx: Int)
@@ -28,6 +44,10 @@ interface APIS {
     // 장봤구니 조회
     @GET("gotcarts/{userIdx}")
     suspend fun getGotCarts(@Path("userIdx") userIdx: Int): CartResult
+
+    // 장봤구니 수정
+    @PUT("gotcarts")
+    suspend fun updateGotCart(@Body cartReq: Any): CartResult
 
     // 장봤구니에서 아이템 삭제
     @DELETE("gotcarts")
@@ -39,7 +59,7 @@ interface APIS {
 
     // 장볼구니 추가
     @POST("getcarts")
-    suspend fun addGetCart(@Body body: Any)
+    suspend fun addGetCart(@Body body: Any): CartResult
 
     // 상품 별 리뷰 조회
     @GET("reviews/item")
@@ -79,11 +99,11 @@ interface APIS {
 
     // 리뷰 삭제
     @DELETE("reviews")
-    suspend fun deleteReview(@Query("userIdx") userIdx: Int, @Query("reviewIdx") reviewIdx: Int)
+    suspend fun deleteReview(@Query("userIdx") userIdx: Int, @Query("reviewIdx") reviewIdx: Int): ReviewResult
 
     companion object {
-        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
-//        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
+//        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
+        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
 
         fun create(): APIS {
             val gson : Gson = GsonBuilder().setLenient().create();
@@ -167,7 +187,7 @@ data class ReviewsResult(
     val result: List<ReviewDetail>
 )
 
-// 리뷰 개별 조회 (리뷰 수정용)
+// 리뷰 개별 조회 (리뷰 수정, 삭제용)
 data class ReviewResult(
     val resultCode: String,
     val result: ReviewDetail
@@ -180,7 +200,7 @@ data class ReviewDetail(
     val paymentDetail: PaymentDetail,
     val user: UserInfo,
     val item: ItemInfo,
-    val createTime: List<Int>
+    val date: String
 )
 
 // 리뷰 body (작성, 수정용)
