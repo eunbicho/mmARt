@@ -138,7 +138,8 @@ fun MyPage(navController: NavController){
                             userId = 0
                             navController.navigate("login"){
                                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                            } },
+                            }
+                                  },
                         elevation = ButtonDefaults.elevation(1.dp),
                         modifier = Modifier.padding(horizontal = 10.dp)
                     ) {
