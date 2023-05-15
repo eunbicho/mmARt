@@ -92,7 +92,7 @@ fun searchBar(navController: NavController){
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
-                            search()
+                            if (searchWord.trim().isNotEmpty()) search()
                         }
                 )
 
@@ -102,8 +102,10 @@ fun searchBar(navController: NavController){
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         // 엔터(키보드에서 search아이콘) 클릭 시 실행
         keyboardActions = KeyboardActions(onSearch = {
-            search()
-            keyboardController?.hide()
+            if (searchWord.trim().isNotEmpty()) {
+                search()
+                keyboardController?.hide()
+            }
         })
     )
 }
