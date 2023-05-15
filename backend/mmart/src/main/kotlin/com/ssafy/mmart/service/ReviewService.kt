@@ -54,7 +54,7 @@ class ReviewService @Autowired constructor(
                 positive++
 
         }
-        return ItemReviewRes(reviewResSSAFY = list, pos = if(total!=0) 100.0 * positive / total  else -1.0)
+        return ItemReviewRes(reviewRes = list, pos = if(total!=0) 100.0 * positive / total  else -1.0)
     }
 
     fun createReview(userIdx: Int, paymentDetailIdx: Int, reviewReq: ReviewReq): ReviewRes? {
