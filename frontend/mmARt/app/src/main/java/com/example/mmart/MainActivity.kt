@@ -1,6 +1,7 @@
 package com.example.mmart
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,11 +31,11 @@ import com.unity3d.player.UnityPlayerActivity
 
 class MainActivity : ComponentActivity() {
     fun a(){
-        startActivity(Intent(this, UnityPlayerActivity::class.java))
+//        startActivity(Intent(this, UnityPlayerActivity::class.java))
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val intent = Intent(this, UnityPlayerActivity::class.java)
+//        val intent = Intent(this, UnityPlayerActivity::class.java)
 
 //        Button(onClick = {
 ////                navController.navigate("unity")
