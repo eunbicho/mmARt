@@ -33,8 +33,7 @@ import retrofit2.http.POST
 interface SEARCH {
 
     @POST("_search")
-    suspend fun getSearchResult(@Body query: Any): Response
-
+    suspend fun getSearchResult(@Body body: Any): Response
 
     companion object {
         private const val BASE_URL = "http://k8a405.p.ssafy.io:8200/"
@@ -79,29 +78,27 @@ data class SearchItemInfo(
 @Composable
 fun Search(navController: NavController, searchWord: String){
     val coroutineScope = rememberCoroutineScope()
-
-    val query = mapOf(
+    // 검색할 때 보낼 body
+    val searchBody = mapOf(
         "query" to mapOf(
             "match" to mapOf(
                 "item_name.nori" to searchWord
             )
         )
     )
-
+    // 검색 결과
     var hits: Hits? by remember { mutableStateOf(null) }
 
     // 검색 결과 받아오기
     LaunchedEffect(true) {
         try {
-            val response: Response = coroutineScope.async { SEARCH.createSearch().getSearchResult(query) }.await()
+            val response: Response = coroutineScope.async { SEARCH.createSearch().getSearchResult(searchBody) }.await()
             hits = response.hits
-            println("$response ///////////////////////")
         } catch (e: Exception) {
             println("검색 결과 에러---------------------")
             e.printStackTrace()
             println("---------------------------------")
         }
-
     }
     Column() {
         // 상단바
