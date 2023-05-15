@@ -1,8 +1,4 @@
 use red-limo-db;
-delete from item_detail_image;
-delete from item_detail;
-delete from item;
-delete from category;
 insert into category (category_idx, create_time, update_time, category_name, place_info)
 values  (1, '2023-04-28 17:00:43', '2023-04-28 17:00:48', '가공식품', 'a'),
         (2, '2023-04-28 17:00:43', '2023-04-28 17:00:48', '신선식품', 'b'),
