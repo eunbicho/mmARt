@@ -35,7 +35,6 @@ services:
       - database
       - cache_database
     container_name: springboot
-    image: red-limo-backend:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/red-limo-db?useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
