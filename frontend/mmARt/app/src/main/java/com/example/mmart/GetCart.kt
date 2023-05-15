@@ -350,12 +350,21 @@ fun GetCart(navController: NavController) {
                         )
                     }
                 }
-                floatingBtn(listState)
+                floatingBtns(
+                    listState = listState,
+                    secondBtn = R.drawable.findway,
+                    secondBtnName = "MAP",
+                    secondEvent = { findMap = true }
+                )
             } else {
                 blankView("장볼구니가 비어있습니다.")
             }
 
         }
+    }
+
+    if (findMap) {
+
     }
 
 
