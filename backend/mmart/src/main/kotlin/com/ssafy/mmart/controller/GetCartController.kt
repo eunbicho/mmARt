@@ -25,23 +25,26 @@ class GetCartController @Autowired constructor(
     }
 
     @GetMapping("/{userIdx}")
-    fun getGetCart(@PathVariable userIdx:Int): ResultResponse<GetCartRes> {
+    fun getGetCart(@PathVariable userIdx: Int): ResultResponse<GetCartRes> {
         return ResultResponse.success(getCartService.getGetCart(userIdx))
     }
 
     @GetMapping("/shortest-path/{userIdx}")
-    fun getShortestPathGetCart(@PathVariable userIdx:Int): ResultResponse<GetCartPathRes?> {
-        return ResultResponse.success(getCartService.getShortestPathGetCart(userIdx))
+    fun getShortestPathGetCart(
+        @PathVariable userIdx: Int,
+        @RequestParam startNode: String
+    ): ResultResponse<GetCartPathRes?> {
+        return ResultResponse.success(getCartService.getShortestPathGetCart(userIdx,startNode))
     }
 
     @DeleteMapping("/{userIdx}")//장볼구니 비우기
-    fun deleteGetCarts(@PathVariable userIdx:Int): ResultResponse<GetCartRes> {
+    fun deleteGetCarts(@PathVariable userIdx: Int): ResultResponse<GetCartRes> {
         return ResultResponse.success(getCartService.deleteGetCarts(userIdx))
     }
 
     @DeleteMapping//장볼구니 아이템 삭제
-    fun deleteGetCart(@RequestParam userIdx:Int, itemIdx:Int): ResultResponse<GetCartRes> {
-        return ResultResponse.success(getCartService.deleteGetCart(userIdx,itemIdx))
+    fun deleteGetCart(@RequestParam userIdx: Int, itemIdx: Int): ResultResponse<GetCartRes> {
+        return ResultResponse.success(getCartService.deleteGetCart(userIdx, itemIdx))
     }
 
 }
