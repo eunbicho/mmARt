@@ -47,7 +47,7 @@ fun Payment(navController: NavController){
 
     Column {
         // 상단바
-        topBar(navController, "결제 내역 조회")
+        topBar(navController, "결제 내역")
 
         if(payments != null) {
             if(payments!!.isEmpty()){

@@ -75,7 +75,7 @@ fun Review(navController: NavController) {
         if (reviews != null) {
             // 작성한 리뷰가 없을 때
             if (reviews!!.isEmpty()) {
-                blankView(msg = "작성한 리뷰가 없습니다.")
+                blankView("작성한 리뷰가 없습니다.")
 
                 // 작성한 리뷰가 있을 때
             } else {

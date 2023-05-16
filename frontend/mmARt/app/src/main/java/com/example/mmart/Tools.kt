@@ -72,8 +72,8 @@ fun searchBar(navController: NavController){
         shape = CircleShape,
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            .padding(20.dp)
+            .height(60.dp)
+            .padding(20.dp, 0.dp)
             .border(color = Dark_gray, width = 1.5.dp, shape = CircleShape)
             .shadow(
                 shape = CircleShape,
@@ -108,7 +108,7 @@ fun searchBar(navController: NavController){
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
-                            search()
+                            if (searchWord.trim().isNotEmpty()) search()
                         }
                 )
 
@@ -118,8 +118,10 @@ fun searchBar(navController: NavController){
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         // 엔터(키보드에서 search아이콘) 클릭 시 실행
         keyboardActions = KeyboardActions(onSearch = {
-            search()
-            keyboardController?.hide()
+            if (searchWord.trim().isNotEmpty()) {
+                search()
+                keyboardController?.hide()
+            }
         })
     )
 }
@@ -229,7 +231,8 @@ fun floatingBtns(
 @Composable
 fun blankView(msg: String) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

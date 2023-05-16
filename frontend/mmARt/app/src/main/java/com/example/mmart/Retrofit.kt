@@ -85,6 +85,11 @@ interface APIS {
     @GET("payments")
     suspend fun getPayments(@Query("userIdx") userIdx: Int): PaymentsResult
 
+    // 결제 내역 개별 조회
+    @GET("payments/{paymentIdx}")
+    suspend fun getPayment(@Path("paymentIdx") paymentIdx: Int, @Query("userIdx") userIdx: Int): PaymentResult
+
+
     // 결제 내역 상세 조회
     @GET("payments/detail")
     suspend fun getPaymentDetails(@Query("userIdx") userIdx: Int, @Query("paymentIdx") paymentIdx: Int): PaymentDetailsResult
@@ -113,8 +118,8 @@ interface APIS {
     suspend fun deleteReview(@Query("userIdx") userIdx: Int, @Query("reviewIdx") reviewIdx: Int): ReviewResult
 
     companion object {
-        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
-//        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
+//        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
+        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
 
         fun create(): APIS {
             val gson : Gson = GsonBuilder().setLenient().create();
@@ -245,6 +250,11 @@ data class PaymentDetail(
 data class PaymentsResult(
     val resultCode: String,
     val result: List<Payment>
+)
+
+data class PaymentResult(
+    val resultCode: String,
+    val result: Payment
 )
 
 data class Payment(
