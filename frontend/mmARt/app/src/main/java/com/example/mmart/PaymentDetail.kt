@@ -56,7 +56,7 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
              LazyColumn (
                  modifier = Modifier
                      .fillMaxWidth()
-                     .height(690.dp),
+                     .height(675.dp),
                  state = listState,
                      ) {
                  item() {
@@ -240,7 +240,7 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
                          Row(
                              modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(30.dp, 15.dp),
+                                .padding(30.dp, 20.dp),
                              verticalAlignment = Alignment.CenterVertically,
                              horizontalArrangement = Arrangement.SpaceBetween,
                          ) {
@@ -268,13 +268,13 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
                                 text = "총 할인 금액",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Main_blue,
+                                color = Vivid_blue,
                              )
                              Text(
                                 text = "${DecimalFormat("#,###").format(priceTotal - payment!!.total)}원",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Main_blue,
+                                color = Vivid_blue,
                              )
                          }
                          Divider(

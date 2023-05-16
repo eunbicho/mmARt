@@ -367,54 +367,33 @@ fun GetCart(navController: NavController) {
 
     }
 
-
     if (quantityError) {
-        Dialog(
+        AlertDialog(
             onDismissRequest = { quantityError = false },
-            content = {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    elevation = 10.dp
-                ){
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text("수량을 다시 한번 확인해주세요.")
-                        Button(
-                            onClick = { quantityError = false }
-                        ){
-                            Text(text = "닫기")
-                        }
-                    }
+            text = { Text("수량을 다시 한번 확인해주세요.") },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = { quantityError = false },
+                    elevation = ButtonDefaults.elevation(1.dp)
+                ) {
+                    Text("확인", color = Dark_gray)
                 }
-            }
+            },
         )
     }
 
     if (inventoryError) {
-        Dialog(
+        AlertDialog(
             onDismissRequest = { inventoryError = false },
-            content = {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    elevation = 10.dp
-                ){
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text("지점 보유 재고를 초과하였습니다.")
-                        Button(
-                            onClick = { inventoryError = false }
-                        ){
-                            Text(text = "닫기")
-                        }
-                    }
+            text = { Text("지점 보유 재고를 초과하였습니다.") },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = { inventoryError = false },
+                    elevation = ButtonDefaults.elevation(1.dp)
+                ) {
+                    Text("확인", color = Dark_gray)
                 }
-            }
+            },
         )
     }
 }

@@ -72,12 +72,14 @@ fun searchBar(navController: NavController){
             .shadow(
                 shape = CircleShape,
                 elevation = 5.dp,
-                ambientColor = Color.Black,
+                ambientColor = Dark_gray,
                 clip = true
             ),
-        colors = TextFieldDefaults.textFieldColors(
+        colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = Main_yellow,
             textColor = Dark_gray,
+            cursorColor = Dark_gray,
+            focusedBorderColor = Dark_gray,
         ),
         singleLine = true,
         textStyle = TextStyle(fontFamily = mainFont, fontSize = 15.sp),

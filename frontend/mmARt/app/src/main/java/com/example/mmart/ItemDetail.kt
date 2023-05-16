@@ -175,7 +175,9 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
         // 상단바
         topBar(navController = navController, "상품 상세")
         Column(
-            modifier = Modifier.verticalScroll(state = rememberScrollState())
+            modifier = Modifier
+                .verticalScroll(state = rememberScrollState())
+                .background(Color.White)
         ){
             // result가 null이 아닐 경우만
             if (item != null) {
@@ -443,7 +445,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                         wrongNumber = false
                         keyboardController?.show()
                     },
-                    text = { Text("수량을 확인하여 주십시오") },
+                    text = { Text("수량을 다시 한번 확인해주세요.") },
                     confirmButton = {
                         OutlinedButton(
                             onClick = {
@@ -452,7 +454,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                             },
                             elevation = ButtonDefaults.elevation(1.dp)
                         ) {
-                            Text("확인", color = Color.Black)
+                            Text("확인", color = Dark_gray)
                         }
                     }
                 )
