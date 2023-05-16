@@ -33,7 +33,9 @@ fun ReviewUpdate(navController: NavController, reviewIdx: Int) {
     // 수정 시 내용
     var reviewContent: String by remember { mutableStateOf("") }
 
-    LaunchedEffect(true) {
+    var reload: Boolean by remember { mutableStateOf(false) }
+
+    LaunchedEffect(reload) {
         // 리뷰 조회
         try {
             review = coroutineScope.async { api.getReview(reviewIdx) }.await().result
@@ -61,6 +63,7 @@ fun ReviewUpdate(navController: NavController, reviewIdx: Int) {
         }
 
         // 이전 페이지로 돌아감
+        reload = !reload
         navController.popBackStack()
     }
 
@@ -159,8 +162,6 @@ fun ReviewUpdate(navController: NavController, reviewIdx: Int) {
                     }
                 }
             }
-
-
         }
     }
 }
