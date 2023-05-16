@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -97,7 +98,9 @@ fun GotCart(navController: NavController) {
         reload = !reload
     }
 
-    Column {
+    Column(
+        modifier = Modifier.padding(bottom = 23.dp)
+    ) {
         topBar(navController = navController, "장봤구니")
 
         // result가 null이 아닐 경우만
@@ -352,17 +355,12 @@ fun GotCart(navController: NavController) {
                     secondEvent = { goToPay = true }
                 )
             } else {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+                Box(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Text(
-                        "장봤구니가 비어있습니다.",
-                        modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp),
-                        fontSize = 18.sp,
-                        textAlign = TextAlign.Center
-                    )
+                    blankView("장봤구니가 비어있습니다.")
                     Row(
+                        modifier = Modifier.align(Alignment.BottomCenter),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Column(
@@ -385,6 +383,39 @@ fun GotCart(navController: NavController) {
                         }
                     }
                 }
+//                Column(
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    modifier = Modifier.fillMaxWidth()
+//                ) {
+//                    Text(
+//                        "장봤구니가 비어있습니다.",
+//                        modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp),
+//                        fontSize = 18.sp,
+//                        textAlign = TextAlign.Center
+//                    )
+//                    Row(
+//                        horizontalArrangement = Arrangement.Center
+//                    ) {
+//                        Column(
+//                            horizontalAlignment = Alignment.CenterHorizontally,
+//                            modifier = Modifier
+//                                .padding(10.dp)
+//                                .clickable { navController.navigate("main") }
+//                        ) {
+//                            Image(painter = painterResource(R.drawable.main), contentDescription = "홈으로", Modifier.size(80.dp))
+//                            Text("홈으로", Modifier.padding(5.dp))
+//                        }
+//                        Column(
+//                            horizontalAlignment = Alignment.CenterHorizontally,
+//                            modifier = Modifier
+//                                .padding(10.dp)
+//                                .clickable { navController.navigate("payment") }
+//                        ) {
+//                            Image(painter = painterResource(R.drawable.payment), contentDescription = "결제내역으로", Modifier.size(80.dp))
+//                            Text("결제내역으로", Modifier.padding(5.dp))
+//                        }
+//                    }
+//                }
             }
         }
     }
