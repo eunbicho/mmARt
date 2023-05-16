@@ -72,6 +72,8 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
     var quantity: Int by remember { mutableStateOf(1) }
     // 리뷰 리스트
     var reviews: List<ReviewDetail>? by remember { mutableStateOf(null) }
+    // 긍부정
+    var pos: Int? by remember { mutableStateOf(null) }
 
     // bottomSheet 모달에서 사용
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -89,6 +91,8 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
     var isDelete:Int? by remember { mutableStateOf(null) }
     // 다시 불러오기
     var reload: Boolean by remember { mutableStateOf(false) }
+    // 로딩창
+    var isLoading: Boolean by remember { mutableStateOf(true) }
 
     // 상세 조회
     LaunchedEffect(reload) {
@@ -100,7 +104,9 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
             println("---------------------------------")
         }
         try {
-            reviews = coroutineScope.async { api.getItemReview(itemId!!) }.await().result
+            val response = coroutineScope.async { api.getItemReview(itemId!!) }.await().result
+            reviews = response.reviewRes
+            pos = response.pos
         } catch (e: Exception){
             println("상픔 상세 리뷰 조회 에러-------------")
             e.printStackTrace()
@@ -187,24 +193,24 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     // 상품명
                     Text(item!!.itemName, fontSize = 25.sp, modifier = Modifier.padding(5.dp))
 
-                    Row(){
+                    Row(verticalAlignment = Alignment.Bottom){
                         // 매장 수량
-                        
-                    }
-                    // 가격
-                    if(item!!.isCoupon){ // 쿠폰 있을 경우
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("${item!!.price}", textDecoration = TextDecoration.LineThrough, color = Color.LightGray, fontWeight = FontWeight.Light, fontSize = 20.sp)
-                            Text("${item!!.couponPrice}원", fontSize = 25.sp, modifier = Modifier.padding(5.dp))
+                        Text("매장 수량: ${item!!.inventory}", fontSize = 15.sp, textAlign = TextAlign.Start)
+                        // 가격
+                        if(item!!.isCoupon){ // 쿠폰 있을 경우
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.End,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("${item!!.price}", textDecoration = TextDecoration.LineThrough, color = Color.LightGray, fontWeight = FontWeight.Light, fontSize = 20.sp)
+                                Text("${item!!.couponPrice}원", fontSize = 25.sp, modifier = Modifier.padding(5.dp))
+                            }
+                        } else { // 쿠폰 없을 경우
+                            Text("${item!!.price}원", fontSize = 25.sp, textAlign = TextAlign.End, modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp))
                         }
-                    } else { // 쿠폰 없을 경우
-                        Text("${item!!.price}원", fontSize = 25.sp, textAlign = TextAlign.End, modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(5.dp))
                     }
                 }
 
@@ -272,7 +278,8 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     contentDescription = "상품 상세 정보",
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(20.dp)
+                        .padding(20.dp),
+                    onSuccess = {isLoading = false}
                 )
             }
 
@@ -285,7 +292,12 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
             )
 
             // 리뷰 부분
-            Text(text = "리뷰", modifier = Modifier.padding(20.dp), fontSize = 20.sp)
+            Row(modifier = Modifier.fillMaxWidth().padding(20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
+                Text(text = "리뷰", fontSize = 20.sp)
+                if(pos!=-1){
+                    Text("${pos}%의 사용자가 긍정적인 평가를 하였습니다")
+                }
+            }
 
             if (reviews != null && reviews!!.isNotEmpty()){
                 reviews!!.forEach { review ->
@@ -306,12 +318,16 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
 
                         // 전체 보기 / 일부 보기
                         var expanded by remember { mutableStateOf(false) }
-                        Text(review.content, modifier = Modifier.padding(vertical = 5.dp) .clickable { expanded = !expanded }, overflow = TextOverflow.Ellipsis, maxLines = if (expanded) Int.MAX_VALUE else 3)
+                        Text(review.content, modifier = Modifier
+                            .padding(vertical = 5.dp)
+                            .clickable { expanded = !expanded }, overflow = TextOverflow.Ellipsis, maxLines = if (expanded) Int.MAX_VALUE else 3)
 
                         // 내가 작성한 리뷰인 경우, 수정 및 삭제 가능
                         if(review.user.userIdx == userId) {
                             Row(
-                                modifier = Modifier.align(Alignment.End) .height(ButtonDefaults.MinHeight),
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .height(ButtonDefaults.MinHeight),
                             ) {
                                 OutlinedButton(
                                     modifier = Modifier.padding(end = 5.dp),
@@ -391,7 +407,9 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
         sheetContent = {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(5.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp)
             ) {
                 TextField(
                     value = numberInput,
@@ -456,7 +474,10 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                 ) {
                     Text("상품이 장볼구니에\n추가되었습니다", modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp), fontSize = 20.sp, textAlign = TextAlign.Center)
                     Row(
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 50.dp)
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -464,7 +485,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                                 .padding(10.dp)
                                 .clickable { goGetCart = false }
                         ) {
-                            Image(painter = painterResource(R.drawable.previous), contentDescription = "이전으로", Modifier.size(80.dp))
+                            Image(painter = painterResource(R.drawable.previous), contentDescription = "이전으로", Modifier.size(70.dp))
                             Text("이전으로", Modifier.padding(5.dp))
                         }
                         Column(
@@ -473,7 +494,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                                 .padding(10.dp)
                                 .clickable { navController.navigate("getCart") }
                         ) {
-                            Image(painter = painterResource(R.drawable.getcart), contentDescription = "장볼구니로", Modifier.size(80.dp))
+                            Image(painter = painterResource(R.drawable.getcart), contentDescription = "장볼구니로", Modifier.size(70.dp))
                             Text("장볼구니로", Modifier.padding(5.dp))
                         }
                     }
@@ -482,6 +503,10 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
         }
     }
 
+    // 이미지 로딩 중일 때
+    if(isLoading){
+        loadingView()
+    }
 }
 
 @Preview(showBackground = true)

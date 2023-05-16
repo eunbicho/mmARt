@@ -20,6 +20,7 @@ import coil.compose.AsyncImage
 import com.example.mmart.ui.theme.Main_blue
 import com.example.mmart.ui.theme.Main_gray
 import com.example.mmart.ui.theme.Main_yellow
+import com.example.mmart.ui.theme.Vivid_yellow
 import kotlinx.coroutines.*
 
 @Composable
@@ -55,16 +56,19 @@ fun ReviewCreate(navController: NavController, paymentDetailIdx: Int){
         )
 
         // 리뷰 작성
-        try{
-            coroutineScope.async { api.createReview(userId, paymentDetailIdx, reviewBody) }
-        } catch (e: Exception){
-            println("리뷰 작성 에러---------------------")
-            e.printStackTrace()
-            println("---------------------------------")
+        coroutineScope.launch{
+            try {
+                val resultCode = api.createReview(userId, paymentDetailIdx, reviewBody).resultCode
+                if(resultCode == "SUCCESS"){
+                    // 이전 페이지로 돌아감
+                    navController.popBackStack()
+                }
+            } catch (e: Exception){
+                println("리뷰 작성 에러---------------------")
+                e.printStackTrace()
+                println("---------------------------------")
+            }
         }
-
-        // 이전 페이지로 돌아감
-        navController.popBackStack()
     }
 
     Column() {
@@ -103,7 +107,6 @@ fun ReviewCreate(navController: NavController, paymentDetailIdx: Int){
                                     modifier = Modifier.padding(bottom = 5.dp)
                                 )
                                 Text(
-//                                    text = paymentDetail!!.createTime.toString(),
                                     text = "${paymentDetail!!.createTime[0]}. ${paymentDetail!!.createTime[1]}. ${paymentDetail!!.createTime[2]}",
                                     color = Main_gray,
                                     modifier = Modifier.padding(top = 5.dp)
@@ -121,7 +124,7 @@ fun ReviewCreate(navController: NavController, paymentDetailIdx: Int){
                             listOf(1, 2, 3, 4, 5).forEach {
                                 Icon(imageVector = Icons.Filled.Star,
                                     contentDescription = "별점",
-                                    tint = if (it <= reviewStar) Color.Yellow else Color.LightGray,
+                                    tint = if (it <= reviewStar) Vivid_yellow else Color.LightGray,
                                     modifier = Modifier.clickable { reviewStar = it })
                             }
 

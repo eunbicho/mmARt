@@ -34,7 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.mmart.ui.theme.*
@@ -53,6 +52,7 @@ fun GotCart(navController: NavController) {
     var cartRes: CartContent? by remember { mutableStateOf(null) }
     var userRes: UserInfo? by remember { mutableStateOf(null) }
 
+    var goToPay by remember { mutableStateOf(false)}
     var showQrcode by remember { mutableStateOf(false)}
     var quantityError by remember { mutableStateOf(false)}
     var inventoryError by remember { mutableStateOf(false)}
@@ -349,41 +349,148 @@ fun GotCart(navController: NavController) {
                     listState = listState,
                     secondBtn = R.drawable.pay,
                     secondBtnName = "PAY",
-                    secondEvent = { showQrcode = true }
+                    secondEvent = { goToPay = true }
                 )
             } else {
-                blankView("장봤구니가 비어있습니다.")
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        "장봤구니가 비어있습니다.",
+                        modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp),
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable { navController.navigate("main") }
+                        ) {
+                            Image(painter = painterResource(R.drawable.main), contentDescription = "홈으로", Modifier.size(80.dp))
+                            Text("홈으로", Modifier.padding(5.dp))
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable { navController.navigate("payment") }
+                        ) {
+                            Image(painter = painterResource(R.drawable.payment), contentDescription = "결제내역으로", Modifier.size(80.dp))
+                            Text("결제내역으로", Modifier.padding(5.dp))
+                        }
+                    }
+                }
             }
-
         }
+    }
+
+    if (goToPay) {
+        Dialog(
+            onDismissRequest = { goToPay = false },
+            content = {
+                Box(
+                    modifier = Modifier
+                        .border(
+                            width = 3.dp,
+                            color = Dark_gray,
+                            shape = RoundedCornerShape(40.dp)
+                        )
+                        .shadow(10.dp, shape = RoundedCornerShape(40.dp))
+                        .background(color = Color.White, shape = RoundedCornerShape(40.dp))
+                ){
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "결제하시겠습니까?",
+                            modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp),
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        Row(
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .clickable { goToPay = false }
+                            ) {
+                                Image(painter = painterResource(R.drawable.previous), contentDescription = "이전으로", Modifier.size(80.dp))
+                                Text("이전으로", Modifier.padding(5.dp))
+                            }
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .clickable {
+                                        showQrcode = true
+                                        goToPay = false
+                                    }
+                            ) {
+                                Image(painter = painterResource(R.drawable.pay), contentDescription = "결제하기", Modifier.size(80.dp))
+                                Text("결제하기", Modifier.padding(5.dp))
+                            }
+                        }
+                    }
+                }
+            }
+        )
     }
 
     if (showQrcode) {
         Dialog(
             onDismissRequest = { showQrcode = false },
             content = {
-                Card (
-                    modifier = Modifier.fillMaxWidth(),
-                    elevation = 10.dp
+                Box (
+                    modifier = Modifier.fillMaxWidth()
+                    .border(
+                        width = 3.dp,
+                        color = Dark_gray,
+                        shape = RoundedCornerShape(40.dp)
+                        )
+                    .shadow(10.dp, shape = RoundedCornerShape(40.dp))
+                    .background(color = Main_yellow, shape = RoundedCornerShape(40.dp)),
                 ){
                     Column(
-                        modifier = Modifier.padding(20.dp),
+                        modifier = Modifier.padding(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text("아래 QR코드를 키오스크에 인식해주세요.")
+                        Text(
+                            "아래 QR코드를\n키오스크에 인식해주세요.",
+                            modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 0.dp),
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center
+                        )
                         AsyncImage(
                             model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${userRes?.qrcode}",
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().padding(10.dp),
                             contentDescription = userRes?.name
                         )
-                        Button(onClick = {
-                            showQrcode = false
-                        }) {
-                            Text("닫기")
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .clickable {
+                                    reload = !reload
+                                    showQrcode = false
+                                }
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.paydone),
+                                contentDescription = "닫기",
+                                modifier = Modifier.size(160.dp)
+                            )
                         }
                     }
                 }
             }
+
         )
     }
 
