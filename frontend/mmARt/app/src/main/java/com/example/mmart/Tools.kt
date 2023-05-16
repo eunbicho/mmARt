@@ -260,7 +260,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
     }
 
     Box(modifier = Modifier.fillMaxSize().padding(vertical = 10.dp)) {
-        LazyVerticalGrid(GridCells.Fixed(2), state=listState) {
+        LazyVerticalGrid(GridCells.Fixed(2), state=listState, contentPadding = PaddingValues(bottom=100.dp)) {
             items(items) { item ->
                 // 수량
                 var quantity: Int by remember { mutableStateOf(1) }
@@ -304,7 +304,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                                 .fillMaxSize()
                                 .aspectRatio(1f)
                                 .padding(5.dp),
-                            onSuccess = {isLoading = false}
+                            onSuccess = {isLoading = false},
                         )
 
                         Text(text = item.itemName, maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 20.sp)
@@ -358,7 +358,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                         Box(
                             modifier = Modifier
                                 .border(
-                                    width = 3.dp,
+                                    width = 2.dp,
                                     color = Color.Black,
                                     shape = RoundedCornerShape(40.dp)
                                 )

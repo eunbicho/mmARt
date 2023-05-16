@@ -49,7 +49,7 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
 
     Column {
         // 상단바
-        topBar(navController, "영수증 보기")
+        topBar(navController, "결제 내역 상세")
 
          if (payment != null && paymentDetails != null) {
              paymentDetails!!.forEach { priceTotal += it.item.price * it.quantity }
