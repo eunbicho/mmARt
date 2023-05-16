@@ -66,19 +66,13 @@
 4. build project in dir("backend//mmart")
     
     ```bash
+    chmod +x gradlew
     ./gradlew clean build -x test
     ```
-
-6. build docker in dir("backend/mmart")
-
-    ```bash
-    docker build -t teqteqteqteq/red-limo-backend .
-    ```
-
-7. docker-compose in dir("backend/mmart")
+5. docker-compose in dir("backend/mmart")
     
     ```bash
-    docker compose up -d --build
+    docker-compose up -d --build
     ```
     
 ## Properties
@@ -132,7 +126,4 @@
 ### AWS S3
 
 [클라우드 스토리지 | 웹 스토리지| Amazon Web Services](https://aws.amazon.com/ko/s3/?did=ap_card&trk=ap_card)
-
-## DB dump
-
 
