@@ -179,7 +179,10 @@ fun Review(navController: NavController) {
                                     OutlinedButton(
                                         border = BorderStroke(color = Main_blue, width = 2.dp),
                                         elevation = ButtonDefaults.elevation(2.dp),
-                                        onClick = { reviewDelete(review.reviewIdx) })
+                                        onClick = {
+                                            reviewDelete(review.reviewIdx)
+                                            reload = !reload
+                                        })
                                     {
                                         Text("삭제", color = Main_gray)
                                     }
