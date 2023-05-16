@@ -16,13 +16,13 @@ spec:
     spec:
       containers:
       - name: springboot
-        image: teqteqteqteq/red-limo-backend:latest
+        image: teqteqteqteq/red-limo-backend:k8s
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         resources:
           requests:
-            cpu: "250m"
+            cpu: "500m"
           limits:
             cpu: "500m"
 ---

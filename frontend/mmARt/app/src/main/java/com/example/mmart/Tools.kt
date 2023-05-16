@@ -157,10 +157,11 @@ fun floatingBtn(
     val coroutineScope = rememberCoroutineScope()
 
     Row(
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Start,
         modifier = Modifier
-            .padding(20.dp, 10.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+            .padding(20.dp)
+            .fillMaxHeight()
     ) {
         FloatingActionButton(
             onClick = {
@@ -191,8 +192,9 @@ fun floatingBtns(
 
     Row(
         modifier = Modifier
-            .padding(20.dp, 10.dp)
-            .fillMaxWidth(),
+            .padding(20.dp)
+            .fillMaxWidth().fillMaxHeight(),
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         FloatingActionButton(
@@ -426,6 +428,11 @@ fun items(navController:NavController, items: List<ItemInfo>){
     }
 
 }
+
+
+
+
+
 
 @Preview(showBackground = true)
 @Composable
