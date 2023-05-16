@@ -21,6 +21,18 @@ interface APIS {
     @GET("users")
     suspend fun duplicationCheck(@Query("email") email: String): UserResult
 
+    // 최근 구매
+    @GET("items/recent")
+    suspend fun getRecentItems(@Query("userIdx") userIdx: Int): ItemsResult
+
+    // 자주 구매
+    @GET("items/frequent")
+    suspend fun getFrequentItems(@Query("userIdx") userIdx: Int): ItemsResult
+
+    // 검색 결과
+    @GET("items/search")
+    suspend fun getSearchResult(@Query("keyword") keyword: String): ItemsResult
+
     // 카테고리 별 아이템
     @GET("items/categories")
     suspend fun getCategories(@Query("userIdx") userIdx: Int, @Query("categoryIdx") categoryIdx: Int): ItemsResult
@@ -63,7 +75,7 @@ interface APIS {
 
     // 상품 별 리뷰 조회
     @GET("reviews/item")
-    suspend fun getItemReview(@Query("itemIdx") itemIdx: Int): ReviewsResult
+    suspend fun getItemReview(@Query("itemIdx") itemIdx: Int): IdxReviewsResult
 
     // 마이페이지 조회
     @GET("users/{userIdx}")
@@ -88,7 +100,7 @@ interface APIS {
 
     // 리뷰 작성
     @POST("reviews")
-    suspend fun createReview(@Query("userIdx") userIdx: Int, @Query("paymentDetailIdx") paymentIdx: Int, @Body body: Any)
+    suspend fun createReview(@Query("userIdx") userIdx: Int, @Query("paymentDetailIdx") paymentIdx: Int, @Body body: Any): ReviewResult
 
     // 유저 별 리뷰 조회
     @GET("reviews/user")
@@ -100,8 +112,7 @@ interface APIS {
 
     // 리뷰 수정
     @PUT("reviews")
-    suspend fun updateReview(@Query("userIdx") userIdx: Int, @Query("reviewIdx") reviewIdx: Int, @Body body: Any)
-
+    suspend fun updateReview(@Query("userIdx") userIdx: Int, @Query("reviewIdx") reviewIdx: Int, @Body body: Any): ReviewResult
     // 리뷰 삭제
     @DELETE("reviews")
     suspend fun deleteReview(@Query("userIdx") userIdx: Int, @Query("reviewIdx") reviewIdx: Int): ReviewResult
@@ -139,7 +150,7 @@ data class ItemInfo(
     val placeInfo: String?,
     val weight: Int,
     val content: String?,
-    val quantity: Int
+    val quantity: Int,
 )
 
 //data class CategoryInfo(
@@ -186,13 +197,24 @@ data class UserInfo(
     val qrcode: String,
 )
 
+// 아이템 별 리뷰 조회
+data class IdxReviewsResult(
+    val resultCode: String,
+    val result: ReviewsPos
+)
+
+data class ReviewsPos(
+    val reviewRes: List<ReviewDetail>,
+    val pos: Int
+)
+
 // 유저 별 리뷰 조회
 data class ReviewsResult(
     val resultCode: String,
     val result: List<ReviewDetail>
 )
 
-// 리뷰 개별 조회 (리뷰 수정, 삭제용)
+// 리뷰 개별 조회
 data class ReviewResult(
     val resultCode: String,
     val result: ReviewDetail
