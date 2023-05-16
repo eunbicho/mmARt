@@ -96,7 +96,9 @@ fun GetCart(navController: NavController) {
         reload = !reload
     }
 
-    Column {
+    Column(
+        modifier = Modifier.padding(bottom = 23.dp)
+    ) {
         topBar(navController = navController, "장볼구니")
         Row(
             modifier = Modifier
@@ -357,7 +359,25 @@ fun GetCart(navController: NavController) {
                     secondEvent = { findMap = true }
                 )
             } else {
-                blankView("장볼구니가 비어있습니다.")
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    blankView("장볼구니가 비어있습니다.")
+                    Row(
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable { navController.navigate("main") }
+                        ) {
+                            Image(painter = painterResource(R.drawable.main), contentDescription = "홈으로", Modifier.size(80.dp))
+                            Text("홈으로", Modifier.padding(5.dp))
+                        }
+                    }
+                }
             }
 
         }
