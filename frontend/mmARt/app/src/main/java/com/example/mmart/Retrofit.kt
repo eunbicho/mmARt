@@ -118,9 +118,9 @@ interface APIS {
 
     companion object {
         // ssafy server
-//        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
+        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
         // kubernetes
-        private const val BASE_URL = "http://34.64.53.42:8080/api/v1/"
+//        private const val BASE_URL = "http://34.64.53.42:8080/api/v1/"
 //        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
 
         fun create(): APIS {

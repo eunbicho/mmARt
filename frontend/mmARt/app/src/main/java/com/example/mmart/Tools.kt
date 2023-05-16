@@ -1,5 +1,6 @@
 package com.example.mmart
 
+import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -38,7 +40,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
+import coil.size.Size
 import com.example.mmart.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -104,7 +112,10 @@ fun searchBar(navController: NavController){
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
-                            if (searchWord.trim().isNotEmpty()) search()
+                            if (searchWord
+                                    .trim()
+                                    .isNotEmpty()
+                            ) search()
                         }
                 )
 
@@ -195,7 +206,8 @@ fun floatingBtns(
     Row(
         modifier = Modifier
             .padding(20.dp)
-            .fillMaxWidth().fillMaxHeight(),
+            .fillMaxWidth()
+            .fillMaxHeight(),
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -239,14 +251,39 @@ fun blankView(msg: String) {
 }
 
 @Composable
+fun GifImage(
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val imageLoader = ImageLoader.Builder(context)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }
+        .build()
+    Image(
+        painter = rememberAsyncImagePainter(
+            ImageRequest.Builder(context).data(data = R.drawable.loading).apply(block = {
+                size(240)
+            }).build(), imageLoader = imageLoader
+        ),
+        contentDescription = null,
+        modifier = modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
 fun loadingView(){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White),
+            .background(color = Vivid_blue),
         contentAlignment = Alignment.Center,
     ) {
-        Text("로딩")
+        GifImage()
     }
 }
 
@@ -263,7 +300,9 @@ fun items(navController:NavController, items: List<ItemInfo>){
         loadingView()
     }
 
-    Box(modifier = Modifier.fillMaxSize().padding(vertical = 10.dp)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(vertical = 10.dp)) {
         LazyVerticalGrid(GridCells.Fixed(2), state=listState, contentPadding = PaddingValues(bottom=100.dp)) {
             items(items) { item ->
                 // 수량
