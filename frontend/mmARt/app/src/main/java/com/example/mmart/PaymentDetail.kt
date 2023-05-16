@@ -39,8 +39,6 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
         try {
             payment = coroutineScope.async { api.getPayment(paymentIdx, userId) }.await().result
             paymentDetails = coroutineScope.async { api.getPaymentDetails(userId, paymentIdx) }.await().result
-            println(payment.toString())
-            println(paymentDetails.toString())
         } catch (e: Exception) {
             println("결제 내역 상세 조회 에러-------------")
             e.printStackTrace()
@@ -50,7 +48,7 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
 
     Column {
         // 상단바
-        topBar(navController, "영수증 보기")
+        topBar(navController, "결제 내역 상세")
 
         if (payment != null) {
             Column(

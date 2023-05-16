@@ -33,7 +33,7 @@ fun Search(navController: NavController, searchWord: String){
             println("---------------------------------")
         }
     }
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(vertical = 10.dp)) {
         // 상단바
         topBar(navController = navController, "상품 검색")
 
@@ -43,7 +43,7 @@ fun Search(navController: NavController, searchWord: String){
         if(items != null){
             // 검색 결과가 있을 때
             if (items!!.isNotEmpty()){
-                Text("총 ${items!!.size}건의 검색 결과", modifier=Modifier.padding(start = 20.dp))
+                Text("총 ${items!!.size}건의 검색 결과", modifier=Modifier.padding(start = 20.dp, top = 10.dp))
 
                 items(navController, items!!)
             } else{
