@@ -10,5 +10,6 @@ data class ReviewRes(
     val user: UserRes,
     val item: GetItemRes,
     val date: String,
+    val pos:Boolean
 ) {
 }

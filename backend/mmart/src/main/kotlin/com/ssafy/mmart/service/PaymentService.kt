@@ -29,6 +29,11 @@ class PaymentService @Autowired constructor(
         return paymentRepository.findAllByUser_UserIdxOrderByDateDesc(userIdx)
     }
 
+    fun getPayment(userIdx: Int, paymentIdx: Int): Payment? {
+        userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
+        return paymentRepository.findByIdOrNull(paymentIdx) ?: throw PaymentNotFoundException()
+    }
+
     fun createPayment(userIdx: Int): Payment? {
         val user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
         val gotCartRes = gotCartService.getGotCarts(userIdx)
