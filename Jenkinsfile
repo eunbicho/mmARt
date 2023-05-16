@@ -17,13 +17,13 @@ pipeline {
         }
       }
     }
-    stage('docker') {
-      steps {
-        dir('backend/mmart') {
-          sh 'docker build -t red-limo-backend:latest .'
-        }
-      }
-    }
+    // stage('docker') {
+    //   steps {
+    //     dir('backend/mmart') {
+    //       sh 'docker build -t red-limo-backend:ec2 .'
+    //     }
+    //   }
+    // }
     stage('deploy') {
       steps {
         dir('backend/mmart') {
