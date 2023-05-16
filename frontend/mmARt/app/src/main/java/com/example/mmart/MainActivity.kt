@@ -1,7 +1,6 @@
 package com.example.mmart
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -24,15 +22,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.compose.material.MaterialTheme
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.navigation.Navigation.findNavController
 import coil.compose.AsyncImage
 import com.example.mmart.ui.theme.*
 import kotlinx.coroutines.async
@@ -175,20 +169,22 @@ fun Main(navController: NavController) {
     }
 
     Scaffold(
+        modifier = Modifier.background(Vivid_blue),
         content = {
             // 배경 이미지
             Image(
                 painter = painterResource(R.drawable.bg),
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth(),
+                alignment = Alignment.BottomCenter,
                 contentDescription = "배경",
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop
             )
 
             Column() {
                 // 상단 로고, 지점 표시
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Image(
@@ -196,16 +192,16 @@ fun Main(navController: NavController) {
                         contentDescription = "로고",
                         modifier = Modifier
                             .padding(16.dp)
-                            .width(150.dp)
-                            .height(100.dp)
+                            .width(120.dp)
+                            .height(60.dp)
                     )
                     Image(
                         painter = painterResource(R.drawable.place),
                         contentDescription = "지점",
                         modifier = Modifier
                             .padding(16.dp)
-                            .width(100.dp)
-                            .height(100.dp)
+                            .width(80.dp)
+                            .height(30.dp)
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -454,9 +450,9 @@ fun Main(navController: NavController) {
     )
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun MainPreview(){
-//    val navController = rememberNavController()
-//    Main(navController = navController)
-//}
+@Preview(showBackground = true)
+@Composable
+fun MainPreview(){
+    val navController = rememberNavController()
+    Main(navController = navController)
+}
