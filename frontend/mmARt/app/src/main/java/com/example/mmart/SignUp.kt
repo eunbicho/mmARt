@@ -1,16 +1,13 @@
 package com.example.mmart
 
+import androidx.compose.foundation.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -131,7 +128,7 @@ fun SignUp(navController: NavController){
             .padding(horizontal = 30.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Image(painter = painterResource(R.drawable.logo), contentDescription = "로고", modifier = Modifier.padding(vertical = 20.dp))
+        Image(painter = painterResource(R.drawable.logo), contentDescription = "로고", modifier = Modifier.padding(vertical = 20.dp).clickable { navController.popBackStack() })
 
         // 아이디 입력
         OutlinedTextField(
