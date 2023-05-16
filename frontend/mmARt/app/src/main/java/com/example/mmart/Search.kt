@@ -38,8 +38,13 @@ fun Search(navController: NavController, searchWord: String){
         topBar(navController = navController, "상품 검색")
 
         // 검색
-        searchBar(navController)
-
+//        searchBar(navController)
+        Row(
+            modifier = Modifier
+                .padding(0.dp, 20.dp, 0.dp, 0.dp)
+        ) {
+            searchBar(navController = navController)
+        }
         if(items != null){
             // 검색 결과가 있을 때
             if (items!!.isNotEmpty()){
