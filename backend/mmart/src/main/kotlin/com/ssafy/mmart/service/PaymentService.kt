@@ -23,10 +23,16 @@ class PaymentService @Autowired constructor(
     val itemRepository: ItemRepository,
     val paymentDetailRepository: PaymentDetailRepository,
     val gotCartService: GotCartService,
+    val getCartService: GetCartService,
 ){
     fun getPayments(userIdx: Int): List<Payment>? {//date 역순으로 주기
         userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
         return paymentRepository.findAllByUser_UserIdxOrderByDateDesc(userIdx)
+    }
+
+    fun getPayment(userIdx: Int, paymentIdx: Int): Payment? {
+        userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
+        return paymentRepository.findByIdOrNull(paymentIdx) ?: throw PaymentNotFoundException()
     }
 
     fun createPayment(userIdx: Int): Payment? {
@@ -46,6 +52,7 @@ class PaymentService @Autowired constructor(
             paymentDetailRepository.save(paymentDetail)
         }
         gotCartService.deleteGotCarts(userIdx)
+        getCartService.deleteGetCarts(userIdx)
         return payment
     }
 

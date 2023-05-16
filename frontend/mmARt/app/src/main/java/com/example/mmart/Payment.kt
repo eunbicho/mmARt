@@ -33,6 +33,8 @@ fun Payment(navController: NavController){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
     var payments: List<Payment>? by remember { mutableStateOf(null) }
 
     LaunchedEffect(true) {
@@ -47,24 +49,33 @@ fun Payment(navController: NavController){
 
     Column {
         // 상단바
-        topBar(navController, "결제 내역 조회")
+        topBar(navController, "결제 내역")
 
         if(payments != null) {
             if(payments!!.isEmpty()){
                 blankView("결제 내역이 없습니다.")
             } else {
-                LazyColumn(){
+                LazyColumn(state = listState){
                     items(payments!!){
                         payment ->
                         Column (
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 23.dp, start = 23.dp, end = 23.dp)
-                                .border(width = (1.8).dp, color = Main_gray, shape = RoundedCornerShape(11.dp))
+                                .border(
+                                    width = (1.8).dp,
+                                    color = Main_gray,
+                                    shape = RoundedCornerShape(11.dp)
+                                )
                         ){
                             Box(
                                 modifier = Modifier
-                                    .padding(start = 15.dp, top = 15.dp, bottom = 15.dp, end = 15.dp)
+                                    .padding(
+                                        start = 15.dp,
+                                        top = 15.dp,
+                                        bottom = 15.dp,
+                                        end = 15.dp
+                                    )
                                     .fillMaxWidth()
                             ) {
                                 Column{
@@ -101,6 +112,7 @@ fun Payment(navController: NavController){
                     }
                 }
             }
+            floatingBtn(listState = listState)
         }
     }
 }
