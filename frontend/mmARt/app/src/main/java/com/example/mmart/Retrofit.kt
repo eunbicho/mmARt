@@ -39,7 +39,11 @@ interface APIS {
 
     // 바코드 스캔
     @GET("items/barcode")
-    suspend fun getItemByBarcode(@Query("barcode") barcode: Long): ItemsResult
+    suspend fun getItemByBarcode(@Query("barcode") barcode: String): ItemDetailResult
+
+    // 장봤구니 추가
+    @POST("gotcarts")
+    suspend fun addGotCart(@Body body: Any): CartResult
 
     // 장볼구니 조회
     @GET("getcarts/{userIdx}")

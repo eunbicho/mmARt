@@ -185,7 +185,9 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                 AsyncImage(
                     model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item!!.thumbnail.replace("_thumb", "")}",
                     contentDescription = "상품 이미지",
-                    modifier = Modifier.fillMaxSize().padding(10.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp)
                 )
 
                 // 상품명, 매장 수량, 가격
@@ -222,7 +224,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start=10.dp,end=20.dp, bottom=10.dp)
+                        .padding(start = 10.dp, end = 20.dp, bottom = 10.dp)
                 ) {
                     // 수량 조절
                     Row(
@@ -279,7 +281,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     contentDescription = "상품 상세 정보",
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(vertical=20.dp),
+                        .padding(vertical = 20.dp),
                     onSuccess = {isLoading = false}
                 )
             }
@@ -294,7 +296,9 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
 
             // 리뷰 부분
             if(reviews!=null){
-                Row(modifier = Modifier.fillMaxWidth().padding(20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
                     Text(text = "리뷰", fontSize = 20.sp)
                     if(pos!=-1){
                         Text("${pos}%의 사용자가 긍정적인 평가를 하였습니다")
@@ -432,7 +436,9 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                 OutlinedButton(
                     onClick = {numberCheck()},
                     elevation = ButtonDefaults.elevation(1.dp),
-                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp)
                 ) {0
                     Text("확인", color = Color.Black)
                 }
@@ -518,25 +524,16 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
 @Preview(showBackground = true)
 @Composable
 fun DetailPreview(){
-    var isWrong = true
-    AlertDialog(
-        onDismissRequest = { isWrong = false },
-        text = { Text("아이디, 비밀번호 확인 후\n\n다시 로그인 해주세요", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(), fontSize = 18.sp) },
-        confirmButton = {
-            Column(
-                Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                OutlinedButton(
-                    onClick = { isWrong = false },
-                    elevation = ButtonDefaults.elevation(1.dp)
-                ) {
-                    Text("확인", color = Color.Black)
-                }
-            }
-        },
-        modifier = Modifier.border(1.dp, Color.Black, RoundedCornerShape(10.dp)),
-        shape = RoundedCornerShape(10.dp)
-    )
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState())
+    ) {
+        AsyncImage(
+            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/images/8801045055961_content.jpg",
+            contentDescription = "상품 상세 정보",
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+    }
+
 }
 

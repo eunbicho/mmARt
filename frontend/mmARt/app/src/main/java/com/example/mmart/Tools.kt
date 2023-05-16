@@ -361,11 +361,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                     ) {
                         Box(
                             modifier = Modifier
-                                .border(
-                                    width = 2.dp,
-                                    color = Color.Black,
-                                    shape = RoundedCornerShape(40.dp)
-                                )
+                                .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(40.dp))
                                 .shadow(10.dp, shape = RoundedCornerShape(40.dp))
                                 .background(color = Color.White, shape = RoundedCornerShape(40.dp))
                         ){
@@ -375,7 +371,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                             ) {
                                 Text("상품이 장볼구니에\n추가되었습니다", modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp), fontSize = 20.sp, textAlign = TextAlign.Center)
                                 Row(
-                                    horizontalArrangement = Arrangement.Center,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 50.dp)
@@ -386,7 +382,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                                             .padding(10.dp)
                                             .clickable { goGetCart = false }
                                     ) {
-                                        Image(painter = painterResource(R.drawable.previous), contentDescription = "이전으로", Modifier.size(80.dp))
+                                        Image(painter = painterResource(R.drawable.previous), contentDescription = "이전으로", Modifier.size(70.dp))
                                         Text("이전으로", Modifier.padding(5.dp))
                                     }
                                     Column(
@@ -395,7 +391,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                                             .padding(10.dp)
                                             .clickable { navController.navigate("getCart") }
                                     ) {
-                                        Image(painter = painterResource(R.drawable.getcart), contentDescription = "장볼구니로", Modifier.size(80.dp))
+                                        Image(painter = painterResource(R.drawable.getcart), contentDescription = "장볼구니로", Modifier.size(70.dp))
                                         Text("장볼구니로", Modifier.padding(5.dp))
                                     }
                                 }
