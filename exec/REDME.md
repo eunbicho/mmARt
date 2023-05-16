@@ -1,4 +1,4 @@
-## 개발 환경
+## env
 
 - Version Control
     - GitLab
@@ -51,7 +51,7 @@
         - Spring Data JPA
         - Spring Data Redis
 
-## EC2
+## install backend
 
 1. install Docker 23.0.4
 
@@ -63,19 +63,19 @@
     git clone https://lab.ssafy.com/s08-ai-image-sub2/S08P22A401.git
     ```
     
-4. build project in dir("backend//mmart")
+4. build spring boot project in dir("backend//mmart")
     
     ```bash
     chmod +x gradlew
     ./gradlew clean build -x test
     ```
-5. docker-compose in dir("backend/mmart")
+5. docker-compose up in dir("backend/mmart")
     
     ```bash
     docker-compose up -d --build
     ```
     
-## Properties
+## properties
 
 1. Spring Boot properties in dir("backend/mmart/src/main/resources")
 
@@ -121,7 +121,7 @@
     ```
     
 
-## 외부 서비스 문서
+## etc
 
 ### AWS S3
 
