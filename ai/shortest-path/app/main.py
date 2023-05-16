@@ -53,7 +53,8 @@ def find_shortest_path(locations: Locations):
 
     # 시작점과 끝점을 추가해서 TSP를 적용할 list 만들기.
     visit_list = deepcopy(locations.locations)
-    visit_list.insert(0,0)
+    # 원래는 0번 카운터에서 시작했지만, 중간에서도 시작하기 위해 입력 리스트의 첫번째 원소를 시작위치로.
+    # visit_list.insert(0,0)
     visit_list.append(V-1)
 
     # TSP 알고리즘을 적용하기 위해, 방문하는 위치들만으로 완전그래프(complete graph) 만들기.
@@ -69,7 +70,7 @@ def find_shortest_path(locations: Locations):
     # 최단거리, 최단경로 초기화.
     shortest_distance = -1
     temp_path = []
-    if l <= 13:
+    if l <= 14:
         shortest_distance, temp_path = held_karp(complete_graph,INF)
     else:
         # 입력 형태를 맞추기 위해, distance matrix인 complete_graph를 numpy array로 변환해줌.
