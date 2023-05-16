@@ -67,6 +67,8 @@ fun Login(navController: NavController){
                     )
                 }
             } catch (e: Exception){
+                println("login 에러////////////////////////")
+                e.printStackTrace()
                 isWrong = true
             }
         }

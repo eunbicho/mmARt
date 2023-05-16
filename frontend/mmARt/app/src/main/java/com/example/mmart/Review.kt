@@ -70,7 +70,7 @@ fun Review(navController: NavController) {
         modifier = Modifier.padding(bottom = 23.dp)
     ) {
         // 상단바
-        topBar(navController, "리뷰 내역 조회")
+        topBar(navController, "리뷰 내역")
 
         if (reviews != null) {
             // 작성한 리뷰가 없을 때

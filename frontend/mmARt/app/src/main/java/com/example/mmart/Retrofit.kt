@@ -89,7 +89,6 @@ interface APIS {
     @GET("payments/{paymentIdx}")
     suspend fun getPayment(@Path("paymentIdx") paymentIdx: Int, @Query("userIdx") userIdx: Int): PaymentResult
 
-
     // 결제 내역 상세 조회
     @GET("payments/detail")
     suspend fun getPaymentDetails(@Query("userIdx") userIdx: Int, @Query("paymentIdx") paymentIdx: Int): PaymentDetailsResult
@@ -228,12 +227,6 @@ data class ReviewDetail(
     val user: UserInfo,
     val item: ItemInfo,
     val date: String
-)
-
-// 리뷰 body (작성, 수정용)
-data class ReviewBody(
-    var star: Int,
-    var content: String
 )
 
 data class PaymentDetail(
