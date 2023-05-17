@@ -60,8 +60,8 @@ class ReviewService @Autowired constructor(
     fun getItemReviews(itemIdx: Int): ItemReviewRes? {
         itemRepository.findById(itemIdx).orElseThrow(::ItemNotFoundException)
         val list = mutableListOf<ReviewRes>()
-        var total = 0;
-        var positive = 0;
+        var total = 0
+        var positive = 0
 
         reviewRepository.findAllByItem_ItemIdxOrderByCreateTimeDesc(itemIdx)?.forEach { review ->
             total++
@@ -101,7 +101,7 @@ class ReviewService @Autowired constructor(
                 //pos 값을 false로 넣기!!!
                 response.close()
                 setReviewRes(reviewRepository.save(reviewReq.toEntity(paymentDetail.item, paymentDetail, user, false)))
-            } else{
+            } else {
                 response.close()
                 setReviewRes(reviewRepository.save(reviewReq.toEntity(paymentDetail.item, paymentDetail, user, true)))
             }
@@ -113,12 +113,30 @@ class ReviewService @Autowired constructor(
 
     @Transactional
     fun updateReview(userIdx: Int, reviewIdx: Int, reviewReq: ReviewReq): ReviewRes? {
+        val url = "http://k8a405.p.ssafy.io:8788/reviews/sentiment-analysis"  // 요청을 보낼 URL
+        // 요청에 필요한 데이터를 객체에 담습니다.
+        val requestBody = """
+        {
+            "review": "${reviewReq.content}"
+        }
+    """.trimIndent()
         var review = reviewRepository.findByIdOrNull(reviewIdx) ?: throw ReviewNotFoundException()
         val user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
         if (user == review.user) {
+            val client = OkHttpClient()
+            val mediaType = "application/json".toMediaType()
+            val request = Request.Builder()
+                .url(url)
+                .post(requestBody.toRequestBody(mediaType))
+                .build()
+
+            val response = client.newCall(request).execute()
+            val pos = response.body?.string() != "0"
+            response.close()
             review.apply {
                 content = reviewReq.content
                 star = reviewReq.star
+                isPositive = pos
             }
         } else {
             throw BadAccessException()
