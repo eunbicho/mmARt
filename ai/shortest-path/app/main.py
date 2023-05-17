@@ -93,8 +93,14 @@ def find_shortest_path(locations: Locations):
     for i in range(path_len-1):
         real_path.extend(SHORTEST_PATHS[visit_list[temp_path[i]]][visit_list[temp_path[i+1]]][1:])
 
+    # 디버깅.
+    # 최단 경로
+    print("real_path")
+    print(real_path)
+
     # 최단 거리 출력해보기.
     print("shortest_distance")
     print(shortest_distance)
+
 
     return {"path":real_path}
