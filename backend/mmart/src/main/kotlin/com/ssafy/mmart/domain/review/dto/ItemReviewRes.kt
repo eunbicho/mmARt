@@ -6,5 +6,4 @@ import com.ssafy.mmart.domain.user.dto.UserRes
 data class ItemReviewRes(
     val reviewRes: List<ReviewRes>,
     val pos: Double,
-) {
-}
+)

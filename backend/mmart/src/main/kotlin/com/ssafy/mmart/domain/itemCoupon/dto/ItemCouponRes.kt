@@ -8,6 +8,4 @@ data class ItemCouponRes(
     val couponName: String,
     val couponDiscount: Int,
     val couponExpired: LocalDateTime,
-) {
-
-}
+)
