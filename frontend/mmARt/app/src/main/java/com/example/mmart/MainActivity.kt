@@ -175,9 +175,9 @@ fun Main(navController: NavController) {
             Image(
                 painter = painterResource(R.drawable.bg),
                 modifier = Modifier.fillMaxWidth(),
-                alignment = Alignment.BottomCenter,
+                alignment = Alignment.Center,
                 contentDescription = "배경",
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillWidth
             )
 
             Column() {
@@ -186,6 +186,7 @@ fun Main(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
+
                 ) {
                     Image(
                         painter = painterResource(R.drawable.logo),

@@ -108,7 +108,8 @@ fun Login(navController: NavController){
             ),
             placeholder = { Text("아이디") },
             singleLine = true,
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(10.dp),
+
         )
 
         // 비밀번호 입력

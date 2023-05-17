@@ -174,7 +174,7 @@ fun floatingBtn(
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
             .padding(20.dp)
-            .fillMaxHeight()
+            .fillMaxSize(),
     ) {
         FloatingActionButton(
             onClick = {
@@ -204,12 +204,11 @@ fun floatingBtns(
     val coroutineScope = rememberCoroutineScope()
 
     Row(
-        modifier = Modifier
-            .padding(20.dp)
-            .fillMaxWidth()
-            .fillMaxHeight(),
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .padding(20.dp)
+            .fillMaxSize(),
     ) {
         FloatingActionButton(
             onClick = {
