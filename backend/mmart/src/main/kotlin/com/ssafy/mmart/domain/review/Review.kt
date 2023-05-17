@@ -22,7 +22,7 @@ data class Review (
     var star : Int,
 
     @Column(name = "isPositive")
-    val isPositive: Boolean = true,
+    var isPositive: Boolean = true,
 
 
     @ManyToOne

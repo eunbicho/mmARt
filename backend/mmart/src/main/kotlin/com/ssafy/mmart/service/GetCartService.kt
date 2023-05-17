@@ -113,7 +113,7 @@ class GetCartService @Autowired constructor(
         val getCartRes = getGetCart(userIdx)
         val tempList = mutableListOf<String>()
         //startNode 넣기
-        tempList.add(startNode);
+        tempList.add(startNode)
         val sortedItem = mutableListOf<SortItemRes>()
         //placeInfo만 추출해서 넣기
         getCartRes.itemList.forEach { cartItem ->
