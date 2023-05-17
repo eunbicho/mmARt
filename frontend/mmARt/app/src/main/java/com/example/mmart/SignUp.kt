@@ -1,16 +1,13 @@
 package com.example.mmart
 
+import androidx.compose.foundation.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -72,6 +69,8 @@ fun SignUp(navController: NavController){
                         isWrong = true
                     }
                 } catch (e: Exception){
+                    println("중복 확인 에러////////////////////////")
+                    e.printStackTrace()
                     isDuplicate = false
                     alertText = "사용할 수 있는 아이디입니다"
                     isWrong = true
@@ -109,6 +108,8 @@ fun SignUp(navController: NavController){
                         isDone = true
                     }
                 } catch (e: Exception){
+                    println("signUp 에러////////////////////////")
+                    e.printStackTrace()
                     alertText = "중복된 아이디입니다"
                     isWrong = true
                 }
@@ -131,7 +132,7 @@ fun SignUp(navController: NavController){
             .padding(horizontal = 30.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Image(painter = painterResource(R.drawable.logo), contentDescription = "로고", modifier = Modifier.padding(vertical = 20.dp))
+        Image(painter = painterResource(R.drawable.logo), contentDescription = "로고", modifier = Modifier.padding(vertical = 20.dp).clickable { navController.popBackStack() })
 
         // 아이디 입력
         OutlinedTextField(
@@ -154,7 +155,7 @@ fun SignUp(navController: NavController){
         if(isDuplicate){
             Text("중복 확인을 해주세요", color = Color.Red, fontSize = 10.sp, textAlign = TextAlign.Start, modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 40.dp))
+                .padding(start = 50.dp))
         } else {
             Text("", fontSize = 10.sp)
         }
@@ -181,14 +182,24 @@ fun SignUp(navController: NavController){
             modifier = Modifier.padding(10.dp)
         )
 
-        Button(
-            onClick = { signUp() },
-            colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_blue),
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth(0.5f)
+        Row(
+            modifier = Modifier.padding(vertical = 10.dp, horizontal = 30.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("확인", color = Color.White)
+            Button(
+                onClick = { signUp() },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_blue),
+                modifier = Modifier.fillMaxWidth(0.5f).aspectRatio(2f).padding(10.dp)
+            ) {
+                Text("확인", color = Color.White)
+            }
+            Button(
+                onClick = { navController.popBackStack() },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_yellow),
+                modifier = Modifier.fillMaxWidth(1F).aspectRatio(2f).padding(10.dp)
+            ) {
+                Text("취소", color = Color.White)
+            }
         }
     }
 

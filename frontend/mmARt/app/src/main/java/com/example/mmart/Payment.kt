@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import androidx.compose.material.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Image
 import coil.compose.AsyncImage
 import com.example.mmart.ui.theme.Main_blue
@@ -33,6 +34,8 @@ fun Payment(navController: NavController){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
     var payments: List<Payment>? by remember { mutableStateOf(null) }
 
     LaunchedEffect(true) {
@@ -45,26 +48,55 @@ fun Payment(navController: NavController){
         }
     }
 
-    Column {
+    Column(
+        modifier = Modifier.padding(bottom = 23.dp)
+    ) {
         // 상단바
         topBar(navController, "결제 내역")
 
         if(payments != null) {
             if(payments!!.isEmpty()){
-                blankView("결제 내역이 없습니다.")
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ){
+                    blankView("결제 내역이 없습니다.")
+                    Row(
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable { navController.navigate("main") }
+                        ) {
+                            Image(painter = painterResource(R.drawable.main), contentDescription = "홈으로", Modifier.size(80.dp))
+                            Text("홈으로", Modifier.padding(5.dp))
+                        }
+                    }
+                }
             } else {
-                LazyColumn(){
+                LazyColumn(state = listState){
                     items(payments!!){
                         payment ->
                         Column (
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 23.dp, start = 23.dp, end = 23.dp)
-                                .border(width = (1.8).dp, color = Main_gray, shape = RoundedCornerShape(11.dp))
+                                .border(
+                                    width = (1.8).dp,
+                                    color = Main_gray,
+                                    shape = RoundedCornerShape(11.dp)
+                                )
                         ){
                             Box(
                                 modifier = Modifier
-                                    .padding(start = 15.dp, top = 15.dp, bottom = 15.dp, end = 15.dp)
+                                    .padding(
+                                        start = 15.dp,
+                                        top = 15.dp,
+                                        bottom = 15.dp,
+                                        end = 15.dp
+                                    )
                                     .fillMaxWidth()
                             ) {
                                 Column{
@@ -101,6 +133,7 @@ fun Payment(navController: NavController){
                     }
                 }
             }
+            floatingBtn(listState = listState)
         }
     }
 }

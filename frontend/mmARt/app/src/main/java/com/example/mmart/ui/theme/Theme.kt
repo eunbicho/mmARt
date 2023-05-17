@@ -9,10 +9,10 @@ import androidx.compose.ui.graphics.Color
 
 private val Palette = lightColors(
     primary = Main_blue,
-    secondary = Main_yellow
+    secondary = Main_yellow,
 
+    background = Vivid_blue,
     /* Other default colors to override
-    background = Color.White,
     surface = Color.White,
     onPrimary = Color.White,
     onSecondary = Color.Black,
