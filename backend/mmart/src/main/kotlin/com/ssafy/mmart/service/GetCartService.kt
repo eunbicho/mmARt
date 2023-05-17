@@ -117,7 +117,9 @@ class GetCartService @Autowired constructor(
         val sortedItem = mutableListOf<SortItemRes>()
         //placeInfo만 추출해서 넣기
         getCartRes.itemList.forEach { cartItem ->
-            tempList.add(cartItem.placeInfo)
+            if(!tempList.contains(cartItem.placeInfo)){
+                tempList.add(cartItem.placeInfo)
+            }
         }
         println(tempList)
         //최단경로 가져오기
