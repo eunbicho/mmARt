@@ -109,7 +109,7 @@ fun GotCart(navController: NavController) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(560.dp)
+                        .height(480.dp)
                         .padding(20.dp, 0.dp),
                     state = listState,
                 ) {

@@ -205,7 +205,7 @@ fun floatingBtns(
 
     Row(
         modifier = Modifier
-            .padding(20.dp)
+            .padding(20.dp, 0.dp)
             .fillMaxWidth()
             .fillMaxHeight(),
         verticalAlignment = Alignment.Bottom,

@@ -81,8 +81,8 @@ dependencies {
     implementation 'com.google.zxing:core:3.5.1'
 
     // 유니티 연결
-//    implementation project(':unityLibrary')
-//    implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
+    implementation project(':unityLibrary')
+    implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
 //    implementation project(':unityLibrary')
 //    implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
 }

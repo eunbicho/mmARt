@@ -1,5 +1,6 @@
 package com.example.mmart
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +22,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -35,14 +37,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.example.mmart.ui.theme.*
+import com.unity3d.player.UnityPlayerActivity
 import kotlinx.coroutines.async
 import java.text.DecimalFormat
 
 
 @Composable
 fun GetCart(navController: NavController) {
+
+    LaunchedEffect(pageCode) {//
+        if (pageCode == 1) {
+//            navController.navigate("main")
+            navController.navigate("main",
+                NavOptions.Builder().setPopUpTo("main", true).build())
+        } else if (pageCode == 2) {
+//            navController.navigate("gotCart")
+            navController.navigate("gotCart",
+                NavOptions.Builder().setPopUpTo("main", false).build())
+
+        }
+        pageCode = 0
+    }
+    val mContext = LocalContext.current
+
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -113,7 +133,7 @@ fun GetCart(navController: NavController) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(480.dp)
+                        .height(400.dp)
                         .padding(20.dp, 0.dp),
                     state = listState,
                 ) {
@@ -384,7 +404,8 @@ fun GetCart(navController: NavController) {
     }
 
     if (findMap) {
-
+        getResult.launch(Intent(mContext, UnityPlayerActivity::class.java).putExtra("userId",userId.toString()))
+        findMap = !findMap
     }
 
     if (quantityError) {

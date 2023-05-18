@@ -1,9 +1,13 @@
 package com.example.mmart
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,13 +36,19 @@ import com.example.mmart.ui.theme.*
 import kotlinx.coroutines.async
 
 //import com.unity3d.player.UnityPlayerActivity
-
+lateinit var getResult: ActivityResultLauncher<Intent>
+var pageCode by mutableStateOf(0) // <- this line
 class MainActivity : ComponentActivity() {
     fun a(){
 //        startActivity(Intent(this, UnityPlayerActivity::class.java))
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                pageCode= it.data?.getStringExtra("pageCode")?.toInt() ?: 0
+            }
+        }
 //        val intent = Intent(this, UnityPlayerActivity::class.java)
 
 //        Button(onClick = {
@@ -175,9 +185,9 @@ fun Main(navController: NavController) {
             Image(
                 painter = painterResource(R.drawable.bg),
                 modifier = Modifier.fillMaxWidth(),
-                alignment = Alignment.BottomCenter,
+                alignment = Alignment.Center,
                 contentDescription = "배경",
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillWidth
             )
 
             Column() {
@@ -193,7 +203,7 @@ fun Main(navController: NavController) {
                         modifier = Modifier
                             .padding(16.dp)
                             .width(120.dp)
-                            .height(60.dp)
+                            .height(40.dp)
                     )
                     Image(
                         painter = painterResource(R.drawable.place),
