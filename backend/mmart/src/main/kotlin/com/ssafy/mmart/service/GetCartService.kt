@@ -107,15 +107,19 @@ class GetCartService @Autowired constructor(
         return setGetCarts(temp)
     }
 
-    fun getShortestPathGetCart(userIdx: Int): GetCartPathRes?{
+    fun getShortestPathGetCart(userIdx: Int,startNode: String): GetCartPathRes?{
         //유저가 존재하는지 확인
         userRepository.findById(userIdx).orElseThrow(::UserNotFoundException)
         val getCartRes = getGetCart(userIdx)
         val tempList = mutableListOf<String>()
+        //startNode 넣기
+        tempList.add(startNode)
         val sortedItem = mutableListOf<SortItemRes>()
         //placeInfo만 추출해서 넣기
         getCartRes.itemList.forEach { cartItem ->
-            tempList.add(cartItem.placeInfo)
+            if(!tempList.contains(cartItem.placeInfo)){
+                tempList.add(cartItem.placeInfo)
+            }
         }
         println(tempList)
         //최단경로 가져오기
