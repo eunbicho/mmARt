@@ -16,6 +16,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -46,6 +48,8 @@ fun Login(navController: NavController){
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
+    // 포커스 조정
+    val focusRequester = remember { FocusRequester() }
 
     var id: String by remember{ mutableStateOf("") }
     var password: String by remember{ mutableStateOf("") }
@@ -77,14 +81,6 @@ fun Login(navController: NavController){
         }
     }
 
-//    // 배경 이미지
-//    Image(
-//        painter = painterResource(R.drawable.bg),
-//        modifier = Modifier.fillMaxSize(),
-//        contentDescription = "배경",
-//        contentScale = ContentScale.FillBounds
-//    )
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -109,7 +105,7 @@ fun Login(navController: NavController){
             placeholder = { Text("아이디") },
             singleLine = true,
             modifier = Modifier.padding(10.dp),
-
+            keyboardActions = KeyboardActions(onDone = {focusRequester.requestFocus()})
         )
 
         // 비밀번호 입력
@@ -126,8 +122,9 @@ fun Login(navController: NavController){
             placeholder = { Text("비밀번호")},
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            keyboardActions = KeyboardActions(onDone = {login()}),
             singleLine = true,
-            modifier = Modifier.padding(10.dp, 10.dp, 10.dp, bottom = 30.dp)
+            modifier = Modifier.padding(10.dp, 10.dp, 10.dp, bottom = 30.dp).focusRequester(focusRequester)
         )
 
         Button(

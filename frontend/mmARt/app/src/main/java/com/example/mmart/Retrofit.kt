@@ -211,7 +211,7 @@ data class IdxReviewsResult(
 
 data class ReviewsPos(
     val reviewRes: List<ReviewDetail>,
-    val pos: Int
+    val pos: Float
 )
 
 // 유저 별 리뷰 조회

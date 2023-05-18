@@ -7,11 +7,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.runtime.*
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -41,6 +44,14 @@ fun Review(navController: NavController) {
     var isDelete: Int? by remember { mutableStateOf(null) }
     // 다시 불러오기
     var reload: Boolean by remember { mutableStateOf(false) }
+    // 정렬
+    var sort: Int by remember { mutableStateOf(0) }
+    // 정렬 리스트
+    val sortList = listOf("최신순", "별점 높은 순", "별점 낮은 순")
+    // 정렬창 on
+    var sortOpen: Boolean by remember { mutableStateOf(false) }
+    // 전체 보기 / 일부 보기
+    var expanded by remember { mutableStateOf(false) }
     // 로딩창
     var isLoading: Boolean by remember { mutableStateOf(true) }
 
@@ -56,8 +67,16 @@ fun Review(navController: NavController) {
         }
     }
 
+    // 아이템 리스트
+    val reviewList =
+        when(sort){
+            0 -> reviews
+            1 -> reviews!!.sortedByDescending { it.star }
+            2 -> reviews!!.sortedBy { it.star }
+            else -> reviews
+        }
+
     // 리뷰 삭제
-    @VisibleForTesting
     fun reviewDelete(reviewIdx: Int) {
         // 리뷰 삭제
         coroutineScope.launch{
@@ -84,6 +103,7 @@ fun Review(navController: NavController) {
         if (reviews != null) {
             // 작성한 리뷰가 없을 때
             if (reviews!!.isEmpty()) {
+                isLoading = false
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -117,7 +137,31 @@ fun Review(navController: NavController) {
             } else {
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyColumn(state = listState, contentPadding = PaddingValues(bottom=100.dp)) {
-                        items(reviews!!) { review ->
+                        // 정렬
+                        item(){
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentSize(Alignment.TopEnd)
+                                .padding(20.dp, 10.dp, 20.dp, 0.dp)){
+                                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { sortOpen = true }){
+                                    Text(sortList[sort])
+                                    Icon(imageVector = Icons.Default.Menu, contentDescription = "정렬", modifier = Modifier.padding(start=10.dp))
+                                }
+                                DropdownMenu(expanded = sortOpen, onDismissRequest = { sortOpen = false }) {
+                                    sortList.forEachIndexed { index, it ->
+                                        DropdownMenuItem(
+                                            onClick = {
+                                                sort = index
+                                                sortOpen = false
+                                            }
+                                        ) {
+                                            Text(it)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        items(reviewList!!) { review ->
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -128,7 +172,6 @@ fun Review(navController: NavController) {
                                         shape = RoundedCornerShape(11.dp)
                                     )
                             ) {
-
                                 // 구매 상품 정보
                                 Row(modifier = Modifier
                                     .clickable { navController.navigate("item/${review.item.itemIdx}") }
@@ -179,8 +222,13 @@ fun Review(navController: NavController) {
                                     }
                                 }
                                 // 리뷰 내용
-                                Text(
-                                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp), text = review.content
+                                Text(review.content,
+                                    modifier = Modifier
+                                        .padding(vertical = 10.dp, horizontal = 20.dp)
+                                        .fillMaxWidth()
+                                        .clickable { expanded = !expanded },
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = if (expanded) Int.MAX_VALUE else 3
                                 )
 
                                 // 수정, 삭제 버튼

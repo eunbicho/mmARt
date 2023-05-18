@@ -57,6 +57,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.selects.select
 import okhttp3.internal.wait
 import androidx.lifecycle.lifecycleScope
+import java.lang.Math.round
+import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
@@ -107,7 +109,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
         try {
             val response = coroutineScope.async { api.getItemReview(itemId!!) }.await().result
             reviews = response.reviewRes
-            pos = response.pos
+            pos = response.pos.roundToInt()
         } catch (e: Exception){
             println("상픔 상세 리뷰 조회 에러-------------")
             e.printStackTrace()
@@ -512,7 +514,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp)
-                ) {0
+                ) {
                     Text("확인", color = Color.Black)
                 }
             }
