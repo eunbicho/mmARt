@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,7 +52,7 @@ class MainActivity : ComponentActivity() {
 
 //        }
         setContent {
-            MaterialTheme(typography = mainTypography) {
+            MmARtTheme {
                 val navController = rememberNavController()
 
                 NavHost(navController = navController, startDestination = "main") {
@@ -120,23 +121,21 @@ class MainActivity : ComponentActivity() {
                     ) { backStackEntry ->
                         PaymentDetail(navController, backStackEntry.arguments!!.getInt("paymentIdx"))
                     }
-                    // 마이페이지 - 결제 내역 조회 - 상세 조회 - 리뷰 작성
+                    // 리뷰 작성 및 수정
                     composable(
-                        route = "reviewCreate/{paymentDetailIdx}",
-                        arguments = listOf(navArgument("paymentDetailIdx") { type = NavType.IntType })
+                        route = "reviewSave/{paymentDetailIdx}/{reviewIdx}",
+                        arguments = listOf(
+                            navArgument("paymentDetailIdx") { type = NavType.IntType },
+                            navArgument("reviewIdx") { type = NavType.IntType }
+                        )
                     ) { backStackEntry ->
-                        ReviewCreate(navController, backStackEntry.arguments!!.getInt("paymentDetailIdx"))
+                        val paymentDetailIdx = backStackEntry.arguments!!.getInt("paymentDetailIdx")
+                        val reviewIdx = backStackEntry.arguments!!.getInt("reviewIdx")
+                        ReviewSave(navController, paymentDetailIdx, reviewIdx)
                     }
                     // 마이페이지 - 리뷰 내역 조회
                     composable(route = "review") {
                         Review(navController)
-                    }
-                    // 마이페이지 - 리뷰 내역 조회 - 리뷰 수정
-                    composable(
-                        route = "reviewUpdate/{reviewIdx}",
-                        arguments = listOf(navArgument("reviewIdx") { type = NavType.IntType })
-                    ) { backStackEntry ->
-                        ReviewUpdate(navController, backStackEntry.arguments!!.getInt("reviewIdx"))
                     }
                 }
 
@@ -174,16 +173,15 @@ fun Main(navController: NavController) {
             // 배경 이미지
             Image(
                 painter = painterResource(R.drawable.bg),
-                modifier = Modifier.fillMaxWidth(),
-                alignment = Alignment.BottomCenter,
+                modifier = Modifier.fillMaxSize(),
                 contentDescription = "배경",
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillWidth
             )
 
             Column() {
                 // 상단 로고, 지점 표시
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -191,7 +189,6 @@ fun Main(navController: NavController) {
                         painter = painterResource(R.drawable.logo),
                         contentDescription = "로고",
                         modifier = Modifier
-                            .padding(16.dp)
                             .width(120.dp)
                             .height(60.dp)
                     )
@@ -199,12 +196,11 @@ fun Main(navController: NavController) {
                         painter = painterResource(R.drawable.place),
                         contentDescription = "지점",
                         modifier = Modifier
-                            .padding(16.dp)
                             .width(80.dp)
                             .height(30.dp)
                     )
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(35.dp))
 
                 // 검색
                 searchBar(navController)
@@ -212,8 +208,7 @@ fun Main(navController: NavController) {
                 // 카테고리, 최근/자주 구매
                 Column(
                     modifier = Modifier
-                        .padding(bottom = 100.dp)
-                        .padding(horizontal = 20.dp)
+                        .padding(20.dp, 10.dp, 20.dp, 100.dp)
                         .verticalScroll(rememberScrollState()),
                 ) {
                     // 카테고리 부분
@@ -350,7 +345,7 @@ fun Main(navController: NavController) {
                     if(recentItems!=null){
                         if(recentItems!!.isEmpty()){
                             isLoading1 = false
-                            Text("최근 구매 상품이 없습니다")
+                            Text("최근 구매 상품이 없습니다", modifier = Modifier.padding(vertical=40.dp).fillMaxWidth(), textAlign = TextAlign.Center)
                         } else {
                             LazyRow(){
                                 items(recentItems!!){
@@ -363,14 +358,13 @@ fun Main(navController: NavController) {
                                     ){
                                         AsyncImage(
                                             model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
-    //                                    model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
                                             contentDescription = "상품 썸네일",
                                             onSuccess = {isLoading1 = false},
                                             modifier = Modifier
                                                 .fillMaxSize()
                                                 .aspectRatio(1f)
                                         )
-                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top=5.dp))
                                     }
                                 }
                             }
@@ -382,7 +376,7 @@ fun Main(navController: NavController) {
                     if(frequentItems!=null){
                         if(frequentItems!!.isEmpty()){
                             isLoading2 = false
-                            Text("자주 구매 상품이 없습니다")
+                            Text("자주 구매 상품이 없습니다", modifier = Modifier.padding(vertical=40.dp).fillMaxWidth(), textAlign = TextAlign.Center)
                         } else {
                             LazyRow(){
                                 items(frequentItems!!){
@@ -395,11 +389,10 @@ fun Main(navController: NavController) {
                                     ){
                                         AsyncImage(
                                             model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
-    //                                    model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
                                             contentDescription = "상품 썸네일",
                                             onSuccess = {isLoading2 = false}
                                         )
-                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top=5.dp))
                                     }
 
                                 }
@@ -408,9 +401,6 @@ fun Main(navController: NavController) {
                     }
 
                 }
-            }
-            if(isLoading1 || isLoading2) {
-                loadingView()
             }
         },
         // 하단바
@@ -448,6 +438,9 @@ fun Main(navController: NavController) {
             }
         }
     )
+    if(isLoading1 || isLoading2) {
+        loadingView()
+    }
 }
 
 @Preview(showBackground = true)
