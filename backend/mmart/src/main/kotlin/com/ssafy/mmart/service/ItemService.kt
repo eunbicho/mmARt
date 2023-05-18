@@ -135,7 +135,7 @@ class ItemService @Autowired constructor(
         result.addAll(temp)
         val temp2 = jpaQueryFactory
             .selectFrom(item)
-            .where(item.inventory.eq(0))
+            .where(item.inventory.eq(0),item.category.categoryIdx.eq(categoryIdx))
             .fetch()
         //한번도 안 산 재고 있는 상품 구해서 넣기
         result.addAll(temp2)
