@@ -2,6 +2,7 @@ package com.example.mmart
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -70,12 +72,39 @@ fun Review(navController: NavController) {
         modifier = Modifier.padding(bottom = 23.dp)
     ) {
         // 상단바
-        topBar(navController, "리뷰 내역 조회")
+        topBar(navController, "리뷰 내역")
 
         if (reviews != null) {
             // 작성한 리뷰가 없을 때
             if (reviews!!.isEmpty()) {
-                blankView("작성한 리뷰가 없습니다.")
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ){
+                    blankView("작성한 리뷰가 없습니다.")
+                    Row(
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable { navController.navigate("main") }
+                        ) {
+                            Image(painter = painterResource(R.drawable.main), contentDescription = "홈으로", Modifier.size(80.dp))
+                            Text("홈으로", Modifier.padding(5.dp))
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable { navController.navigate("payment") }
+                        ) {
+                            Image(painter = painterResource(R.drawable.payment), contentDescription = "결제내역으로", Modifier.size(80.dp))
+                            Text("결제내역으로", Modifier.padding(5.dp))
+                        }
+                    }
+                }
 
                 // 작성한 리뷰가 있을 때
             } else {
@@ -179,7 +208,10 @@ fun Review(navController: NavController) {
                                     OutlinedButton(
                                         border = BorderStroke(color = Main_blue, width = 2.dp),
                                         elevation = ButtonDefaults.elevation(2.dp),
-                                        onClick = { reviewDelete(review.reviewIdx) })
+                                        onClick = {
+                                            reviewDelete(review.reviewIdx)
+                                            reload = !reload
+                                        })
                                     {
                                         Text("삭제", color = Main_gray)
                                     }

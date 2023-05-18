@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -97,7 +98,9 @@ fun GotCart(navController: NavController) {
         reload = !reload
     }
 
-    Column {
+    Column(
+        modifier = Modifier.padding(bottom = 23.dp)
+    ) {
         topBar(navController = navController, "장봤구니")
 
         // result가 null이 아닐 경우만
@@ -352,17 +355,12 @@ fun GotCart(navController: NavController) {
                     secondEvent = { goToPay = true }
                 )
             } else {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+                Box(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Text(
-                        "장봤구니가 비어있습니다.",
-                        modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp),
-                        fontSize = 18.sp,
-                        textAlign = TextAlign.Center
-                    )
+                    blankView("장봤구니가 비어있습니다.")
                     Row(
+                        modifier = Modifier.align(Alignment.BottomCenter),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Column(
@@ -385,6 +383,39 @@ fun GotCart(navController: NavController) {
                         }
                     }
                 }
+//                Column(
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    modifier = Modifier.fillMaxWidth()
+//                ) {
+//                    Text(
+//                        "장봤구니가 비어있습니다.",
+//                        modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp),
+//                        fontSize = 18.sp,
+//                        textAlign = TextAlign.Center
+//                    )
+//                    Row(
+//                        horizontalArrangement = Arrangement.Center
+//                    ) {
+//                        Column(
+//                            horizontalAlignment = Alignment.CenterHorizontally,
+//                            modifier = Modifier
+//                                .padding(10.dp)
+//                                .clickable { navController.navigate("main") }
+//                        ) {
+//                            Image(painter = painterResource(R.drawable.main), contentDescription = "홈으로", Modifier.size(80.dp))
+//                            Text("홈으로", Modifier.padding(5.dp))
+//                        }
+//                        Column(
+//                            horizontalAlignment = Alignment.CenterHorizontally,
+//                            modifier = Modifier
+//                                .padding(10.dp)
+//                                .clickable { navController.navigate("payment") }
+//                        ) {
+//                            Image(painter = painterResource(R.drawable.payment), contentDescription = "결제내역으로", Modifier.size(80.dp))
+//                            Text("결제내역으로", Modifier.padding(5.dp))
+//                        }
+//                    }
+//                }
             }
         }
     }
@@ -449,28 +480,30 @@ fun GotCart(navController: NavController) {
             onDismissRequest = { showQrcode = false },
             content = {
                 Box (
-                    modifier = Modifier.fillMaxWidth()
-                    .border(
-                        width = 3.dp,
-                        color = Dark_gray,
-                        shape = RoundedCornerShape(40.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = 3.dp,
+                            color = Dark_gray,
+                            shape = RoundedCornerShape(40.dp)
                         )
-                    .shadow(10.dp, shape = RoundedCornerShape(40.dp))
-                    .background(color = Main_yellow, shape = RoundedCornerShape(40.dp)),
+                        .shadow(10.dp, shape = RoundedCornerShape(40.dp))
+                        .background(color = Main_yellow, shape = RoundedCornerShape(40.dp)),
                 ){
                     Column(
-                        modifier = Modifier.padding(10.dp),
+                        modifier = Modifier.padding(30.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Text(
                             "아래 QR코드를\n키오스크에 인식해주세요.",
                             modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 0.dp),
-                            fontSize = 18.sp,
+                            fontSize = 20.sp,
                             textAlign = TextAlign.Center
                         )
                         AsyncImage(
                             model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${userRes?.qrcode}",
-                            modifier = Modifier.fillMaxWidth().padding(10.dp),
+                            modifier = Modifier.size(300.dp),
                             contentDescription = userRes?.name
                         )
                         Column(
@@ -483,8 +516,9 @@ fun GotCart(navController: NavController) {
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.paydone),
-                                contentDescription = "닫기",
-                                modifier = Modifier.size(160.dp)
+                                contentDescription = "결제 닫기",
+                                modifier = Modifier.width(160.dp)
+                                    .padding(0.dp, 10.dp)
                             )
                         }
                     }
@@ -495,52 +529,32 @@ fun GotCart(navController: NavController) {
     }
 
     if (quantityError) {
-        Dialog(
+        AlertDialog(
             onDismissRequest = { quantityError = false },
-            content = {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    elevation = 10.dp
-                ){
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text("수량을 다시 한번 확인해주세요.")
-                        Button(
-                            onClick = { quantityError = false }
-                        ){
-                            Text(text = "닫기")
-                        }
-                    }
+            text = { Text("수량을 다시 한번 확인해주세요.") },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = { quantityError = false },
+                    elevation = ButtonDefaults.elevation(1.dp)
+                ) {
+                    Text("확인", color = Dark_gray)
                 }
-            }
+            },
         )
     }
 
     if (inventoryError) {
-        Dialog(
+        AlertDialog(
             onDismissRequest = { inventoryError = false },
-            content = {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    elevation = 10.dp
-                ){
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text("지점 보유 재고를 초과하였습니다.")
-                        Button(
-                            onClick = { inventoryError = false }
-                        ){
-                            Text(text = "닫기")
-                        }
-                    }
+            text = { Text("지점 보유 재고를 초과하였습니다.") },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = { inventoryError = false },
+                    elevation = ButtonDefaults.elevation(1.dp)
+                ) {
+                    Text("확인", color = Dark_gray)
                 }
-            }
+            },
         )
     }
 }

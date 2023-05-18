@@ -49,14 +49,14 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
 
     Column {
         // 상단바
-        topBar(navController, "영수증 보기")
+        topBar(navController, "결제 내역 상세")
 
          if (payment != null && paymentDetails != null) {
              paymentDetails!!.forEach { priceTotal += it.item.price * it.quantity }
              LazyColumn (
                  modifier = Modifier
                      .fillMaxWidth()
-                     .height(690.dp),
+                     .height(675.dp),
                  state = listState,
                      ) {
                  item() {
@@ -85,7 +85,7 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
                                     fontSize = 20.sp,
                                 )
                                 Text(
-                                    text = "${payment!!.date[0]}-${payment!!.date[1]}-${payment!!.date[2]} ${payment!!.date[3]}:${payment!!.date[4]}",
+                                    text = "${payment!!.date[0]}-${DecimalFormat("00").format(payment!!.date[1])}-${DecimalFormat("00").format(payment!!.date[2])} ${DecimalFormat("00").format(payment!!.date[3])}:${DecimalFormat("00").format(payment!!.date[4])}",
                                     color = Main_gray,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Light
@@ -195,7 +195,6 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
                                                 .clip(RoundedCornerShape(10.dp)),
                                             onClick = { navController.navigate("reviewCreate/${paymentDetail.paymentDetailIdx}") },
                                             elevation = ButtonDefaults.elevation(2.dp)
-
                                         ) {
                                             Text(
                                                 text = "리뷰 작성",
@@ -205,37 +204,17 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
                                     } else {
                                         OutlinedButton(
                                             border = BorderStroke(
-                                                color = Vivid_blue,
+                                                color = Vivid_yellow,
                                                 width = 2.dp
                                             ),
                                             modifier = Modifier
-                                                .width(150.dp)
-                                                .clip(RoundedCornerShape(10.dp))
-                                                .padding(end = 5.dp),
-                                            onClick = { navController.navigate("reviewUpdate/${paymentDetail.paymentDetailIdx}") },
+                                                .fillMaxWidth()
+                                                .clip(RoundedCornerShape(10.dp)),
+                                            onClick = { navController.navigate("review") },
                                             elevation = ButtonDefaults.elevation(2.dp)
-
                                         ) {
                                             Text(
-                                                text = "리뷰 수정",
-                                                color = Main_gray,
-                                            )
-                                        }
-                                        OutlinedButton(
-                                            border = BorderStroke(
-                                                color = Vivid_blue,
-                                                width = 2.dp
-                                            ),
-                                            modifier = Modifier
-                                                .width(150.dp)
-                                                .clip(RoundedCornerShape(10.dp))
-                                                .padding(start = 5.dp),
-                                            onClick = { navController.navigate("reviewCreate/${paymentDetail.paymentDetailIdx}") },
-                                            elevation = ButtonDefaults.elevation(2.dp)
-
-                                        ) {
-                                            Text(
-                                                text = "리뷰 삭제",
+                                                text = "리뷰 내역",
                                                 color = Main_gray,
                                             )
                                         }
@@ -261,7 +240,7 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
                          Row(
                              modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(30.dp, 15.dp),
+                                .padding(30.dp, 20.dp),
                              verticalAlignment = Alignment.CenterVertically,
                              horizontalArrangement = Arrangement.SpaceBetween,
                          ) {
@@ -289,13 +268,13 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
                                 text = "총 할인 금액",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Main_blue,
+                                color = Vivid_blue,
                              )
                              Text(
                                 text = "${DecimalFormat("#,###").format(priceTotal - payment!!.total)}원",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Main_blue,
+                                color = Vivid_blue,
                              )
                          }
                          Divider(
