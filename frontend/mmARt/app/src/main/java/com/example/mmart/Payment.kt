@@ -49,7 +49,8 @@ fun Payment(navController: NavController){
     }
 
     Column(
-        modifier = Modifier.padding(bottom = 23.dp)
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         // 상단바
         topBar(navController, "결제 내역")
@@ -76,64 +77,61 @@ fun Payment(navController: NavController){
                     }
                 }
             } else {
-                LazyColumn(state = listState){
-                    items(payments!!){
-                        payment ->
-                        Column (
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 23.dp, start = 23.dp, end = 23.dp)
-                                .border(
-                                    width = (1.8).dp,
-                                    color = Main_gray,
-                                    shape = RoundedCornerShape(11.dp)
-                                )
-                        ){
-                            Box(
+                Box(modifier = Modifier.fillMaxSize()){
+                    LazyColumn(state = listState, contentPadding = PaddingValues(bottom=90.dp), modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)){
+                        items(payments!!){
+                                payment ->
+                            Column (
                                 modifier = Modifier
-                                    .padding(
-                                        start = 15.dp,
-                                        top = 15.dp,
-                                        bottom = 15.dp,
-                                        end = 15.dp
-                                    )
                                     .fillMaxWidth()
-                            ) {
-                                Column{
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text("${payment.marketName}점")
-                                        Text("${payment.total}원")
-                                    }
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(top = 5.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ){
-                                        Text(
-                                            text = "${payment.date[0]}. ${payment.date[1]}. ${payment.date[2]}",
-                                            fontWeight = FontWeight.Bold,
-                                            color = Main_gray,
-                                        )
-                                        Text(
-                                            text = "주문 상세보기 >",
-                                            color = Vivid_blue,
+                                    .padding(vertical=10.dp)
+                                    .border(
+                                        width = (1.8).dp,
+                                        color = Main_gray,
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                            ){
+                                Box(
+                                    modifier = Modifier
+                                        .padding(30.dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    Column{
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text("${payment.marketName}점")
+                                            Text("${payment.total}원")
+                                        }
+                                        Row(
                                             modifier = Modifier
-                                                .clickable { navController.navigate("payment/${payment.paymentIdx}") }
-                                        )
+                                                .fillMaxWidth()
+                                                .padding(top = 20.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ){
+                                            Text(
+                                                text = "${payment.date[0]}. ${payment.date[1]}. ${payment.date[2]}",
+                                                fontWeight = FontWeight.Bold,
+                                                color = Main_gray,
+                                            )
+                                            Text(
+                                                text = "주문 상세보기 >",
+                                                color = Vivid_blue,
+                                                modifier = Modifier
+                                                    .clickable { navController.navigate("payment/${payment.paymentIdx}") }
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
-
                     }
+                    // 하단 버튼
+                    floatingBtn(listState = listState)
                 }
             }
-            floatingBtn(listState = listState)
         }
     }
 }
