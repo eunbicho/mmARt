@@ -196,6 +196,7 @@ fun Main(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
+
                 ) {
                     Image(
                         painter = painterResource(R.drawable.logo),
