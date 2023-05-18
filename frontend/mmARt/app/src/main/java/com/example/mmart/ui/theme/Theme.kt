@@ -8,10 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val Palette = lightColors(
-    primary = Main_blue,
-    secondary = Main_yellow,
-
-    background = Vivid_blue,
+    primary = Dark_gray,
+    background = Color.White,
     /* Other default colors to override
     surface = Color.White,
     onPrimary = Color.White,
@@ -23,10 +21,8 @@ private val Palette = lightColors(
 
 @Composable
 fun MmARtTheme(content: @Composable () -> Unit) {
-    val colors = Palette
-
     MaterialTheme(
-        colors = colors,
+        colors = Palette,
         typography = mainTypography,
         shapes = Shapes,
         content = content

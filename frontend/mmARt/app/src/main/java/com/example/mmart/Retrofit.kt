@@ -55,7 +55,7 @@ interface APIS {
 
     // 장볼구니에서 아이템 삭제
     @DELETE("getcarts")
-    suspend fun deleteGetCart(@Query("userIdx") userIdx: Int, @Query("itemIdx") itemIdx: Int)
+    suspend fun deleteGetCart(@Query("userIdx") userIdx: Int, @Query("itemIdx") itemIdx: Int): CartResult
 
     // 장봤구니 조회
     @GET("gotcarts/{userIdx}")
@@ -67,7 +67,7 @@ interface APIS {
 
     // 장봤구니에서 아이템 삭제
     @DELETE("gotcarts")
-    suspend fun deleteGotCart(@Query("userIdx") userIdx: Int, @Query("itemIdx") itemIdx: Int)
+    suspend fun deleteGotCart(@Query("userIdx") userIdx: Int, @Query("itemIdx") itemIdx: Int): CartResult
 
     // 상품 상세 조회
     @GET("items/{itemIdx}")
@@ -123,7 +123,7 @@ interface APIS {
     companion object {
         // ssafy server
 //        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
-        // kubernetes
+        // kubernetes64
         private const val BASE_URL = "http://34.64.53.42:8080/api/v1/"
 //        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
 
