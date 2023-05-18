@@ -22,7 +22,7 @@ import com.example.mmart.ui.theme.Main_yellow
 import kotlinx.coroutines.async
 
 @Composable
-fun ReviewUpdate(navController: NavController, reviewIdx: Int) {
+fun Update(navController: NavController, reviewIdx: Int) {
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
