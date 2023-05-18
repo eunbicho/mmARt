@@ -163,7 +163,7 @@ fun floatingBtn(
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
             .padding(20.dp)
-            .fillMaxHeight()
+            .fillMaxSize(),
     ) {
         FloatingActionButton(
             onClick = {
@@ -197,6 +197,9 @@ fun floatingBtns(
             .padding(horizontal = 20.dp, vertical = 5.dp),
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .padding(20.dp)
+            .fillMaxSize(),
     ) {
         FloatingActionButton(
             onClick = {
