@@ -96,7 +96,9 @@ fun GetCart(navController: NavController) {
         reload = !reload
     }
 
-    Column {
+    Column(
+        modifier = Modifier.padding(bottom = 23.dp)
+    ) {
         topBar(navController = navController, "장볼구니")
         Row(
             modifier = Modifier
@@ -357,7 +359,25 @@ fun GetCart(navController: NavController) {
                     secondEvent = { findMap = true }
                 )
             } else {
-                blankView("장볼구니가 비어있습니다.")
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    blankView("장볼구니가 비어있습니다.")
+                    Row(
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable { navController.navigate("main") }
+                        ) {
+                            Image(painter = painterResource(R.drawable.main), contentDescription = "홈으로", Modifier.size(80.dp))
+                            Text("홈으로", Modifier.padding(5.dp))
+                        }
+                    }
+                }
             }
 
         }
@@ -367,54 +387,33 @@ fun GetCart(navController: NavController) {
 
     }
 
-
     if (quantityError) {
-        Dialog(
+        AlertDialog(
             onDismissRequest = { quantityError = false },
-            content = {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    elevation = 10.dp
-                ){
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text("수량을 다시 한번 확인해주세요.")
-                        Button(
-                            onClick = { quantityError = false }
-                        ){
-                            Text(text = "닫기")
-                        }
-                    }
+            text = { Text("수량을 다시 한번 확인해주세요.") },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = { quantityError = false },
+                    elevation = ButtonDefaults.elevation(1.dp)
+                ) {
+                    Text("확인", color = Dark_gray)
                 }
-            }
+            },
         )
     }
 
     if (inventoryError) {
-        Dialog(
+        AlertDialog(
             onDismissRequest = { inventoryError = false },
-            content = {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    elevation = 10.dp
-                ){
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text("지점 보유 재고를 초과하였습니다.")
-                        Button(
-                            onClick = { inventoryError = false }
-                        ){
-                            Text(text = "닫기")
-                        }
-                    }
+            text = { Text("지점 보유 재고를 초과하였습니다.") },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = { inventoryError = false },
+                    elevation = ButtonDefaults.elevation(1.dp)
+                ) {
+                    Text("확인", color = Dark_gray)
                 }
-            }
+            },
         )
     }
 }

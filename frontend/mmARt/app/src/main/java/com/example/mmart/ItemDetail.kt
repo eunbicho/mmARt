@@ -175,7 +175,9 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
         // 상단바
         topBar(navController = navController, "상품 상세")
         Column(
-            modifier = Modifier.verticalScroll(state = rememberScrollState())
+            modifier = Modifier
+                .verticalScroll(state = rememberScrollState())
+                .background(Color.White)
         ){
             // result가 null이 아닐 경우만
             if (item != null) {
@@ -183,7 +185,9 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                 AsyncImage(
                     model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item!!.thumbnail.replace("_thumb", "")}",
                     contentDescription = "상품 이미지",
-                    modifier = Modifier.padding(20.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp)
                 )
 
                 // 상품명, 매장 수량, 가격
@@ -220,8 +224,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
-                        .padding(bottom = 10.dp)
+                        .padding(start = 10.dp, end = 20.dp, bottom = 10.dp)
                 ) {
                     // 수량 조절
                     Row(
@@ -278,7 +281,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     contentDescription = "상품 상세 정보",
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(20.dp),
+                        .padding(vertical = 20.dp),
                     onSuccess = {isLoading = false}
                 )
             }
@@ -292,105 +295,109 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
             )
 
             // 리뷰 부분
-            Row(modifier = Modifier.fillMaxWidth().padding(20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
-                Text(text = "리뷰", fontSize = 20.sp)
-                if(pos!=-1){
-                    Text("${pos}%의 사용자가 긍정적인 평가를 하였습니다")
+            if(reviews!=null){
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
+                    Text(text = "리뷰", fontSize = 20.sp)
+                    if(pos!=-1){
+                        Text("${pos}%의 사용자가 긍정적인 평가를 하였습니다")
+                    }
                 }
-            }
 
-            if (reviews != null && reviews!!.isNotEmpty()){
-                reviews!!.forEach { review ->
-                    Column(
-                        modifier = Modifier.padding(horizontal = 20.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            repeat(review.star){
-                                Icon(Icons.Filled.Star,"별점", tint = Vivid_yellow, )
-                            }
-                            repeat(5-review.star){
-                                Icon(Icons.Filled.Star,"5-별점", tint = Color.LightGray)
-                            }
-                            Text(review.user.name, fontSize = 13.sp, textAlign = TextAlign.End, color = Main_gray,modifier = Modifier.weight(1f))
-                        }
-
-                        // 전체 보기 / 일부 보기
-                        var expanded by remember { mutableStateOf(false) }
-                        Text(review.content, modifier = Modifier
-                            .padding(vertical = 5.dp)
-                            .clickable { expanded = !expanded }, overflow = TextOverflow.Ellipsis, maxLines = if (expanded) Int.MAX_VALUE else 3)
-
-                        // 내가 작성한 리뷰인 경우, 수정 및 삭제 가능
-                        if(review.user.userIdx == userId) {
+                if (reviews != null && reviews!!.isNotEmpty()){
+                    reviews!!.forEach { review ->
+                        Column(
+                            modifier = Modifier.padding(horizontal = 20.dp)
+                        ) {
                             Row(
-                                modifier = Modifier
-                                    .align(Alignment.End)
-                                    .height(ButtonDefaults.MinHeight),
-                            ) {
-                                OutlinedButton(
-                                    modifier = Modifier.padding(end = 5.dp),
-                                    border = BorderStroke(color = Main_blue, width = 2.dp),
-                                    onClick = { navController.navigate("reviewUpdate/${review.reviewIdx}") },
-                                    elevation = ButtonDefaults.elevation(2.dp)
-                                ) {
-                                    Text("수정하기", color = Main_gray)
-
+                                verticalAlignment = Alignment.CenterVertically
+                            ){
+                                repeat(review.star){
+                                    Icon(Icons.Filled.Star,"별점", tint = Vivid_yellow, )
                                 }
-                                OutlinedButton(
-                                    modifier = Modifier.padding(start = 5.dp),
-                                    border = BorderStroke(color = Main_yellow, width = 2.dp),
-                                    onClick = { isDelete = review.reviewIdx },
-                                    elevation = ButtonDefaults.elevation(2.dp)
+                                repeat(5-review.star){
+                                    Icon(Icons.Filled.Star,"5-별점", tint = Color.LightGray)
+                                }
+                                Text(review.user.name, fontSize = 13.sp, textAlign = TextAlign.End, color = Main_gray,modifier = Modifier.weight(1f))
+                            }
+
+                            // 전체 보기 / 일부 보기
+                            var expanded by remember { mutableStateOf(false) }
+                            Text(review.content, modifier = Modifier
+                                .padding(vertical = 5.dp)
+                                .clickable { expanded = !expanded }, overflow = TextOverflow.Ellipsis, maxLines = if (expanded) Int.MAX_VALUE else 3)
+
+                            // 내가 작성한 리뷰인 경우, 수정 및 삭제 가능
+                            if(review.user.userIdx == userId) {
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.End)
+                                        .height(ButtonDefaults.MinHeight),
                                 ) {
-                                    Text("삭제하기", color = Main_gray)
+                                    OutlinedButton(
+                                        modifier = Modifier.padding(end = 5.dp),
+                                        border = BorderStroke(color = Main_blue, width = 2.dp),
+                                        onClick = { navController.navigate("reviewUpdate/${review.reviewIdx}") },
+                                        elevation = ButtonDefaults.elevation(2.dp)
+                                    ) {
+                                        Text("수정하기", color = Main_gray)
+
+                                    }
+                                    OutlinedButton(
+                                        modifier = Modifier.padding(start = 5.dp),
+                                        border = BorderStroke(color = Main_yellow, width = 2.dp),
+                                        onClick = { isDelete = review.reviewIdx },
+                                        elevation = ButtonDefaults.elevation(2.dp)
+                                    ) {
+                                        Text("삭제하기", color = Main_gray)
+                                    }
                                 }
                             }
+                            Divider(
+                                color = Color.LightGray,
+                                thickness = 1.dp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 10.dp)
+                            )
                         }
-                        Divider(
-                            color = Color.LightGray,
-                            thickness = 1.dp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 10.dp)
-                        )
+
+                        // 삭제 확인 다이얼로그
+                        if(isDelete == review.reviewIdx){
+                            AlertDialog(
+                                onDismissRequest = { isDelete = null },
+                                title = { Text("삭제 확인") },
+                                text = { Text("해당 리뷰를 삭제하시겠습니까?") },
+                                // 삭제 확인 버튼
+                                dismissButton = {
+                                    OutlinedButton(
+                                        onClick = {
+                                            reviewDelete(review.reviewIdx)
+                                        },
+                                        elevation = ButtonDefaults.elevation(1.dp)
+                                    ) {
+                                        Text("삭제", color = Color.Black)
+                                    }
+                                },
+                                // 취소 버튼
+                                confirmButton = {
+                                    OutlinedButton(
+                                        onClick = { isDelete = null },
+                                        elevation = ButtonDefaults.elevation(1.dp)
+                                    ) {
+                                        Text("취소", color = Color.Black)
+                                    }
+                                },
+                                modifier = Modifier.border(1.dp, Main_gray)
+                            )
+                        }
+
                     }
 
-                    // 삭제 확인 다이얼로그
-                    if(isDelete == review.reviewIdx){
-                        AlertDialog(
-                            onDismissRequest = { isDelete = null },
-                            title = { Text("삭제 확인") },
-                            text = { Text("해당 리뷰를 삭제하시겠습니까?") },
-                            // 삭제 확인 버튼
-                            dismissButton = {
-                                OutlinedButton(
-                                    onClick = {
-                                        reviewDelete(review.reviewIdx)
-                                    },
-                                    elevation = ButtonDefaults.elevation(1.dp)
-                                ) {
-                                    Text("삭제", color = Color.Black)
-                                }
-                            },
-                            // 취소 버튼
-                            confirmButton = {
-                                OutlinedButton(
-                                    onClick = { isDelete = null },
-                                    elevation = ButtonDefaults.elevation(1.dp)
-                                ) {
-                                    Text("취소", color = Color.Black)
-                                }
-                            },
-                            modifier = Modifier.border(1.dp, Main_gray)
-                        )
-                    }
-
+                } else {
+                    Text("작성된 리뷰가 없습니다.", modifier = Modifier.padding(20.dp))
                 }
-
-            } else {
-                 Text("작성된 리뷰가 없습니다.", modifier = Modifier.padding(20.dp))
             }
         }
     }
@@ -409,11 +416,12 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(5.dp)
+                    .padding(10.dp)
             ) {
                 TextField(
                     value = numberInput,
                     onValueChange = { numberInput=it },
+                    singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     keyboardActions = KeyboardActions(
                         onDone = {
@@ -423,11 +431,15 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     modifier = Modifier
                         // 포커스 (바로 키보드 열기위해)
                         .focusRequester(focusRequester)
+                        .fillMaxWidth(0.8f),
                 )
                 OutlinedButton(
                     onClick = {numberCheck()},
                     elevation = ButtonDefaults.elevation(1.dp),
-                ) {
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp)
+                ) {0
                     Text("확인", color = Color.Black)
                 }
             }
@@ -439,7 +451,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                         wrongNumber = false
                         keyboardController?.show()
                     },
-                    text = { Text("수량을 확인하여 주십시오") },
+                    text = { Text("수량을 다시 한번 확인해주세요.") },
                     confirmButton = {
                         OutlinedButton(
                             onClick = {
@@ -448,7 +460,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                             },
                             elevation = ButtonDefaults.elevation(1.dp)
                         ) {
-                            Text("확인", color = Color.Black)
+                            Text("확인", color = Dark_gray)
                         }
                     }
                 )
@@ -464,7 +476,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
         ) {
             Box(
                 modifier = Modifier
-                    .border(width = 3.dp, color = Color.Black, shape = RoundedCornerShape(40.dp))
+                    .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(40.dp))
                     .shadow(10.dp, shape = RoundedCornerShape(40.dp))
                     .background(color = Color.White, shape = RoundedCornerShape(40.dp))
             ){
@@ -512,25 +524,16 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
 @Preview(showBackground = true)
 @Composable
 fun DetailPreview(){
-    var isWrong = true
-    AlertDialog(
-        onDismissRequest = { isWrong = false },
-        text = { Text("아이디, 비밀번호 확인 후\n\n다시 로그인 해주세요", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(), fontSize = 18.sp) },
-        confirmButton = {
-            Column(
-                Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                OutlinedButton(
-                    onClick = { isWrong = false },
-                    elevation = ButtonDefaults.elevation(1.dp)
-                ) {
-                    Text("확인", color = Color.Black)
-                }
-            }
-        },
-        modifier = Modifier.border(1.dp, Color.Black, RoundedCornerShape(10.dp)),
-        shape = RoundedCornerShape(10.dp)
-    )
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState())
+    ) {
+        AsyncImage(
+            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/images/8801045055961_content.jpg",
+            contentDescription = "상품 상세 정보",
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+    }
+
 }
 
