@@ -29,8 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.mmart.ui.theme.Vivid_blue
-import com.example.mmart.ui.theme.Vivid_yellow
+import com.example.mmart.ui.theme.*
 
 import kotlinx.coroutines.*
 import retrofit2.HttpException
@@ -65,12 +64,14 @@ fun SignUp(navController: NavController){
                     // 이미 있는 아이디이면
                     if(response.resultCode == "SUCCESS") {
                         isDuplicate = true
-                        alertText = "중복된 아이디입니다"
+                        alertText = "중복된 아이디입니다."
                         isWrong = true
                     }
                 } catch (e: Exception){
+                    println("중복 확인 에러////////////////////////")
+                    e.printStackTrace()
                     isDuplicate = false
-                    alertText = "사용할 수 있는 아이디입니다"
+                    alertText = "사용할 수 있는 아이디입니다."
                     isWrong = true
                 }
             }
@@ -80,16 +81,16 @@ fun SignUp(navController: NavController){
     // 회원가입
     fun signUp(){
         if(id==""){
-            alertText = "아이디를 입력해 주세요"
+            alertText = "아이디를 입력해 주세요."
             isWrong = true
         } else if(isDuplicate) {
-            alertText = "아이디 중복 확인을 해주세요"
+            alertText = "아이디 중복 확인을 해주세요."
             isWrong = true
         } else if (name==""){
-            alertText = "이름을 입력해 주세요"
+            alertText = "이름을 입력해 주세요."
             isWrong = true
         } else if(password==""){
-            alertText = "비밀번호를 입력해 주세요"
+            alertText = "비밀번호를 입력해 주세요."
             isWrong = true
         } else{
             val body = mapOf(
@@ -101,11 +102,13 @@ fun SignUp(navController: NavController){
                 try {
                     val response = api.signUp(body)
                     if(response.resultCode == "SUCCESS") {
-                        alertText = "회원가입에 성공했습니다"
+                        alertText = "회원가입에 성공했습니다."
                         isWrong = true
                         isDone = true
                     }
                 } catch (e: Exception){
+                    println("signUp 에러////////////////////////")
+                    e.printStackTrace()
                     alertText = "중복된 아이디입니다"
                     isWrong = true
                 }
@@ -113,29 +116,29 @@ fun SignUp(navController: NavController){
         }
     }
 
-    // 배경 이미지
-    Image(
-        painter = painterResource(R.drawable.bg),
-        modifier = Modifier.fillMaxSize(),
-        contentDescription = "배경",
-        contentScale = ContentScale.FillBounds
-    )
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
+            .background(Light_blue)
             .fillMaxSize()
-            .padding(horizontal = 30.dp),
+            .padding(0.dp, 0.dp, 0.dp, 60.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Image(painter = painterResource(R.drawable.logo), contentDescription = "로고", modifier = Modifier.padding(vertical = 20.dp).clickable { navController.popBackStack() })
+        Image(painter = painterResource(R.drawable.mmart_logo), contentDescription = "로고", modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 30.dp))
 
         // 아이디 입력
         OutlinedTextField(
             value = id,
             onValueChange = { id = it },
             shape = CircleShape,
-            placeholder = {Text("아이디", color = Color.LightGray)},
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                backgroundColor = Color.White,
+                cursorColor = Vivid_blue,
+                trailingIconColor = Dark_gray,
+                focusedBorderColor = Vivid_blue,
+                placeholderColor = Light_gray
+            ),
+            placeholder = {Text("아이디")},
             singleLine = true,
             modifier = Modifier.padding(top=10.dp, bottom = 3.dp),
             trailingIcon = {
@@ -144,14 +147,14 @@ fun SignUp(navController: NavController){
                     shape = CircleShape,
                     modifier = Modifier.padding(end = 10.dp),
                 ) {
-                    Text("중복확인", color = Color.DarkGray, fontSize = 12.sp)
+                    Text("중복확인", fontSize = 12.sp, color = Vivid_blue)
                 }
             }
         )
         if(isDuplicate){
-            Text("중복 확인을 해주세요", color = Color.Red, fontSize = 10.sp, textAlign = TextAlign.Start, modifier = Modifier
+            Text("중복 확인을 해주세요.", color = Color.Red, fontSize = 10.sp, textAlign = TextAlign.Start, modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 40.dp))
+                .padding(start = 50.dp))
         } else {
             Text("", fontSize = 10.sp)
         }
@@ -161,7 +164,13 @@ fun SignUp(navController: NavController){
             value = name,
             onValueChange = { name = it },
             shape = CircleShape,
-            placeholder = {Text("이름", color = Color.LightGray)},
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                backgroundColor = Color.White,
+                cursorColor = Vivid_blue,
+                focusedBorderColor = Vivid_blue,
+                placeholderColor = Light_gray
+            ),
+            placeholder = {Text("이름")},
             singleLine = true,
             modifier = Modifier.padding(10.dp)
         )
@@ -171,21 +180,39 @@ fun SignUp(navController: NavController){
             value = password,
             onValueChange = { password = it },
             shape = CircleShape,
-            placeholder = {Text("비밀번호", color = Color.LightGray)},
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                backgroundColor = Color.White,
+                cursorColor = Vivid_blue,
+                focusedBorderColor = Vivid_blue,
+                placeholderColor = Light_gray
+            ),
+            placeholder = {Text("비밀번호")},
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             singleLine = true,
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(10.dp, 10.dp, 10.dp, bottom = 30.dp)
         )
 
-        Button(
-            onClick = { signUp() },
-            colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_blue),
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth(0.5f)
+        Row(
+            modifier = Modifier.padding(vertical = 0.dp, horizontal = 30.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("확인", color = Color.White)
+            Button(
+                onClick = { signUp() },
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_blue),
+                modifier = Modifier.fillMaxWidth(0.5f).aspectRatio(2.5f).padding(10.dp)
+            ) {
+                Text("확인", color = Color.White)
+            }
+            Button(
+                onClick = { navController.popBackStack() },
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_yellow),
+                modifier = Modifier.fillMaxWidth(2f).aspectRatio(2.5f).padding(10.dp)
+            ) {
+                Text("취소", color = Color.White)
+            }
         }
     }
 
