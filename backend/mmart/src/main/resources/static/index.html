@@ -104,6 +104,7 @@
             })
             .then( gotCartRes => {
                 if (gotCartRes.itemList.length > 0 ) payList.style.display = "flex"
+                document.getElementById("go-to-pay").focus()
                 price1.innerHTML = `${gotCartRes.priceTotal.toLocaleString('ko-KR')}원`
                 price2.innerHTML = `${gotCartRes.discountTotal.toLocaleString('ko-KR')}원`
                 price3.innerHTML = `${gotCartRes.total.toLocaleString('ko-KR')}원`

@@ -1,5 +1,6 @@
 package com.example.mmart
 
+import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -38,7 +40,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
+import coil.size.Size
 import com.example.mmart.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -72,12 +80,14 @@ fun searchBar(navController: NavController){
             .shadow(
                 shape = CircleShape,
                 elevation = 5.dp,
-                ambientColor = Color.Black,
+                ambientColor = Dark_gray,
                 clip = true
             ),
-        colors = TextFieldDefaults.textFieldColors(
+        colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = Main_yellow,
             textColor = Dark_gray,
+            cursorColor = Dark_gray,
+            focusedBorderColor = Dark_gray,
         ),
         singleLine = true,
         textStyle = TextStyle(fontFamily = mainFont, fontSize = 15.sp),
@@ -102,7 +112,10 @@ fun searchBar(navController: NavController){
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
-                            if (searchWord.trim().isNotEmpty()) search()
+                            if (searchWord
+                                    .trim()
+                                    .isNotEmpty()
+                            ) search()
                         }
                 )
 
@@ -157,10 +170,11 @@ fun floatingBtn(
     val coroutineScope = rememberCoroutineScope()
 
     Row(
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Start,
         modifier = Modifier
-            .padding(20.dp, 10.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+            .padding(20.dp)
+            .fillMaxSize(),
     ) {
         FloatingActionButton(
             onClick = {
@@ -190,10 +204,11 @@ fun floatingBtns(
     val coroutineScope = rememberCoroutineScope()
 
     Row(
-        modifier = Modifier
-            .padding(20.dp, 10.dp)
-            .fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .padding(20.dp)
+            .fillMaxSize(),
     ) {
         FloatingActionButton(
             onClick = {
@@ -235,14 +250,39 @@ fun blankView(msg: String) {
 }
 
 @Composable
+fun GifImage(
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val imageLoader = ImageLoader.Builder(context)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }
+        .build()
+    Image(
+        painter = rememberAsyncImagePainter(
+            ImageRequest.Builder(context).data(data = R.drawable.loading).apply(block = {
+                size(240)
+            }).build(), imageLoader = imageLoader
+        ),
+        contentDescription = null,
+        modifier = modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
 fun loadingView(){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White),
+            .background(color = Vivid_blue),
         contentAlignment = Alignment.Center,
     ) {
-        Text("로딩")
+        GifImage()
     }
 }
 
@@ -259,8 +299,10 @@ fun items(navController:NavController, items: List<ItemInfo>){
         loadingView()
     }
 
-    Box(modifier = Modifier.fillMaxSize().padding(vertical = 10.dp)) {
-        LazyVerticalGrid(GridCells.Fixed(2), state=listState) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(vertical = 10.dp)) {
+        LazyVerticalGrid(GridCells.Fixed(2), state=listState, contentPadding = PaddingValues(bottom=100.dp)) {
             items(items) { item ->
                 // 수량
                 var quantity: Int by remember { mutableStateOf(1) }
@@ -304,7 +346,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                                 .fillMaxSize()
                                 .aspectRatio(1f)
                                 .padding(5.dp),
-                            onSuccess = {isLoading = false}
+                            onSuccess = {isLoading = false},
                         )
 
                         Text(text = item.itemName, maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 20.sp)
@@ -357,11 +399,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                     ) {
                         Box(
                             modifier = Modifier
-                                .border(
-                                    width = 3.dp,
-                                    color = Color.Black,
-                                    shape = RoundedCornerShape(40.dp)
-                                )
+                                .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(40.dp))
                                 .shadow(10.dp, shape = RoundedCornerShape(40.dp))
                                 .background(color = Color.White, shape = RoundedCornerShape(40.dp))
                         ){
@@ -371,7 +409,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                             ) {
                                 Text("상품이 장볼구니에\n추가되었습니다", modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp), fontSize = 20.sp, textAlign = TextAlign.Center)
                                 Row(
-                                    horizontalArrangement = Arrangement.Center,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 50.dp)
@@ -382,7 +420,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                                             .padding(10.dp)
                                             .clickable { goGetCart = false }
                                     ) {
-                                        Image(painter = painterResource(R.drawable.previous), contentDescription = "이전으로", Modifier.size(80.dp))
+                                        Image(painter = painterResource(R.drawable.previous), contentDescription = "이전으로", Modifier.size(70.dp))
                                         Text("이전으로", Modifier.padding(5.dp))
                                     }
                                     Column(
@@ -391,7 +429,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                                             .padding(10.dp)
                                             .clickable { navController.navigate("getCart") }
                                     ) {
-                                        Image(painter = painterResource(R.drawable.getcart), contentDescription = "장볼구니로", Modifier.size(80.dp))
+                                        Image(painter = painterResource(R.drawable.getcart), contentDescription = "장볼구니로", Modifier.size(70.dp))
                                         Text("장볼구니로", Modifier.padding(5.dp))
                                     }
                                 }
@@ -426,6 +464,11 @@ fun items(navController:NavController, items: List<ItemInfo>){
     }
 
 }
+
+
+
+
+
 
 @Preview(showBackground = true)
 @Composable

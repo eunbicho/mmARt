@@ -39,7 +39,11 @@ interface APIS {
 
     // 바코드 스캔
     @GET("items/barcode")
-    suspend fun getItemByBarcode(@Query("barcode") barcode: Long): ItemsResult
+    suspend fun getItemByBarcode(@Query("barcode") barcode: String): ItemDetailResult
+
+    // 장봤구니 추가
+    @POST("gotcarts")
+    suspend fun addGotCart(@Body body: Any): CartResult
 
     // 장볼구니 조회
     @GET("getcarts/{userIdx}")
@@ -89,7 +93,6 @@ interface APIS {
     @GET("payments/{paymentIdx}")
     suspend fun getPayment(@Path("paymentIdx") paymentIdx: Int, @Query("userIdx") userIdx: Int): PaymentResult
 
-
     // 결제 내역 상세 조회
     @GET("payments/detail")
     suspend fun getPaymentDetails(@Query("userIdx") userIdx: Int, @Query("paymentIdx") paymentIdx: Int): PaymentDetailsResult
@@ -118,7 +121,10 @@ interface APIS {
     suspend fun deleteReview(@Query("userIdx") userIdx: Int, @Query("reviewIdx") reviewIdx: Int): ReviewResult
 
     companion object {
-        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
+        // ssafy server
+//        private const val BASE_URL = "http://k8a405.p.ssafy.io:8090/api/v1/"
+        // kubernetes
+        private const val BASE_URL = "http://34.64.53.42:8080/api/v1/"
 //        private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
 
         fun create(): APIS {
@@ -228,12 +234,6 @@ data class ReviewDetail(
     val user: UserInfo,
     val item: ItemInfo,
     val date: String
-)
-
-// 리뷰 body (작성, 수정용)
-data class ReviewBody(
-    var star: Int,
-    var content: String
 )
 
 data class PaymentDetail(
