@@ -384,6 +384,7 @@ fun GetCart(navController: NavController) {
                     )
                 }
             } else {
+                isLoading = false
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {

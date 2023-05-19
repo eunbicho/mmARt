@@ -63,10 +63,6 @@ fun searchBar(navController: NavController){
         navController.navigate("search/$searchWord")
     }
 
-    fun barcodeSearch(){
-        navController.navigate("barcodeScan")
-    }
-
     // 키보드 조정
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -279,12 +275,10 @@ fun loadingView(){
 }
 
 @Composable
-fun items(navController:NavController, items: List<ItemInfo>){
+fun items(navController:NavController, items: List<ItemInfo>, loading: (Boolean) -> Unit){
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyGridState()
-    
-    var isLoading: Boolean by remember { mutableStateOf(true) }
 
     var sort: String by remember { mutableStateOf("추천순") }
     var expanded: Boolean by remember { mutableStateOf(false) }
@@ -297,11 +291,6 @@ fun items(navController:NavController, items: List<ItemInfo>){
             "높은 가격순" -> items.sortedByDescending { it.couponPrice }
             else -> items
         }
-
-    // 이미지 로딩 중일 때
-//    if(isLoading){
-//        loadingView()
-//    }
 
     Box(modifier = Modifier
         .fillMaxSize()) {
@@ -373,7 +362,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                                 .fillMaxSize()
                                 .aspectRatio(1f)
                                 .padding(5.dp),
-                            onSuccess = {isLoading = false},
+                            onSuccess = { loading(false) }
                         )
 
                         Text(text = item.itemName, maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 20.sp)

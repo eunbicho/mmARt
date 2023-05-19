@@ -8,7 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val Palette = lightColors(
-    primary = Dark_gray,
+    primary = Main_blue,
+//    primary = Dark_gray,
     background = Color.White,
     /* Other default colors to override
     surface = Color.White,
