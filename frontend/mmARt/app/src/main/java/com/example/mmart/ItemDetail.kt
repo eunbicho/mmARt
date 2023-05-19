@@ -57,6 +57,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.selects.select
 import okhttp3.internal.wait
 import androidx.lifecycle.lifecycleScope
+import java.lang.Math.round
+import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
@@ -65,6 +67,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
 
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
 
     // 아이템 정보
     var item: ItemInfo? by remember { mutableStateOf(null) }
@@ -106,7 +109,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
         try {
             val response = coroutineScope.async { api.getItemReview(itemId!!) }.await().result
             reviews = response.reviewRes
-            pos = response.pos
+            pos = response.pos.roundToInt()
         } catch (e: Exception){
             println("상픔 상세 리뷰 조회 에러-------------")
             e.printStackTrace()
@@ -174,232 +177,304 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
     Column() {
         // 상단바
         topBar(navController = navController, "상품 상세")
-        Column(
-            modifier = Modifier
-                .verticalScroll(state = rememberScrollState())
-                .background(Color.White)
+        Box(
+            modifier = Modifier.fillMaxSize()
         ){
-            // result가 null이 아닐 경우만
-            if (item != null) {
-                // 상품 이미지
-                AsyncImage(
-                    model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item!!.thumbnail.replace("_thumb", "")}",
-                    contentDescription = "상품 이미지",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(10.dp)
-                )
+            LazyColumn(
+                contentPadding = PaddingValues(bottom = 90.dp), state = listState
+            ) {
+                item{
+                    // result가 null이 아닐 경우만
+                    if (item != null) {
+                        // 상품 이미지
+                        AsyncImage(
+                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${
+                                item!!.thumbnail.replace(
+                                    "_thumb",
+                                    ""
+                                )
+                            }",
+                            contentDescription = "상품 이미지",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(10.dp)
+                        )
 
-                // 상품명, 매장 수량, 가격
-                Column(
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)
-                ){
-                    // 상품명
-                    Text(item!!.itemName, fontSize = 25.sp, modifier = Modifier.padding(5.dp))
+                        // 상품명, 매장 수량, 가격
+                        Column(
+                            modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)
+                        ) {
+                            // 상품명
+                            Text(item!!.itemName, fontSize = 25.sp, modifier = Modifier.padding(5.dp))
 
-                    Row(verticalAlignment = Alignment.Bottom){
-                        // 매장 수량
-                        Text("매장 수량: ${item!!.inventory}", fontSize = 15.sp, textAlign = TextAlign.Start)
-                        // 가격
-                        if(item!!.isCoupon){ // 쿠폰 있을 경우
+                            Row(verticalAlignment = Alignment.Bottom) {
+                                // 매장 수량
+                                Text(
+                                    "매장 수량: ${item!!.inventory}",
+                                    fontSize = 15.sp,
+                                    textAlign = TextAlign.Start
+                                )
+                                // 가격
+                                if (item!!.inventory > 0) {
+                                    if (item!!.isCoupon) { // 쿠폰 있을 경우
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.End,
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Text(
+                                                "${item!!.price}",
+                                                textDecoration = TextDecoration.LineThrough,
+                                                color = Color.LightGray,
+                                                fontWeight = FontWeight.Light,
+                                                fontSize = 20.sp
+                                            )
+                                            Text(
+                                                "${item!!.couponPrice}원",
+                                                fontSize = 25.sp,
+                                                modifier = Modifier.padding(5.dp)
+                                            )
+                                        }
+                                    } else { // 쿠폰 없을 경우
+                                        Text(
+                                            "${item!!.price}원",
+                                            fontSize = 25.sp,
+                                            textAlign = TextAlign.End,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(5.dp)
+                                        )
+                                    }
+                                } else {
+                                    Text(
+                                        "품절",
+                                        fontSize = 25.sp,
+                                        textAlign = TextAlign.End,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(5.dp)
+                                    )
+                                }
+
+                            }
+                        }
+
+                        // 수량, 총 금액, 장볼구니 추가 버튼
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 10.dp, end = 20.dp, bottom = 10.dp)
+                        ) {
+                            // 수량 조절
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.End,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(0.3f)
                             ) {
-                                Text("${item!!.price}", textDecoration = TextDecoration.LineThrough, color = Color.LightGray, fontWeight = FontWeight.Light, fontSize = 20.sp)
-                                Text("${item!!.couponPrice}원", fontSize = 25.sp, modifier = Modifier.padding(5.dp))
-                            }
-                        } else { // 쿠폰 없을 경우
-                            Text("${item!!.price}원", fontSize = 25.sp, textAlign = TextAlign.End, modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(5.dp))
-                        }
-                    }
-                }
-
-                // 수량, 총 금액, 장볼구니 추가 버튼
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 20.dp, bottom = 10.dp)
-                ) {
-                    // 수량 조절
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth(0.3f)
-                    ) {
-                        IconButton(
-                            onClick = { quantity-- },
-                            enabled = 1 < quantity
-                        ) {
-                            Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "수량 감소")
-                        }
-                        Text(quantity.toString(), modifier = Modifier.clickable {
-                            numberInput = ""
-                            // 모달 열기
-                            coroutineScope.launch {sheetState.show()}
-                            // 열리면서 포커스 조정
-                            focusRequester.requestFocus()
-                        })
-                        IconButton(
-                            onClick = { quantity++ },
-                            enabled = quantity < item!!.inventory
-                        ) {
-                            Icon(Icons.Default.KeyboardArrowRight, contentDescription = "수량 증가")
-                        }
-                    }
-
-                    // 총 금액, 장볼구니 추가 버튼
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        // 수량 * 가격
-                        if(item!!.isCoupon){ // 쿠폰 있을 경우
-                            Text("${item!!.couponPrice * quantity}원", modifier= Modifier.padding(10.dp))
-                        } else { // 쿠폰 없을 경우
-                            Text("${item!!.price * quantity}원", modifier= Modifier.padding(10.dp))
-                        }
-
-                        // 장바구니 추가 버튼
-                        Button(
-                            onClick = {  addGetCart() },
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_blue),
-                        ) {
-                            Text("장볼구니", color = Color.White)
-                        }
-                    }
-
-                }
-
-                // 상품 상제 이미지
-                AsyncImage(
-                    model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item!!.content}",
-                    contentDescription = "상품 상세 정보",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(vertical = 20.dp),
-                    onSuccess = {isLoading = false}
-                )
-            }
-
-            Divider(
-                color = Color.Black,
-                thickness = 1.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-            )
-
-            // 리뷰 부분
-            if(reviews!=null){
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
-                    Text(text = "리뷰", fontSize = 20.sp)
-                    if(pos!=-1){
-                        Text("${pos}%의 사용자가 긍정적인 평가를 하였습니다")
-                    }
-                }
-
-                if (reviews != null && reviews!!.isNotEmpty()){
-                    reviews!!.forEach { review ->
-                        Column(
-                            modifier = Modifier.padding(horizontal = 20.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ){
-                                repeat(review.star){
-                                    Icon(Icons.Filled.Star,"별점", tint = Vivid_yellow, )
-                                }
-                                repeat(5-review.star){
-                                    Icon(Icons.Filled.Star,"5-별점", tint = Color.LightGray)
-                                }
-                                Text(review.user.name, fontSize = 13.sp, textAlign = TextAlign.End, color = Main_gray,modifier = Modifier.weight(1f))
-                            }
-
-                            // 전체 보기 / 일부 보기
-                            var expanded by remember { mutableStateOf(false) }
-                            Text(review.content, modifier = Modifier
-                                .padding(vertical = 5.dp)
-                                .clickable { expanded = !expanded }, overflow = TextOverflow.Ellipsis, maxLines = if (expanded) Int.MAX_VALUE else 3)
-
-                            // 내가 작성한 리뷰인 경우, 수정 및 삭제 가능
-                            if(review.user.userIdx == userId) {
-                                Row(
-                                    modifier = Modifier
-                                        .align(Alignment.End)
-                                        .height(ButtonDefaults.MinHeight),
+                                IconButton(
+                                    onClick = { quantity-- },
+                                    enabled = 1 < quantity
                                 ) {
-                                    OutlinedButton(
-                                        modifier = Modifier.padding(end = 5.dp),
-                                        border = BorderStroke(color = Main_blue, width = 2.dp),
-                                        onClick = { navController.navigate("reviewUpdate/${review.reviewIdx}") },
-                                        elevation = ButtonDefaults.elevation(2.dp)
-                                    ) {
-                                        Text("수정하기", color = Main_gray)
-
-                                    }
-                                    OutlinedButton(
-                                        modifier = Modifier.padding(start = 5.dp),
-                                        border = BorderStroke(color = Main_yellow, width = 2.dp),
-                                        onClick = { isDelete = review.reviewIdx },
-                                        elevation = ButtonDefaults.elevation(2.dp)
-                                    ) {
-                                        Text("삭제하기", color = Main_gray)
-                                    }
+                                    Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "수량 감소")
+                                }
+                                Text(quantity.toString(), modifier = Modifier.clickable {
+                                    numberInput = ""
+                                    // 모달 열기
+                                    coroutineScope.launch { sheetState.show() }
+                                    // 열리면서 포커스 조정
+                                    focusRequester.requestFocus()
+                                })
+                                IconButton(
+                                    onClick = { quantity++ },
+                                    enabled = quantity < item!!.inventory
+                                ) {
+                                    Icon(Icons.Default.KeyboardArrowRight, contentDescription = "수량 증가")
                                 }
                             }
-                            Divider(
-                                color = Color.LightGray,
-                                thickness = 1.dp,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 10.dp)
-                            )
+
+                            // 총 금액, 장볼구니 추가 버튼
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                // 수량 * 가격
+                                if(item!!.inventory>0){
+                                    if (item!!.isCoupon) { // 쿠폰 있을 경우
+                                        Text(
+                                            "${item!!.couponPrice * quantity}원",
+                                            modifier = Modifier.padding(10.dp)
+                                        )
+                                    } else { // 쿠폰 없을 경우
+                                        Text(
+                                            "${item!!.price * quantity}원",
+                                            modifier = Modifier.padding(10.dp)
+                                        )
+                                    }
+                                } else {
+                                    Text("품절", modifier = Modifier.padding(10.dp), color = Color.LightGray)
+                                }
+
+
+                                // 장바구니 추가 버튼
+                                Button(
+                                    onClick = { addGetCart() },
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_blue),
+                                    enabled = item!!.inventory > 0
+                                ) {
+                                    Text("장볼구니", color = Color.White)
+                                }
+                            }
+
                         }
 
-                        // 삭제 확인 다이얼로그
-                        if(isDelete == review.reviewIdx){
-                            AlertDialog(
-                                onDismissRequest = { isDelete = null },
-                                title = { Text("삭제 확인") },
-                                text = { Text("해당 리뷰를 삭제하시겠습니까?") },
-                                // 삭제 확인 버튼
-                                dismissButton = {
-                                    OutlinedButton(
-                                        onClick = {
-                                            reviewDelete(review.reviewIdx)
-                                        },
-                                        elevation = ButtonDefaults.elevation(1.dp)
-                                    ) {
-                                        Text("삭제", color = Color.Black)
-                                    }
-                                },
-                                // 취소 버튼
-                                confirmButton = {
-                                    OutlinedButton(
-                                        onClick = { isDelete = null },
-                                        elevation = ButtonDefaults.elevation(1.dp)
-                                    ) {
-                                        Text("취소", color = Color.Black)
-                                    }
-                                },
-                                modifier = Modifier.border(1.dp, Main_gray)
-                            )
-                        }
-
+                        // 상품 상제 이미지
+                        AsyncImage(
+                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item!!.content}",
+                            contentDescription = "상품 상세 정보",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 20.dp),
+                            onSuccess = { isLoading = false }
+                        )
                     }
 
-                } else {
-                    Text("작성된 리뷰가 없습니다.", modifier = Modifier.padding(20.dp))
+                    Divider(
+                        color = Color.Black,
+                        thickness = 1.dp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                    )
+
+                    // 리뷰 부분
+                    if (reviews != null) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = "리뷰", fontSize = 20.sp)
+                            if (pos != -1) {
+                                Text("${pos}%의 사용자가 긍정적인 평가를 하였습니다", fontSize = 12.sp)
+                            }
+                        }
+
+                        if (reviews != null && reviews!!.isNotEmpty()) {
+                            reviews!!.forEach { review ->
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 20.dp)
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        repeat(review.star) {
+                                            Icon(Icons.Filled.Star, "별점", tint = Vivid_yellow,)
+                                        }
+                                        repeat(5 - review.star) {
+                                            Icon(Icons.Filled.Star, "5-별점", tint = Color.LightGray)
+                                        }
+                                        Text(
+                                            review.user.name,
+                                            fontSize = 13.sp,
+                                            textAlign = TextAlign.End,
+                                            color = Main_gray,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
+
+                                    // 전체 보기 / 일부 보기
+                                    var expanded by remember { mutableStateOf(false) }
+                                    Text(review.content,
+                                        modifier = Modifier
+                                            .padding(vertical = 5.dp, horizontal = 5.dp)
+                                            .fillMaxWidth()
+                                            .clickable { expanded = !expanded },
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = if (expanded) Int.MAX_VALUE else 3
+                                    )
+
+                                    // 내가 작성한 리뷰인 경우, 수정 및 삭제 가능
+                                    if (review.user.userIdx == userId) {
+                                        Row(
+                                            modifier = Modifier
+                                                .align(Alignment.End)
+                                                .height(ButtonDefaults.MinHeight),
+                                        ) {
+                                            OutlinedButton(
+                                                modifier = Modifier.padding(end = 5.dp),
+                                                border = BorderStroke(color = Main_blue, width = 2.dp),
+                                                onClick = { navController.navigate("reviewSave/0/${review.reviewIdx}") },
+                                                elevation = ButtonDefaults.elevation(2.dp)
+                                            ) {
+                                                Text("수정하기", color = Main_gray)
+
+                                            }
+                                            OutlinedButton(
+                                                modifier = Modifier.padding(start = 5.dp),
+                                                border = BorderStroke(
+                                                    color = Main_yellow,
+                                                    width = 2.dp
+                                                ),
+                                                onClick = { isDelete = review.reviewIdx },
+                                                elevation = ButtonDefaults.elevation(2.dp)
+                                            ) {
+                                                Text("삭제하기", color = Main_gray)
+                                            }
+                                        }
+                                    }
+                                    Divider(
+                                        color = Color.LightGray,
+                                        thickness = 1.dp,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 20.dp)
+                                    )
+                                }
+
+                                // 삭제 확인 다이얼로그
+                                if (isDelete == review.reviewIdx) {
+                                    AlertDialog(
+                                        onDismissRequest = { isDelete = null },
+                                        title = { Text("삭제 확인") },
+                                        text = { Text("해당 리뷰를 삭제하시겠습니까?") },
+                                        // 삭제 확인 버튼
+                                        dismissButton = {
+                                            OutlinedButton(
+                                                onClick = {
+                                                    reviewDelete(review.reviewIdx)
+                                                },
+                                                elevation = ButtonDefaults.elevation(1.dp)
+                                            ) {
+                                                Text("삭제", color = Color.Black)
+                                            }
+                                        },
+                                        // 취소 버튼
+                                        confirmButton = {
+                                            OutlinedButton(
+                                                onClick = { isDelete = null },
+                                                elevation = ButtonDefaults.elevation(1.dp)
+                                            ) {
+                                                Text("취소", color = Color.Black)
+                                            }
+                                        },
+                                        modifier = Modifier.border(1.dp, Main_gray)
+                                    )
+                                }
+                            }
+
+                        } else {
+                            Text("작성된 리뷰가 없습니다.", modifier = Modifier.padding(20.dp))
+                        }
+                    }
                 }
             }
+            // 하단 버튼
+            floatingBtn(listState)
         }
+
     }
 
     // 모달 보이냐 안 보이냐에 따라 키보드 조정
@@ -439,7 +514,7 @@ fun ItemDetail(navController: NavController, itemId: Int?, modifier: Modifier = 
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp)
-                ) {0
+                ) {
                     Text("확인", color = Color.Black)
                 }
             }

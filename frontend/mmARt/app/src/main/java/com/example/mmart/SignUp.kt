@@ -154,7 +154,7 @@ fun SignUp(navController: NavController){
         if(isDuplicate){
             Text("중복 확인을 해주세요.", color = Color.Red, fontSize = 10.sp, textAlign = TextAlign.Start, modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 50.dp))
+                .padding(start = 60.dp))
         } else {
             Text("", fontSize = 10.sp)
         }
