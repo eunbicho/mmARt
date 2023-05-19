@@ -56,9 +56,9 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
 
          if (payment != null && paymentDetails != null) {
              paymentDetails!!.forEach { priceTotal += it.item.price * it.quantity }
-             Box(modifier = Modifier.fillMaxSize().padding(30.dp)) {
+             Box(modifier = Modifier.fillMaxSize()) {
                  LazyColumn (
-                     modifier = Modifier.fillMaxWidth(),
+                     modifier = Modifier.fillMaxWidth().padding(30.dp),
                      state = listState,
                      contentPadding = PaddingValues(bottom=90.dp),
                  ) {

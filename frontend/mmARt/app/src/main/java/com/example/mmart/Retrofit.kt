@@ -25,6 +25,10 @@ interface APIS {
     @GET("items/recent")
     suspend fun getRecentItems(@Query("userIdx") userIdx: Int): ItemsResult
 
+    // 할인 상품
+    @GET("items/discount")
+    suspend fun getDiscountItems(@Query("userIdx") userIdx: Int): ItemsResult
+
     // 자주 구매
     @GET("items/frequent")
     suspend fun getFrequentItems(@Query("userIdx") userIdx: Int): ItemsResult
