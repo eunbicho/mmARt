@@ -14,6 +14,9 @@ fun Category(navController: NavController, categoryIdx: Int){
     // 아이템 리스트
     var items: List<ItemInfo>? by remember { mutableStateOf(null) }
 
+    // 로딩
+    var isLoading: Boolean by remember { mutableStateOf(true) }
+
     // 카테고리 별 아이템 조회
     LaunchedEffect(true) {
         try {
@@ -37,15 +40,18 @@ fun Category(navController: NavController, categoryIdx: Int){
             else -> "카테고리"
         }
 
-
-
     Column() {
+
         // 상단바
         topBar(navController = navController, categoryName)
 
         // result가 null이 아닐 경우만
         if (items != null) {
-            items(navController, items!!)
+            items(navController, items!!) {isLoading = it}
         }
+    }
+
+    if(isLoading){
+        loadingView()
     }
 }
