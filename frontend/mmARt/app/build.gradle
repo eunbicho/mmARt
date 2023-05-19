@@ -80,9 +80,13 @@ dependencies {
     implementation('com.journeyapps:zxing-android-embedded:4.1.0') { transitive = false }
     implementation 'com.google.zxing:core:3.5.1'
 
+    // GIF
+    implementation "io.coil-kt:coil-compose:2.3.0"
+    implementation "io.coil-kt:coil-gif:2.1.0"
+
     // 유니티 연결
-//    implementation project(':unityLibrary')
-//    implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
+    implementation project(':unityLibrary')
+    implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
 //    implementation project(':unityLibrary')
 //    implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
 }
