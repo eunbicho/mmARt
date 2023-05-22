@@ -62,14 +62,7 @@
     ```bash
     git clone https://lab.ssafy.com/s08-ai-image-sub2/S08P22A401.git
     ```
-    
-4. build spring boot project in dir("backend//mmart")
-    
-    ```bash
-    chmod +x gradlew
-    ./gradlew clean build -x test
-    ```
-5. docker-compose up in dir("backend/mmart")
+4. docker-compose up in dir("backend/mmart")
     
     ```bash
     docker-compose up -d --build
