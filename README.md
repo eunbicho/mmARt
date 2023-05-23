@@ -13,95 +13,85 @@
 ---
 
 # 🚙 apk 다운로드 하기
+https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
 
 
 # 🚙 서비스 소개
 
-[![AdventureEveryday](https://img.youtube.com/vi/RDSZdaFqegk/0.jpg)](https://www.youtube.com/watch?v=RDSZdaFqegk)
+[![AdventureEveryday](https://img.youtube.com/vi/woY2z9R8p0Y/0.jpg)](https://www.youtube.com/watch?v=woY2z9R8p0Y)
 
 
 
 
 ### 🔹 개요
 
-- 한줄 소개 : 편리한 마트 장보기
+- 한줄 소개 : 편리한 대형마트 장보기
 - 서비스명 : mmARt
 
 ### 🔹 타겟
 
-- 영어를 흥미롭게 접하고 싶은 아이
-- 일상생활에서 영어를 자주 접하게 하고 그 과정에서 저비용, 고효율의 영어 교육을 원하는 부모님
+- 오프라인 대형마트에서 효율적인 쇼핑을 원하는 사람들
 
 # 🚙 기획 배경
 
 ### 🔹 배경
-
+오프라인 대형마트 쇼핑에서의 불편함 발견
+1. 물건이 너무 많다보니 어떤 물건이 어디 있는지 찾기 어렵고, 매번 직원분께 물어보기에도 번거롭다.
+2. 물건의 리뷰를 일일이 검색해서 확인하기 불편하다.
+3. 결제할 때 여러 물건을 다시 꺼내서 바코드를 찍기 불편하다.
 
 
 ### 🔹 목적
 
-- 아이들에게는
-    - 실생활에서 자연스럽고 즐겁게 영어단어와 문장 학습 가능
-    - 영어에 대한 흥미 유발 가능
-- 학부모에게는
-    - 자녀의 영어 교육 고민 완화
-    - 고비용을 들이지 않고 영어 교육이 가능
+1. 사용자가 원하는 물건의 위치를 AR를 통해 안내 받을 수 있다.
+2. 물건의 최저가와 리뷰를 바로 확인해서 물건을 선택하는 데 도움이 될 수 있다.
+3. 사용자의 편의를 위해 모든 사용자들이 일반적으로 가지고 있는 핸드폰 카메라를 이용하여 장바구니에 들어간 품목들의 바코드를 인식하여 나갈 때 수동적인 결제없이 자동 결제가 가능하다.
+
+
 
 ### 🔹 의의
 
-- 내 주변 사물을 직접 촬영해서 단어를 확인하는 과정을 통해 나의 주변에 있는 사물들을 영어로 친숙하게 받아들이게 하며 AR을 이용해 3D로 단어를 띄워 흥미를 유발한다. 영어에 대한 흥미로운 경험이 지속되게 하여 이후의 영어에 대한 경험들을 긍정적으로 받아들이도록 한다.
-- 특정 동화에서 제시하는 그림을 퀴즈 형식으로 맞히는 경험을 통해 재미있게 단어를 익히게 하며, 사물을 완성하면 보상으로 동화를 재생해주어 성취감을 느끼게 한다.
-- 영어 예문을 스스로 만들어서 듣고, 동화를 만들어서 읽어보고 들어보는 경험을 통해 정확한 영어 발음을 계속 접하게 되므로 원어민 선생님에게 영어를 배우도록 하기 위해 지출하던 많은 비용을 절약할 수 있다.
+- 대형마트에서 물건을 간편하게 찾고, 찾은 물건의 최저가와 리뷰를 편리하게 확인하고 결제할 수 있어 효율적인 쇼핑이 가능하다.
+- 기존 카트에 앱을 설치한 핸드폰을 거치하면, 큰 비용을 들이지 않고 서비스 적용이 가능하다.
 
-# 🚙 디자인 컨셉
-![designConcept](https://user-images.githubusercontent.com/36323800/231401421-fbdd5cc1-5c56-4826-ad5b-3215fe13cd9f.PNG)
 
 
 # 🚙 시연 화면 (추가예정)
-
-
-### 🔹 로그인
-<img src="./image/gif/register.gif" width="250" height="530" />
-
 
 
 
 
 # 🚙 기술 스택
 
+
 ### [AI]
 
-- Pytorch
-- Tensorflow
-- Anaconda
-- FastAPI
-- CLIP, CNN
+- 
 
 ### [FE]
 
-- Flutter
-- Firebase
-- ARCore, ARKit
-- Figma
-- Visual Studio Code
-- Android Studio
-- Intellij
+- Kotlin
+- Unity
+- Android
+- Jetpack Compose
 
 ### [BE]
 
+- Java
 - Spring Boot
-- Gradle(Kotlin)
+- Elasticsearch
+- Python
+- Tensorflow
+
+### [DB]
 - MySQL
-- Spring Data JPA
-- Spring Security
-- JWT
-- Jenkins
+- Redis
+- S3
+
+### [Infra]
 - Docker
-- Docker Compose
-- SSL
-- NGINX
-- AWS(EC2, S3)
-- Intellij
+- Jenkins
+- K8s
 
 ### [ETC]
 
@@ -214,17 +204,17 @@
 ## AI
 
 ```bash
-+---sentiment_analysis
-|   +---app
-|   |   \---model
-|   |       \---ns_bert_1_epoch
-|   |           +---assets
-|   |           \---variables
-|   \---local
-|       \---__pycache__
-\---shortest-path
++---clip
+|   \---app
+|       +---images
+|       +---model
+|       \---test
+|           +---accuracy
+|           \---data_ndjson
+\---doodle-recognition-cnn
     +---app
-    \---local
+    |   \---model
+    \---local-test
         \---__pycache__
 ```
 
@@ -246,38 +236,27 @@
 |   \---wrapper
 \---src
     +---main
-    |   +---kotlin
+    |   +---java
     |   |   \---com
     |   |       \---ssafy
-    |   |           \---mmart
+    |   |           \---snapstory
     |   |               +---config
     |   |               +---controller
     |   |               +---domain
-    |   |               |   +---category
+    |   |               |   +---aiTale
     |   |               |   |   \---dto
-    |   |               |   +---favorite
+    |   |               |   +---quizTale
+    |   |               |   +---quizTaleItem
+    |   |               |   +---quizTaleItemDraw
     |   |               |   |   \---dto
-    |   |               |   +---favoriteCategory
-    |   |               |   +---getCart
+    |   |               |   +---quizTaleItemList
     |   |               |   |   \---dto
-    |   |               |   +---gotCart
+    |   |               |   +---quizTaleList
     |   |               |   |   \---dto
-    |   |               |   +---item
+    |   |               |   +---user
     |   |               |   |   \---dto
-    |   |               |   +---itemCoupon
-    |   |               |   |   \---dto
-    |   |               |   +---itemDetail
-    |   |               |   +---itemDetailImage
-    |   |               |   |   \---dto
-    |   |               |   +---itemItemCoupon
-    |   |               |   +---payment
-    |   |               |   |   \---dto
-    |   |               |   +---paymentDetail
-    |   |               |   |   \---dto
-    |   |               |   +---review
-    |   |               |   |   \---dto
-    |   |               |   +---reviewImage
-    |   |               |   \---user
+    |   |               |   +---word
+    |   |               |   \---wordList
     |   |               |       \---dto
     |   |               +---exception
     |   |               |   +---bad_request
@@ -291,11 +270,12 @@
     |   |               \---service
     |   \---resources
     |       \---static
+    |           \---index_files
     \---test
-        \---kotlin
+        \---java
             \---com
                 \---ssafy
-                    \---mmart
+                    \---snapstory
 ```
 
 ## env
@@ -433,11 +413,16 @@
 ![TEAM](./image/team.png)
 ## [AI]
 - 김현호 : AI 모델 학습 및 배포, 데이터전처리
+
 ## [FE]
 - 유지원 : FE, UI/UX
-- 조은비 : FE, UI/UX
-- 권택윤 : FE, Auth
+- 조은비 : AR, UI/UX
+
+## [Infra]
+- 권택윤
+
 ## [BE]
 - 안예나 : BE, REST API, DB, 디자인
 - 김명호 : 팀장, BE, CI/CD, DB, FE(AR)
+
 
