@@ -60,7 +60,7 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
                  LazyColumn (
                      modifier = Modifier.fillMaxWidth().padding(30.dp),
                      state = listState,
-                     contentPadding = PaddingValues(bottom=90.dp),
+                     contentPadding = PaddingValues(bottom=80.dp),
                  ) {
                      item() {
                          Column(
@@ -307,13 +307,8 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
                          }
                      }
                  }
-                 floatingBtns(
-                     listState = listState,
-                     secondBtn = R.drawable.mypage,
-                     secondBtnName = "MYPAGE",
-                     secondEvent = {
-                         navController.popBackStack(route = "myPage", inclusive = false)
-                     }
+                 floatingBtn(
+                     listState = listState
                  )
              }
          }

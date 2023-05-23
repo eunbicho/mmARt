@@ -239,7 +239,7 @@ fun Main(navController: NavController) {
                 // 카테고리, 최근/자주 구매
                 Column(
                     modifier = Modifier
-                        .padding(20.dp, 10.dp, 20.dp, 100.dp)
+                        .padding(20.dp, 10.dp, 20.dp, 110.dp)
                         .verticalScroll(rememberScrollState()),
                 ) {
                     // 카테고리 부분
@@ -344,14 +344,6 @@ fun Main(navController: NavController) {
                             }
                         }
                     }
-    //            Button(onClick = {
-    //                             mContext.startActivity(Intent(mContext, UnityPlayerActivity::class.java))
-    //                b.a()
-    //                navController.navigate("unity")
-    //                Intent test = new Intent(this, UnityPlayerActivity::class.java)Intent test = new Intent(this, UnityPlayerActivity::class.java)
-    //                startActivity(Intent(this, UnityPlayerActivity::class.java))
-    //            }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
-    //          Button(onClick = { navController.navigate("unity") }){ Text(text = "유니티테스트") }
 
                     val api = APIS.create()
                     val coroutineScope = rememberCoroutineScope()
@@ -379,7 +371,7 @@ fun Main(navController: NavController) {
                         if(recentItems!!.isEmpty()){
                             isLoading1 = false
                             Text("최근 구매 상품이 없습니다", modifier = Modifier
-                                .padding(vertical = 40.dp)
+                                .padding(vertical = 50.dp)
                                 .fillMaxWidth(), textAlign = TextAlign.Center)
                         } else {
                             LazyRow(){
@@ -387,19 +379,21 @@ fun Main(navController: NavController) {
                                         item ->
                                     Column(
                                         modifier = Modifier
-                                            .padding(10.dp)
-                                            .widthIn(max = 80.dp)
-                                            .clickable { navController.navigate("item/${item.itemIdx}") }
+                                            .padding(7.dp)
+                                            .width(100.dp)
+                                            .clickable { navController.navigate("item/${item.itemIdx}") },
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ){
                                         AsyncImage(
-                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
+                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
                                             contentDescription = "상품 썸네일",
                                             onSuccess = {isLoading1 = false},
                                             modifier = Modifier
                                                 .fillMaxSize()
                                                 .aspectRatio(1f)
+
                                         )
-                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier
+                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, fontSize = 12.sp, modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(top = 5.dp))
                                     }
@@ -414,7 +408,7 @@ fun Main(navController: NavController) {
                         if(frequentItems!!.isEmpty()){
                             isLoading2 = false
                             Text("자주 구매 상품이 없습니다", modifier = Modifier
-                                .padding(vertical = 40.dp)
+                                .padding(vertical = 50.dp)
                                 .fillMaxWidth(), textAlign = TextAlign.Center)
                         } else {
                             LazyRow(){
@@ -422,20 +416,24 @@ fun Main(navController: NavController) {
                                         item ->
                                     Column(
                                         modifier = Modifier
-                                            .padding(10.dp)
-                                            .widthIn(max = 80.dp)
-                                            .clickable { navController.navigate("item/${item.itemIdx}") }
+                                            .padding(7.dp)
+                                            .width(100.dp)
+                                            .clickable { navController.navigate("item/${item.itemIdx}") },
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ){
                                         AsyncImage(
-                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
+                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
                                             contentDescription = "상품 썸네일",
-                                            onSuccess = {isLoading2 = false}
+                                            onSuccess = {isLoading2 = false},
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .aspectRatio(1f)
+
                                         )
-                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier
+                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, fontSize = 12.sp, modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(top = 5.dp))
                                     }
-
                                 }
                             }
                         }
@@ -447,7 +445,7 @@ fun Main(navController: NavController) {
                         if(discountItems!!.isEmpty()){
                             isLoading3 = false
                             Text("할인 중인 상품이 없습니다", modifier = Modifier
-                                .padding(vertical = 40.dp)
+                                .padding(vertical = 50.dp)
                                 .fillMaxWidth(), textAlign = TextAlign.Center)
                         } else {
                             LazyRow(){
@@ -455,19 +453,21 @@ fun Main(navController: NavController) {
                                         item ->
                                     Column(
                                         modifier = Modifier
-                                            .padding(10.dp)
-                                            .widthIn(max = 80.dp)
-                                            .clickable { navController.navigate("item/${item.itemIdx}") }
+                                            .padding(7.dp)
+                                            .width(100.dp)
+                                            .clickable { navController.navigate("item/${item.itemIdx}") },
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ){
                                         AsyncImage(
-                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
+                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
                                             contentDescription = "상품 썸네일",
                                             onSuccess = {isLoading3 = false},
                                             modifier = Modifier
                                                 .fillMaxSize()
                                                 .aspectRatio(1f)
+
                                         )
-                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier
+                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, fontSize = 12.sp, modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(top = 5.dp))
                                     }
