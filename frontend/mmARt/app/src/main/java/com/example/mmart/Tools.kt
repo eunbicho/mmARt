@@ -1,30 +1,34 @@
 package com.example.mmart
 
+import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -34,11 +38,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
+import coil.size.Size
 import com.example.mmart.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -50,10 +61,6 @@ fun searchBar(navController: NavController){
 
     fun search(){
         navController.navigate("search/$searchWord")
-    }
-
-    fun barcodeSearch(){
-        navController.navigate("barcodeScan")
     }
 
     // 키보드 조정
@@ -72,41 +79,32 @@ fun searchBar(navController: NavController){
             .shadow(
                 shape = CircleShape,
                 elevation = 5.dp,
-                ambientColor = Color.Black,
+                ambientColor = Dark_gray,
                 clip = true
             ),
-        colors = TextFieldDefaults.textFieldColors(
+        colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = Main_yellow,
             textColor = Dark_gray,
+            cursorColor = Dark_gray,
+            focusedBorderColor = Dark_gray,
         ),
         singleLine = true,
         textStyle = TextStyle(fontFamily = mainFont, fontSize = 15.sp),
-
         // textfield 우측에 아이콘 추가
         trailingIcon = {
-            Row(
+            Image(
+                painter = painterResource(R.drawable.search),
+                contentDescription = "검색",
                 modifier = Modifier
-                    .padding(horizontal = 20.dp)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.barcode),
-                    contentDescription = "바코드 검색",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable { barcodeSearch() }
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Image(
-                    painter = painterResource(R.drawable.search),
-                    contentDescription = "검색",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable {
-                            if (searchWord.trim().isNotEmpty()) search()
-                        }
-                )
-
-            }
+                    .size(50.dp)
+                    .padding(end = 20.dp)
+                    .clickable {
+                        if (searchWord
+                                .trim()
+                                .isNotEmpty()
+                        ) search()
+                    }
+            )
         },
         // 키보드 모양 바꾸기
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -128,7 +126,7 @@ fun topBar(navController: NavController, title: String){
             .background(color = Color(0XFFF5F5F5))
             .fillMaxWidth()
             .height(60.dp)
-            .padding(15.dp),
+            .padding(horizontal = 20.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
 
@@ -157,17 +155,17 @@ fun floatingBtn(
     val coroutineScope = rememberCoroutineScope()
 
     Row(
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Start,
         modifier = Modifier
-            .padding(20.dp, 10.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+            .padding(20.dp)
+            .fillMaxSize(),
     ) {
         FloatingActionButton(
             onClick = {
                 coroutineScope.launch {
                     listState.animateScrollToItem(index = 0)
                 }},
-            backgroundColor = Light_gray,
             modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
         ) {
             Image(
@@ -190,18 +188,21 @@ fun floatingBtns(
     val coroutineScope = rememberCoroutineScope()
 
     Row(
-        modifier = Modifier
-            .padding(20.dp, 10.dp)
-            .fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+           .padding(20.dp)
+           .fillMaxSize(),
     ) {
         FloatingActionButton(
             onClick = {
                 coroutineScope.launch {
                     listState.animateScrollToItem(index = 0)
                 }},
-            backgroundColor = Light_gray,
-            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
+            modifier = Modifier
+                .sizeIn(60.dp, 60.dp, 80.dp, 80.dp)
+                .clip(CircleShape),
+            backgroundColor = Color.White,
         ) {
             Image(
                 painter = painterResource(R.drawable.top),
@@ -211,8 +212,10 @@ fun floatingBtns(
 
         FloatingActionButton(
             onClick = secondEvent,
-            backgroundColor = Light_gray,
-            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
+            modifier = Modifier
+                .sizeIn(60.dp, 60.dp, 80.dp, 80.dp)
+                .clip(CircleShape),
+            backgroundColor = Color.White,
         ) {
             Image(
                 painter = painterResource(secondBtn),
@@ -235,33 +238,88 @@ fun blankView(msg: String) {
 }
 
 @Composable
+fun GifImage(
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val imageLoader = ImageLoader.Builder(context)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }
+        .build()
+    Image(
+        painter = rememberAsyncImagePainter(
+            ImageRequest.Builder(context).data(data = R.drawable.loading).apply(block = {
+                size(240)
+            }).build(), imageLoader = imageLoader
+        ),
+        contentDescription = null,
+        modifier = modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
 fun loadingView(){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White),
+            .background(color = Vivid_blue),
         contentAlignment = Alignment.Center,
     ) {
-        Text("로딩")
+        GifImage()
     }
 }
 
 @Composable
-fun items(navController:NavController, items: List<ItemInfo>){
+fun items(navController:NavController, items: List<ItemInfo>, loading: (Boolean) -> Unit){
     val api = APIS.create()
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyGridState()
-    
-    var isLoading: Boolean by remember { mutableStateOf(true) }
 
-    // 이미지 로딩 중일 때
-    if(isLoading){
-        loadingView()
-    }
+    var sort: String by remember { mutableStateOf("추천순") }
+    var expanded: Boolean by remember { mutableStateOf(false) }
 
-    Box(modifier = Modifier.fillMaxSize().padding(vertical = 10.dp)) {
-        LazyVerticalGrid(GridCells.Fixed(2), state=listState) {
-            items(items) { item ->
+    // 아이템 리스트
+    val itemList =
+        when(sort){
+            "추천순" -> items
+            "낮은 가격순" -> items.sortedBy { it.couponPrice }
+            "높은 가격순" -> items.sortedByDescending { it.couponPrice }
+            else -> items
+        }
+
+    Box(modifier = Modifier
+        .fillMaxSize()) {
+        LazyVerticalGrid(GridCells.Fixed(2), state=listState, contentPadding = PaddingValues(bottom=90.dp)) {
+            // 정렬
+            item(span = { GridItemSpan(2) }){
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(Alignment.TopEnd)
+                    .padding(20.dp, 10.dp, 20.dp, 0.dp)){
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { expanded = true }){
+                        Text(sort)
+                        Icon(imageVector = Icons.Default.Menu, contentDescription = "정렬", modifier = Modifier.padding(start=10.dp))
+                    }
+                    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        listOf("추천순", "낮은 가격순", "높은 가격순").forEach {
+                            DropdownMenuItem(
+                                onClick = {
+                                    sort = it
+                                    expanded = false
+                                }
+                            ) {
+                                Text(it)
+                            }
+                        }
+                    }
+                }
+            }
+            items(itemList) { item ->
                 // 수량
                 var quantity: Int by remember { mutableStateOf(1) }
                 // 장볼구니 모달
@@ -304,21 +362,27 @@ fun items(navController:NavController, items: List<ItemInfo>){
                                 .fillMaxSize()
                                 .aspectRatio(1f)
                                 .padding(5.dp),
-                            onSuccess = {isLoading = false}
+                            onSuccess = { loading(false) }
                         )
 
                         Text(text = item.itemName, maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 20.sp)
 
-                        if(item.isCoupon){
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text("${item.couponPrice}원", fontSize = 20.sp, modifier = Modifier.padding(5.dp))
-                                Text("${item.price}", textDecoration = TextDecoration.LineThrough, color = Color.LightGray, fontWeight = FontWeight.Light, fontSize = 15.sp)
+                        // 가격
+                        if(item.inventory>0){
+                            if(item.isCoupon){
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text("${item.couponPrice}원", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(5.dp))
+                                    Text("${item.price}", textDecoration = TextDecoration.LineThrough, color = Color.LightGray, fontWeight = FontWeight.Light, fontSize = 15.sp)
+                                }
+                            } else{
+                                Text(text = "${item.price}원", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                             }
-                        } else{
-                            Text(text = "${item.price}원", fontSize = 20.sp)
+                        } else {
+                            Text(text = "품절", fontSize = 20.sp, color = Color.LightGray)
                         }
+
                     }
                     // 수량, 장볼구니 추가 버튼
                     Row(
@@ -338,15 +402,27 @@ fun items(navController:NavController, items: List<ItemInfo>){
                         ) {
                             Icon(Icons.Default.KeyboardArrowRight, contentDescription = "수량 증가")
                         }
-
-                        Image(painter = painterResource(R.drawable.getcart), contentDescription = "장볼구니 추가",
+                        if(item.inventory>0){
+                            Image(
+                            painter = painterResource(R.drawable.getcart),
+                            contentDescription = "장볼구니 추가",
                             modifier = Modifier
                                 .size(40.dp)
                                 .padding(end = 20.dp)
                                 .weight(1f)
                                 .wrapContentWidth(align = Alignment.End)
-                                .clickable { addGetCart() }
-                        )
+                                .clickable { addGetCart() })
+                        }else{
+                            Image(
+                                painter = painterResource(R.drawable.getcart_x),
+                                contentDescription = "장볼구니 추가X",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .padding(end = 20.dp)
+                                    .weight(1f)
+                                    .wrapContentWidth(align = Alignment.End))
+                            }
+
                     }
                 }
 
@@ -358,7 +434,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                         Box(
                             modifier = Modifier
                                 .border(
-                                    width = 3.dp,
+                                    width = 2.dp,
                                     color = Color.Black,
                                     shape = RoundedCornerShape(40.dp)
                                 )
@@ -371,7 +447,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                             ) {
                                 Text("상품이 장볼구니에\n추가되었습니다", modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp), fontSize = 20.sp, textAlign = TextAlign.Center)
                                 Row(
-                                    horizontalArrangement = Arrangement.Center,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 50.dp)
@@ -382,7 +458,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                                             .padding(10.dp)
                                             .clickable { goGetCart = false }
                                     ) {
-                                        Image(painter = painterResource(R.drawable.previous), contentDescription = "이전으로", Modifier.size(80.dp))
+                                        Image(painter = painterResource(R.drawable.previous), contentDescription = "이전으로", Modifier.size(70.dp))
                                         Text("이전으로", Modifier.padding(5.dp))
                                     }
                                     Column(
@@ -391,7 +467,7 @@ fun items(navController:NavController, items: List<ItemInfo>){
                                             .padding(10.dp)
                                             .clickable { navController.navigate("getCart") }
                                     ) {
-                                        Image(painter = painterResource(R.drawable.getcart), contentDescription = "장볼구니로", Modifier.size(80.dp))
+                                        Image(painter = painterResource(R.drawable.getcart), contentDescription = "장볼구니로", Modifier.size(70.dp))
                                         Text("장볼구니로", Modifier.padding(5.dp))
                                     }
                                 }
@@ -401,6 +477,8 @@ fun items(navController:NavController, items: List<ItemInfo>){
                 }
             }
         }
+
+        // 하단 버튼
         Row(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.Start,
@@ -427,22 +505,13 @@ fun items(navController:NavController, items: List<ItemInfo>){
 
 }
 
+
+
+
+
+
 @Preview(showBackground = true)
 @Composable
 fun toolPreview(){
-    Image(
-        painter = painterResource(R.drawable.bg),
-        modifier = Modifier.fillMaxSize(),
-        contentDescription = "배경",
-        contentScale = ContentScale.FillBounds
-    )
-    Box(){
-        Column(modifier = Modifier.fillMaxSize()) {
-            Text(text = "aaaaaaaaaaa")
-            Text("뭐야아앙아ㅏ")
-            loadingView()
-        }
-    }
-
 }
 

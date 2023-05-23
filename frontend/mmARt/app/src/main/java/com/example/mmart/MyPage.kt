@@ -42,6 +42,8 @@ fun MyPage(navController: NavController){
     var user: UserInfo? by remember { mutableStateOf(null) }
     // 로그아웃 모달
     var isLogout: Boolean by remember { mutableStateOf(false) }
+    //로딩창
+    var isLoading: Boolean by remember { mutableStateOf(true) }
 
     LaunchedEffect(true) {
         // 유저 정보 조회
@@ -57,6 +59,7 @@ fun MyPage(navController: NavController){
     Column() {
         topBar(navController = navController, "마이페이지")
         if(user != null){
+            isLoading = false
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 70.dp)
@@ -130,7 +133,9 @@ fun MyPage(navController: NavController){
             text = { Text("로그아웃 하시겠습니까?", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(), fontSize = 18.sp) },
             confirmButton = {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(bottom=10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp),
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     OutlinedButton(
@@ -157,6 +162,10 @@ fun MyPage(navController: NavController){
             modifier = Modifier.border(1.dp, Color.Black, RoundedCornerShape(10.dp)),
             shape = RoundedCornerShape(10.dp)
         )
+    }
+
+    if(isLoading){
+        loadingView()
     }
 }
 

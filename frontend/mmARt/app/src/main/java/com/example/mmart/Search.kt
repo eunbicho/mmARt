@@ -22,6 +22,8 @@ fun Search(navController: NavController, searchWord: String){
     val coroutineScope = rememberCoroutineScope()
 
     var items: List<ItemInfo>? by remember { mutableStateOf(null) }
+    // 로딩
+    var isLoading: Boolean by remember { mutableStateOf(true) }
 
     // 검색 결과 받아오기
     LaunchedEffect(true) {
@@ -33,22 +35,31 @@ fun Search(navController: NavController, searchWord: String){
             println("---------------------------------")
         }
     }
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(vertical = 10.dp)) {
         // 상단바
         topBar(navController = navController, "상품 검색")
 
-        // 검색
-        searchBar(navController)
-
+        Row(
+            modifier = Modifier
+                .padding(0.dp, 20.dp, 0.dp, 0.dp)
+        ) {
+            searchBar(navController = navController)
+        }
         if(items != null){
             // 검색 결과가 있을 때
             if (items!!.isNotEmpty()){
-                Text("총 ${items!!.size}건의 검색 결과", modifier=Modifier.padding(start = 20.dp))
-
-                items(navController, items!!)
+                Text("총 ${items!!.size}건의 검색 결과", modifier=Modifier.padding(start = 20.dp, top = 15.dp))
+                items(navController, items!!) {isLoading = it}
             } else{
+                isLoading = false
                 blankView(msg = "일치하는 검색 결과가 없습니다.")
             }
         }
+    }
+
+    if(isLoading){
+        loadingView()
     }
 }

@@ -1,24 +1,23 @@
 package com.example.mmart
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -27,26 +26,30 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.compose.material.MaterialTheme
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.navigation.Navigation.findNavController
 import coil.compose.AsyncImage
-import com.example.mmart.ui.theme.mainTypography
+import com.example.mmart.ui.theme.*
 import kotlinx.coroutines.async
 
 //import com.unity3d.player.UnityPlayerActivity
-
+lateinit var getResult: ActivityResultLauncher<Intent>
+var pageCode by mutableStateOf(0) // <- this line
 class MainActivity : ComponentActivity() {
     fun a(){
 //        startActivity(Intent(this, UnityPlayerActivity::class.java))
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                pageCode= it.data?.getStringExtra("pageCode")?.toInt() ?: 0
+            }
+        }
 //        val intent = Intent(this, UnityPlayerActivity::class.java)
 
 //        Button(onClick = {
@@ -59,7 +62,7 @@ class MainActivity : ComponentActivity() {
 
 //        }
         setContent {
-            MaterialTheme(typography = mainTypography) {
+            MmARtTheme {
                 val navController = rememberNavController()
 
                 NavHost(navController = navController, startDestination = "main") {
@@ -128,23 +131,21 @@ class MainActivity : ComponentActivity() {
                     ) { backStackEntry ->
                         PaymentDetail(navController, backStackEntry.arguments!!.getInt("paymentIdx"))
                     }
-                    // 마이페이지 - 결제 내역 조회 - 상세 조회 - 리뷰 작성
+                    // 리뷰 작성 및 수정
                     composable(
-                        route = "reviewCreate/{paymentDetailIdx}",
-                        arguments = listOf(navArgument("paymentDetailIdx") { type = NavType.IntType })
+                        route = "reviewSave/{paymentDetailIdx}/{reviewIdx}",
+                        arguments = listOf(
+                            navArgument("paymentDetailIdx") { type = NavType.IntType },
+                            navArgument("reviewIdx") { type = NavType.IntType }
+                        )
                     ) { backStackEntry ->
-                        ReviewCreate(navController, backStackEntry.arguments!!.getInt("paymentDetailIdx"))
+                        val paymentDetailIdx = backStackEntry.arguments!!.getInt("paymentDetailIdx")
+                        val reviewIdx = backStackEntry.arguments!!.getInt("reviewIdx")
+                        ReviewSave(navController, paymentDetailIdx, reviewIdx)
                     }
                     // 마이페이지 - 리뷰 내역 조회
                     composable(route = "review") {
                         Review(navController)
-                    }
-                    // 마이페이지 - 리뷰 내역 조회 - 리뷰 수정
-                    composable(
-                        route = "reviewUpdate/{reviewIdx}",
-                        arguments = listOf(navArgument("reviewIdx") { type = NavType.IntType })
-                    ) { backStackEntry ->
-                        ReviewUpdate(navController, backStackEntry.arguments!!.getInt("reviewIdx"))
                     }
                 }
 
@@ -165,8 +166,8 @@ var userId = 0
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter") // Scaffold의 padding value 사용 안 할 때
 @Composable
 fun Main(navController: NavController) {
-    val b = MainActivity()
-    val mContext = LocalContext.current
+//    val b = MainActivity()
+//    val mContext = LocalContext.current
 
     var isLoading1: Boolean by remember { mutableStateOf(true) }
     var isLoading2: Boolean by remember { mutableStateOf(true) }
@@ -176,254 +177,242 @@ fun Main(navController: NavController) {
         navController.navigate("category/$categoryId")
     }
 
-    val bottomBarHeight = with(LocalDensity.current) {
-        val navigationBarHeightDp = 48.dp // Specify the default height of the navigation bar in dp
-        val navigationBarHeightPx = navigationBarHeightDp.toPx()
-        val scaledDensity = LocalConfiguration.current.fontScale * density
-        val navigationBarHeight = (navigationBarHeightPx / scaledDensity).dp
-        navigationBarHeight
-    }
-
     Scaffold(
+        modifier = Modifier.background(Vivid_blue),
         content = {
             // 배경 이미지
             Image(
                 painter = painterResource(R.drawable.bg),
                 modifier = Modifier.fillMaxSize(),
                 contentDescription = "배경",
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.FillWidth
             )
 
-            // 상단 로고, 지점 표시
-            Box {
+            Column() {
+                // 상단 로고, 지점 표시
                 Row(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
+
                 ) {
                     Image(
                         painter = painterResource(R.drawable.logo),
                         contentDescription = "로고",
                         modifier = Modifier
-                            .padding(16.dp)
-                            .width(150.dp)
-                            .height(100.dp)
+                            .width(120.dp)
+                            .height(40.dp)
                     )
                     Image(
                         painter = painterResource(R.drawable.place),
                         contentDescription = "지점",
                         modifier = Modifier
-                            .padding(16.dp)
-                            .width(100.dp)
-                            .height(100.dp)
+                            .width(80.dp)
+                            .height(30.dp)
                     )
-
                 }
-            }
-            // 바디
-            Column(
-                modifier = Modifier
-                    .padding(top = 130.dp, bottom = 100.dp)
-                    .padding(horizontal = 20.dp)
-                    .verticalScroll(rememberScrollState()),
-            ) {
+                Spacer(modifier = Modifier.height(35.dp))
+
                 // 검색
                 searchBar(navController)
 
-                // 카테고리 부분
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                        .padding(horizontal = 10.dp)
+                // 카테고리, 최근/자주 구매
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp, 10.dp, 20.dp, 100.dp)
+                        .verticalScroll(rememberScrollState()),
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(vertical = 10.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
-
+                    // 카테고리 부분
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                            .padding(top = 20.dp, bottom = 10.dp)
+                            .background(Light_yellow)
                     ) {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 15.dp)
+                                .fillMaxHeight()
+                                .padding(20.dp),
+                            verticalArrangement = Arrangement.SpaceBetween
+
                         ) {
-                            items(4) { item ->
-                                fun imageResource(num: Int): Int {
-                                    return when (num) {
-                                        0 -> R.drawable.category_1
-                                        1 -> R.drawable.category_2
-                                        2 -> R.drawable.category_3
-                                        3 -> R.drawable.category_4
-                                        else -> R.drawable.category_1
+                            LazyRow(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 15.dp)
+                            ) {
+                                items(4) { item ->
+                                    fun imageResource(num: Int): Int {
+                                        return when (num) {
+                                            0 -> R.drawable.category_1
+                                            1 -> R.drawable.category_2
+                                            2 -> R.drawable.category_3
+                                            3 -> R.drawable.category_4
+                                            else -> R.drawable.category_1
+                                        }
                                     }
-                                }
 
-                                fun description(num: Int): String {
-                                    return when (num) {
-                                        0 -> "가공식품"
-                                        1 -> "신선식품"
-                                        2 -> "일상용품"
-                                        3 -> "의약품"
-                                        else -> "가공식품"
+                                    fun description(num: Int): String {
+                                        return when (num) {
+                                            0 -> "가공식품"
+                                            1 -> "신선식품"
+                                            2 -> "일상용품"
+                                            3 -> "의약품"
+                                            else -> "가공식품"
+                                        }
                                     }
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .clickable { category(item + 1) },
-                                    horizontalAlignment = Alignment.CenterHorizontally
-
-                                ) {
-                                    Image(
-                                        painter = painterResource(imageResource(item)),
-                                        contentDescription = description(item),
+                                    Column(
                                         modifier = Modifier
-                                            .size(50.dp)
-                                    )
-                                    Text(description(item))
+                                            .clickable { category(item + 1) },
+                                        horizontalAlignment = Alignment.CenterHorizontally
+
+                                    ) {
+                                        Image(
+                                            painter = painterResource(imageResource(item)),
+                                            contentDescription = description(item),
+                                            modifier = Modifier
+                                                .size(50.dp)
+                                        )
+                                        Text(description(item), modifier = Modifier.padding(top=5.dp))
+                                    }
                                 }
                             }
-                        }
 
-                        LazyRow(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 15.dp)
-                        ) {
-                            items(4) { item ->
-                                fun imageResource(num: Int): Int {
-                                    return when (num) {
-                                        0 -> R.drawable.category_5
-                                        1 -> R.drawable.category_6
-                                        2 -> R.drawable.category_7
-                                        3 -> R.drawable.category_8
-                                        else -> R.drawable.category_1
+                            LazyRow(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 15.dp)
+                            ) {
+                                items(4) { item ->
+                                    fun imageResource(num: Int): Int {
+                                        return when (num) {
+                                            0 -> R.drawable.category_5
+                                            1 -> R.drawable.category_6
+                                            2 -> R.drawable.category_7
+                                            3 -> R.drawable.category_8
+                                            else -> R.drawable.category_1
+                                        }
                                     }
-                                }
 
-                                fun description(num: Int): String {
-                                    return when (num) {
-                                        0 -> "교육용품"
-                                        1 -> "디지털"
-                                        2 -> "인테리어"
-                                        3 -> "스포츠"
-                                        else -> "가공식품"
+                                    fun description(num: Int): String {
+                                        return when (num) {
+                                            0 -> "교육용품"
+                                            1 -> "디지털"
+                                            2 -> "인테리어"
+                                            3 -> "스포츠"
+                                            else -> "가공식품"
+                                        }
                                     }
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .clickable { category(item + 5) },
-                                    horizontalAlignment = Alignment.CenterHorizontally
-
-                                ) {
-                                    Image(
-                                        painter = painterResource(imageResource(item)),
-                                        contentDescription = description(item),
+                                    Column(
                                         modifier = Modifier
-                                            .size(50.dp)
-                                    )
-                                    Text(description(item))
+                                            .clickable { category(item + 5) },
+                                        horizontalAlignment = Alignment.CenterHorizontally
+
+                                    ) {
+                                        Image(
+                                            painter = painterResource(imageResource(item)),
+                                            contentDescription = description(item),
+                                            modifier = Modifier
+                                                .size(50.dp)
+                                        )
+                                        Text(description(item), modifier = Modifier.padding(top=5.dp))
+                                    }
                                 }
                             }
                         }
                     }
-                }
-//            Button(onClick = {
-//                             mContext.startActivity(Intent(mContext, UnityPlayerActivity::class.java))
-//                b.a()
-//                navController.navigate("unity")
-//                Intent test = new Intent(this, UnityPlayerActivity::class.java)Intent test = new Intent(this, UnityPlayerActivity::class.java)
-//                startActivity(Intent(this, UnityPlayerActivity::class.java))
-//            }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
-//          Button(onClick = { navController.navigate("unity") }){ Text(text = "유니티테스트") }
+    //            Button(onClick = {
+    //                             mContext.startActivity(Intent(mContext, UnityPlayerActivity::class.java))
+    //                b.a()
+    //                navController.navigate("unity")
+    //                Intent test = new Intent(this, UnityPlayerActivity::class.java)Intent test = new Intent(this, UnityPlayerActivity::class.java)
+    //                startActivity(Intent(this, UnityPlayerActivity::class.java))
+    //            }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
+    //          Button(onClick = { navController.navigate("unity") }){ Text(text = "유니티테스트") }
 
-                val api = APIS.create()
-                val coroutineScope = rememberCoroutineScope()
+                    val api = APIS.create()
+                    val coroutineScope = rememberCoroutineScope()
 
-                // 아이템 정보
-                var recentItems: List<ItemInfo>? by remember { mutableStateOf(null) }
-                var frequentItems: List<ItemInfo>? by remember { mutableStateOf(null) }
+                    // 아이템 정보
+                    var recentItems: List<ItemInfo>? by remember { mutableStateOf(null) }
+                    var frequentItems: List<ItemInfo>? by remember { mutableStateOf(null) }
 
-                LaunchedEffect(true) {
-                    try {
-                        recentItems = coroutineScope.async { api.getRecentItems(userId) }.await().result
-                        frequentItems = coroutineScope.async { api.getFrequentItems(userId) }.await().result
-                    } catch (e: Exception){
-                        println("메인페이지 아이템 조회 에러----------")
-                        e.printStackTrace()
-                        println("---------------------------------")
+                    LaunchedEffect(true) {
+                        try {
+                            recentItems = coroutineScope.async { api.getRecentItems(userId) }.await().result
+                            frequentItems = coroutineScope.async { api.getFrequentItems(userId) }.await().result
+                        } catch (e: Exception){
+                            println("메인페이지 아이템 조회 에러----------")
+                            e.printStackTrace()
+                            println("---------------------------------")
+                        }
                     }
-                }
 
-                // 최근 구매
-                Text("최근 구매 상품", fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(top=20.dp))
-                if(recentItems!=null){
-                    if(recentItems!!.isEmpty()){
-                        Text("최근 구매 상품이 없습니다")
-                    } else {
-                        LazyRow(){
-                            items(recentItems!!){
-                                    item ->
-                                Column(
-                                    modifier = Modifier
-                                        .padding(10.dp)
-                                        .widthIn(max = 70.dp)
-                                        .clickable { navController.navigate("item/${item.itemIdx}") }
-                                ){
-                                    AsyncImage(
-                                        model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
-//                                    model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
-                                        contentDescription = "상품 썸네일",
-                                        onSuccess = {isLoading1 = false}
-                                    )
-                                    Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                    // 최근 구매
+                    Text("최근 구매 상품", fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(top=20.dp))
+                    if(recentItems!=null){
+                        if(recentItems!!.isEmpty()){
+                            isLoading1 = false
+                            Text("최근 구매 상품이 없습니다", modifier = Modifier.padding(vertical=40.dp).fillMaxWidth(), textAlign = TextAlign.Center)
+                        } else {
+                            LazyRow(){
+                                items(recentItems!!){
+                                        item ->
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(10.dp)
+                                            .widthIn(max = 80.dp)
+                                            .clickable { navController.navigate("item/${item.itemIdx}") }
+                                    ){
+                                        AsyncImage(
+                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
+                                            contentDescription = "상품 썸네일",
+                                            onSuccess = {isLoading1 = false},
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .aspectRatio(1f)
+                                        )
+                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top=5.dp))
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                // 자주 구매
-                Text("자주 구매 상품", fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(top=20.dp))
-                if(frequentItems!=null){
-                    println(frequentItems)
-                    if(frequentItems!!.isEmpty()){
-                        Text("자주 구매 상품이 없습니다")
-                    } else {
-                        LazyRow(){
-                            items(frequentItems!!){
-                                    item ->
-                                Column(
-                                    modifier = Modifier
-                                        .padding(10.dp)
-                                        .widthIn(max = 70.dp)
-                                        .clickable { navController.navigate("item/${item.itemIdx}") }
-                                ){
-                                    AsyncImage(
-                                        model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
-//                                    model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
-                                        contentDescription = "상품 썸네일",
-                                        onSuccess = {isLoading2 = false}
-                                    )
-                                    Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                    // 자주 구매
+                    Text("자주 구매 상품", fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(top=20.dp))
+                    if(frequentItems!=null){
+                        if(frequentItems!!.isEmpty()){
+                            isLoading2 = false
+                            Text("자주 구매 상품이 없습니다", modifier = Modifier.padding(vertical=40.dp).fillMaxWidth(), textAlign = TextAlign.Center)
+                        } else {
+                            LazyRow(){
+                                items(frequentItems!!){
+                                        item ->
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(10.dp)
+                                            .widthIn(max = 80.dp)
+                                            .clickable { navController.navigate("item/${item.itemIdx}") }
+                                    ){
+                                        AsyncImage(
+                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
+                                            contentDescription = "상품 썸네일",
+                                            onSuccess = {isLoading2 = false}
+                                        )
+                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top=5.dp))
+                                    }
+
                                 }
-
                             }
                         }
                     }
-                }
 
+                }
             }
-
-            if(isLoading1 || isLoading2) {
-                loadingView()
-            }
-
-
         },
         // 하단바
         bottomBar = {
@@ -460,11 +449,14 @@ fun Main(navController: NavController) {
             }
         }
     )
+    if(isLoading1 || isLoading2) {
+        loadingView()
+    }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun MainPreview(){
-//    val navController = rememberNavController()
-//    Main(navController = navController)
-//}
+@Preview(showBackground = true)
+@Composable
+fun MainPreview(){
+    val navController = rememberNavController()
+    Main(navController = navController)
+}
