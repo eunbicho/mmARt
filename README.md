@@ -204,17 +204,17 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
 ## AI
 
 ```bash
-+---clip
-|   \---app
-|       +---images
-|       +---model
-|       \---test
-|           +---accuracy
-|           \---data_ndjson
-\---doodle-recognition-cnn
++---sentiment_analysis
+|   +---app
+|   |   \---model
+|   |       \---ns_bert_1_epoch
+|   |           +---assets
+|   |           \---variables
+|   \---local
+|       \---__pycache__
+\---shortest-path
     +---app
-    |   \---model
-    \---local-test
+    \---local
         \---__pycache__
 ```
 
@@ -236,27 +236,38 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
 |   \---wrapper
 \---src
     +---main
-    |   +---java
+    |   +---kotlin
     |   |   \---com
     |   |       \---ssafy
-    |   |           \---snapstory
+    |   |           \---mmart
     |   |               +---config
     |   |               +---controller
     |   |               +---domain
-    |   |               |   +---aiTale
+    |   |               |   +---category
     |   |               |   |   \---dto
-    |   |               |   +---quizTale
-    |   |               |   +---quizTaleItem
-    |   |               |   +---quizTaleItemDraw
+    |   |               |   +---favorite
     |   |               |   |   \---dto
-    |   |               |   +---quizTaleItemList
+    |   |               |   +---favoriteCategory
+    |   |               |   +---getCart
     |   |               |   |   \---dto
-    |   |               |   +---quizTaleList
+    |   |               |   +---gotCart
     |   |               |   |   \---dto
-    |   |               |   +---user
+    |   |               |   +---item
     |   |               |   |   \---dto
-    |   |               |   +---word
-    |   |               |   \---wordList
+    |   |               |   +---itemCoupon
+    |   |               |   |   \---dto
+    |   |               |   +---itemDetail
+    |   |               |   +---itemDetailImage
+    |   |               |   |   \---dto
+    |   |               |   +---itemItemCoupon
+    |   |               |   +---payment
+    |   |               |   |   \---dto
+    |   |               |   +---paymentDetail
+    |   |               |   |   \---dto
+    |   |               |   +---review
+    |   |               |   |   \---dto
+    |   |               |   +---reviewImage
+    |   |               |   \---user
     |   |               |       \---dto
     |   |               +---exception
     |   |               |   +---bad_request
@@ -270,12 +281,11 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
     |   |               \---service
     |   \---resources
     |       \---static
-    |           \---index_files
     \---test
-        \---java
+        \---kotlin
             \---com
                 \---ssafy
-                    \---snapstory
+                    \---mmart
 ```
 
 ## env
