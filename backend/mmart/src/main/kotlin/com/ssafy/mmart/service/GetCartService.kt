@@ -117,8 +117,8 @@ class GetCartService @Autowired constructor(
         val sortedItem = mutableListOf<SortItemRes>()
         //placeInfo만 추출해서 넣기
         getCartRes.itemList.forEach { cartItem ->
-            if(!tempList.contains(cartItem.placeInfo)){
-                tempList.add(cartItem.placeInfo)
+            if(!tempList.contains(cartItem.placeInfo.split("-")[0])){
+                tempList.add(cartItem.placeInfo.split("-")[0])
             }
         }
         println(tempList)
@@ -138,10 +138,9 @@ class GetCartService @Autowired constructor(
             //전체 경로 리스트
             val totalList = responseBody?.substring(1, responseBody.length - 2)?.split(",")
             totalList?.forEach { node ->
-                val nodeIdx = getCartRes.itemList.find { it.placeInfo == node }
+                val nodeIdx = getCartRes.itemList.find { it.placeInfo.split("-")[0] == node.split("-")[0] }
                 if (nodeIdx != null) {
-
-                    sortedItem.add(SortItemRes(nodeIdx.itemName, nodeIdx.placeInfo, getCartRes.itemList.count { it.placeInfo == node }))
+                    sortedItem.add(SortItemRes(nodeIdx.itemName, nodeIdx.placeInfo, getCartRes.itemList.count { it.placeInfo.split("-")[0] == node.split("-")[0] }))
                 }
             }
             return GetCartPathRes(itemList = sortedItem, totalPath = totalList!!)
