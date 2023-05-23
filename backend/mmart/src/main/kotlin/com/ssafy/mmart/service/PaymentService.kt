@@ -4,6 +4,7 @@ import com.ssafy.mmart.domain.payment.Payment
 import com.ssafy.mmart.domain.payment.dto.PaymentReq
 import com.ssafy.mmart.domain.paymentDetail.PaymentDetail
 import com.ssafy.mmart.exception.bad_request.BadAccessException
+import com.ssafy.mmart.exception.not_found.GotCartNotFoundException
 import com.ssafy.mmart.exception.not_found.ItemNotFoundException
 import com.ssafy.mmart.exception.not_found.PaymentNotFoundException
 import com.ssafy.mmart.exception.not_found.UserNotFoundException
@@ -38,22 +39,27 @@ class PaymentService @Autowired constructor(
     fun createPayment(userIdx: Int): Payment? {
         val user = userRepository.findByIdOrNull(userIdx) ?: throw UserNotFoundException()
         val gotCartRes = gotCartService.getGotCarts(userIdx)
-        val payment = paymentRepository.save(Payment(user=user, total = gotCartRes.total))
-        for (gotCartItem in gotCartRes.itemList) {
-            val item = itemRepository.findByIdOrNull(gotCartItem.itemIdx) ?: throw ItemNotFoundException()
-            item.inventory -= gotCartItem.quantity
-            val paymentDetail = PaymentDetail(
-                quantity = gotCartItem.quantity,
-                discount = if (gotCartItem.isCoupon) gotCartItem.price - gotCartItem.couponPrice else 0,
-                totalPrice = gotCartItem.couponPrice * gotCartItem.quantity,
-                payment = payment,
-                item = item,
-            )
-            paymentDetailRepository.save(paymentDetail)
+        if (gotCartRes.itemList.size!=0){
+            val payment = paymentRepository.save(Payment(user=user, total = gotCartRes.total))
+            for (gotCartItem in gotCartRes.itemList) {
+                val item = itemRepository.findByIdOrNull(gotCartItem.itemIdx) ?: throw ItemNotFoundException()
+                item.inventory -= gotCartItem.quantity
+                val paymentDetail = PaymentDetail(
+                    quantity = gotCartItem.quantity,
+                    discount = if (gotCartItem.isCoupon) gotCartItem.price - gotCartItem.couponPrice else 0,
+                    totalPrice = gotCartItem.couponPrice * gotCartItem.quantity,
+                    payment = payment,
+                    item = item,
+                )
+                paymentDetailRepository.save(paymentDetail)
+            }
+            gotCartService.deleteGotCarts(userIdx)
+            getCartService.deleteGetCarts(userIdx)
+            return payment
         }
-        gotCartService.deleteGotCarts(userIdx)
-        getCartService.deleteGetCarts(userIdx)
-        return payment
+        else{
+            throw GotCartNotFoundException()
+        }
     }
 
     @Transactional
