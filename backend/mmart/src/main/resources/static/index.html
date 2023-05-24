@@ -146,10 +146,8 @@
             if (index < items.length - 1) itemLists.appendChild(divider)
         })
 
-        setTimeout(5000)
-        weightCheck.style.display = "block"
-        setTimeout(10000)
-        weightCheck.style.display = "none"
+        setTimeout(() => weightCheck.style.display = "block", 5000)
+        setTimeout(() => weightCheck.style.display = "none", 10000)
     }
 
     payBtn.addEventListener("click", e => {
