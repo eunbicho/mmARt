@@ -168,3 +168,8 @@ li {
     -webkit-text-stroke: 2.5px #545454;
     text-shadow: 4px 4px 0 #545454;
 }
+
+#weight-check {
+    position: fixed;
+    width: 400px;
+}

@@ -23,6 +23,8 @@
     </form>
 </div>
 <div id="pay-list">
+    <img id="weight-check" src="/static/weight-check.png" alt="weight check" style="display: none">
+
     <img src="/static/mmart-horizontal.png" alt="mmAR+ pay">
     <div id="pay-list-main">
         <ul id="items">
@@ -83,6 +85,7 @@
     const price2 = document.querySelector("#price2")
     const price3 = document.querySelector("#price3")
     const payBtn = document.querySelector("#go-to-pay")
+    const weightCheck = document.querySelector("#weight-check")
 
     let userIdx = 0
     let gotCartRes = []
@@ -142,6 +145,11 @@
             divider.style.marginInlineStart = "20px"
             if (index < items.length - 1) itemLists.appendChild(divider)
         })
+
+        setTimeout(5000)
+        weightCheck.style.display = "block"
+        setTimeout(10000)
+        weightCheck.style.display = "none"
     }
 
     payBtn.addEventListener("click", e => {
