@@ -3,16 +3,16 @@ apply plugin: 'com.android.library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation fileTree(dir: 'libs', include: ['arcore_client.aar'])
-    implementation fileTree(dir: 'libs',include: ['UnityARCore.aar'])
-    implementation fileTree(dir: 'libs',include: ['ARPresto.aar'])
-    implementation fileTree(dir: 'libs',include: ['unityandroidpermissions.aar'])
+    implementation(name: 'arcore_client', ext:'aar')
+    implementation(name: 'UnityARCore', ext:'aar')
+    implementation(name: 'ARPresto', ext:'aar')
+    implementation(name: 'unityandroidpermissions', ext:'aar')
 
 }
 
 android {
     compileSdkVersion 32
-    buildToolsVersion '33.0.2'
+    buildToolsVersion '30.0.2'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -99,7 +99,6 @@ android {
             jni.srcDirs = ["src/main/Il2CppOutputProject"]
         }
     }
-    ndkVersion '21.3.6528147'
 }
 
 
