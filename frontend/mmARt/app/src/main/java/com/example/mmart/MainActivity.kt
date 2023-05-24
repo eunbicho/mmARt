@@ -47,9 +47,6 @@ import kotlinx.coroutines.async
 lateinit var getResult: ActivityResultLauncher<Intent>
 var pageCode by mutableStateOf(0) // <- this line
 class MainActivity : ComponentActivity() {
-    fun a(){
-//        startActivity(Intent(this, UnityPlayerActivity::class.java))
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -57,17 +54,7 @@ class MainActivity : ComponentActivity() {
                 pageCode= it.data?.getStringExtra("pageCode")?.toInt() ?: 0
             }
         }
-//        val intent = Intent(this, UnityPlayerActivity::class.java)
 
-//        Button(onClick = {
-////                navController.navigate("unity")
-////                Intent test = new Intent(this, UnityPlayerActivity::class.java)
-////                startActivity(Intent(this, UnityPlayerActivity::class.java))
-//        }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
-
-//        findViewById<MaterialButton>(R.id.button).setOnClickListener {
-
-//        }
         setContent {
             MmARtTheme {
                 val navController = rememberNavController()
@@ -191,8 +178,6 @@ fun BackOnPressed() {
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter") // Scaffold의 padding value 사용 안 할 때
 @Composable
 fun Main(navController: NavController) {
-//    val b = MainActivity()
-//    val mContext = LocalContext.current
 
     var isLoading1: Boolean by remember { mutableStateOf(true) }
     var isLoading2: Boolean by remember { mutableStateOf(true) }
@@ -220,7 +205,7 @@ fun Main(navController: NavController) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
+                        .padding(20.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
 
@@ -240,7 +225,7 @@ fun Main(navController: NavController) {
                             .height(30.dp)
                     )
                 }
-                Spacer(modifier = Modifier.height(35.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 // 검색
                 searchBar(navController)
