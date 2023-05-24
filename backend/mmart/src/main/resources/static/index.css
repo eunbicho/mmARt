@@ -172,4 +172,6 @@ li {
 #weight-check {
     position: fixed;
     width: 400px;
+    align-self: center;
+    top: 300px;
 }
