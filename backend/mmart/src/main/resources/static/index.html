@@ -23,7 +23,7 @@
     </form>
 </div>
 <div id="pay-list">
-    <img id="weight-check" src="/static/weight-check.png" alt="weight check" style="display: none">
+    <img id="weight-check" src="/static/weight-check.png" alt="weight check">
 
     <img src="/static/mmart-horizontal.png" alt="mmAR+ pay">
     <div id="pay-list-main">
@@ -86,6 +86,7 @@
     const price3 = document.querySelector("#price3")
     const payBtn = document.querySelector("#go-to-pay")
     const weightCheck = document.querySelector("#weight-check")
+    weightCheck.style.display = "none"
 
     let userIdx = 0
     let gotCartRes = []
