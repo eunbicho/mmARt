@@ -4,7 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,6 +16,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,11 +32,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.example.mmart.ui.theme.*
 import kotlinx.coroutines.async
@@ -40,9 +47,6 @@ import kotlinx.coroutines.async
 lateinit var getResult: ActivityResultLauncher<Intent>
 var pageCode by mutableStateOf(0) // <- this line
 class MainActivity : ComponentActivity() {
-    fun a(){
-//        startActivity(Intent(this, UnityPlayerActivity::class.java))
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -50,17 +54,7 @@ class MainActivity : ComponentActivity() {
                 pageCode= it.data?.getStringExtra("pageCode")?.toInt() ?: 0
             }
         }
-//        val intent = Intent(this, UnityPlayerActivity::class.java)
 
-//        Button(onClick = {
-////                navController.navigate("unity")
-////                Intent test = new Intent(this, UnityPlayerActivity::class.java)
-////                startActivity(Intent(this, UnityPlayerActivity::class.java))
-//        }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
-
-//        findViewById<MaterialButton>(R.id.button).setOnClickListener {
-
-//        }
         setContent {
             MmARtTheme {
                 val navController = rememberNavController()
@@ -163,20 +157,38 @@ class MainActivity : ComponentActivity() {
 // 유저 아이디
 var userId = 0
 
+// 뒤로 가기 두 번 눌렀을 때 앱 종료
+@Composable
+fun BackOnPressed() {
+    val context = LocalContext.current
+    var backPressedTime = 0L
+
+    BackHandler() {
+        if(System.currentTimeMillis() - backPressedTime >= 1500L) {
+            backPressedTime = System.currentTimeMillis()
+            Toast.makeText(context, "한 번 더 누르시면 앱이 종료됩니다.", Toast.LENGTH_SHORT).show()
+        } else {
+            // 앱 종료
+            (context as Activity).finish()
+        }
+
+    }
+}
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter") // Scaffold의 padding value 사용 안 할 때
 @Composable
 fun Main(navController: NavController) {
-//    val b = MainActivity()
-//    val mContext = LocalContext.current
 
     var isLoading1: Boolean by remember { mutableStateOf(true) }
     var isLoading2: Boolean by remember { mutableStateOf(true) }
+    var isLoading3: Boolean by remember { mutableStateOf(true) }
 
     // 카테고리 별 상품보기
     fun category(categoryId: Int){
         navController.navigate("category/$categoryId")
     }
 
+    BackOnPressed()
     Scaffold(
         modifier = Modifier.background(Vivid_blue),
         content = {
@@ -191,7 +203,9 @@ fun Main(navController: NavController) {
             Column() {
                 // 상단 로고, 지점 표시
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
 
@@ -211,7 +225,7 @@ fun Main(navController: NavController) {
                             .height(30.dp)
                     )
                 }
-                Spacer(modifier = Modifier.height(35.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 // 검색
                 searchBar(navController)
@@ -219,7 +233,7 @@ fun Main(navController: NavController) {
                 // 카테고리, 최근/자주 구매
                 Column(
                     modifier = Modifier
-                        .padding(20.dp, 10.dp, 20.dp, 100.dp)
+                        .padding(20.dp, 10.dp, 20.dp, 110.dp)
                         .verticalScroll(rememberScrollState()),
                 ) {
                     // 카테고리 부분
@@ -324,14 +338,6 @@ fun Main(navController: NavController) {
                             }
                         }
                     }
-    //            Button(onClick = {
-    //                             mContext.startActivity(Intent(mContext, UnityPlayerActivity::class.java))
-    //                b.a()
-    //                navController.navigate("unity")
-    //                Intent test = new Intent(this, UnityPlayerActivity::class.java)Intent test = new Intent(this, UnityPlayerActivity::class.java)
-    //                startActivity(Intent(this, UnityPlayerActivity::class.java))
-    //            }, modifier = Modifier.height(50.dp)){ Text(text = "유니티테스트") }
-    //          Button(onClick = { navController.navigate("unity") }){ Text(text = "유니티테스트") }
 
                     val api = APIS.create()
                     val coroutineScope = rememberCoroutineScope()
@@ -339,11 +345,13 @@ fun Main(navController: NavController) {
                     // 아이템 정보
                     var recentItems: List<ItemInfo>? by remember { mutableStateOf(null) }
                     var frequentItems: List<ItemInfo>? by remember { mutableStateOf(null) }
+                    var discountItems: List<ItemInfo>? by remember { mutableStateOf(null) }
 
                     LaunchedEffect(true) {
                         try {
                             recentItems = coroutineScope.async { api.getRecentItems(userId) }.await().result
                             frequentItems = coroutineScope.async { api.getFrequentItems(userId) }.await().result
+                            discountItems = coroutineScope.async { api.getDiscountItems(userId) }.await().result
                         } catch (e: Exception){
                             println("메인페이지 아이템 조회 에러----------")
                             e.printStackTrace()
@@ -356,26 +364,32 @@ fun Main(navController: NavController) {
                     if(recentItems!=null){
                         if(recentItems!!.isEmpty()){
                             isLoading1 = false
-                            Text("최근 구매 상품이 없습니다", modifier = Modifier.padding(vertical=40.dp).fillMaxWidth(), textAlign = TextAlign.Center)
+                            Text("최근 구매 상품이 없습니다", modifier = Modifier
+                                .padding(vertical = 50.dp)
+                                .fillMaxWidth(), textAlign = TextAlign.Center)
                         } else {
                             LazyRow(){
                                 items(recentItems!!){
                                         item ->
                                     Column(
                                         modifier = Modifier
-                                            .padding(10.dp)
-                                            .widthIn(max = 80.dp)
-                                            .clickable { navController.navigate("item/${item.itemIdx}") }
+                                            .padding(7.dp)
+                                            .width(100.dp)
+                                            .clickable { navController.navigate("item/${item.itemIdx}") },
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ){
                                         AsyncImage(
-                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
+                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
                                             contentDescription = "상품 썸네일",
                                             onSuccess = {isLoading1 = false},
                                             modifier = Modifier
                                                 .fillMaxSize()
                                                 .aspectRatio(1f)
+
                                         )
-                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top=5.dp))
+                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, fontSize = 12.sp, modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 5.dp))
                                     }
                                 }
                             }
@@ -387,25 +401,70 @@ fun Main(navController: NavController) {
                     if(frequentItems!=null){
                         if(frequentItems!!.isEmpty()){
                             isLoading2 = false
-                            Text("자주 구매 상품이 없습니다", modifier = Modifier.padding(vertical=40.dp).fillMaxWidth(), textAlign = TextAlign.Center)
+                            Text("자주 구매 상품이 없습니다", modifier = Modifier
+                                .padding(vertical = 50.dp)
+                                .fillMaxWidth(), textAlign = TextAlign.Center)
                         } else {
                             LazyRow(){
                                 items(frequentItems!!){
                                         item ->
                                     Column(
                                         modifier = Modifier
-                                            .padding(10.dp)
-                                            .widthIn(max = 80.dp)
-                                            .clickable { navController.navigate("item/${item.itemIdx}") }
+                                            .padding(7.dp)
+                                            .width(100.dp)
+                                            .clickable { navController.navigate("item/${item.itemIdx}") },
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ){
                                         AsyncImage(
-                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
+                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
                                             contentDescription = "상품 썸네일",
-                                            onSuccess = {isLoading2 = false}
-                                        )
-                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top=5.dp))
-                                    }
+                                            onSuccess = {isLoading2 = false},
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .aspectRatio(1f)
 
+                                        )
+                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, fontSize = 12.sp, modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 5.dp))
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // 할인 상품
+                    Text("할인 상품", fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(top=20.dp))
+                    if(discountItems!=null){
+                        if(discountItems!!.isEmpty()){
+                            isLoading3 = false
+                            Text("할인 중인 상품이 없습니다", modifier = Modifier
+                                .padding(vertical = 50.dp)
+                                .fillMaxWidth(), textAlign = TextAlign.Center)
+                        } else {
+                            LazyRow(){
+                                items(discountItems!!){
+                                        item ->
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(7.dp)
+                                            .width(100.dp)
+                                            .clickable { navController.navigate("item/${item.itemIdx}") },
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ){
+                                        AsyncImage(
+                                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
+                                            contentDescription = "상품 썸네일",
+                                            onSuccess = {isLoading3 = false},
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .aspectRatio(1f)
+
+                                        )
+                                        Text(item.itemName, overflow = TextOverflow.Ellipsis, maxLines = 1, textAlign = TextAlign.Center, fontSize = 12.sp, modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 5.dp))
+                                    }
                                 }
                             }
                         }
@@ -449,14 +508,7 @@ fun Main(navController: NavController) {
             }
         }
     )
-    if(isLoading1 || isLoading2) {
+    if(isLoading1 || isLoading2 || isLoading3) {
         loadingView()
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainPreview(){
-    val navController = rememberNavController()
-    Main(navController = navController)
 }
