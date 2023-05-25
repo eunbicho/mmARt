@@ -55,7 +55,6 @@ fun Login(navController: NavController){
     var password: String by remember{ mutableStateOf("") }
     var isWrong: Boolean by remember { mutableStateOf(false) }
 
-
     fun login(){
         val body = mapOf(
             "email" to id,
@@ -81,6 +80,7 @@ fun Login(navController: NavController){
         }
     }
 
+    BackOnPressed()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
