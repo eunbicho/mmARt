@@ -1,0 +1,140 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    xmlns:tools="http://schemas.android.com/tools"
+4    package="com.unity3d.player" >
+5
+6    <uses-sdk android:minSdkVersion="24" />
+6-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+7
+8    <uses-feature android:glEsVersion="0x00030000" />
+8-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:17:3-52
+8-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:17:17-49
+9
+10    <uses-permission android:name="android.permission.INTERNET" />
+10-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:18:3-65
+10-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:18:20-62
+11
+12    <uses-feature
+12-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:19:3-88
+13        android:name="android.hardware.touchscreen"
+13-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:19:17-60
+14        android:required="false" />
+14-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:19:61-85
+15    <uses-feature
+15-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:20:3-99
+16        android:name="android.hardware.touchscreen.multitouch"
+16-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:20:17-71
+17        android:required="false" />
+17-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:20:72-96
+18    <uses-feature
+18-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:21:3-108
+19        android:name="android.hardware.touchscreen.multitouch.distinct"
+19-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:21:17-80
+20        android:required="false" />
+20-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:21:81-105
+21
+22    <uses-permission android:name="android.permission.CAMERA" />
+22-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:22:3-63
+22-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:22:20-60
+23
+24    <uses-feature
+24-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:23:3-85
+25        android:name="android.hardware.camera.ar"
+25-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:23:17-58
+26        android:required="true" />
+26-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:23:59-82
+27    <uses-feature
+27-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:24:3-83
+28        android:name="com.google.ar.core.depth"
+28-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:24:17-56
+29        android:required="true" />
+29-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:24:57-80
+30
+31    <application android:extractNativeLibs="true" >
+31-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:2:3-16:17
+31-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:2:16-48
+32        <activity
+32-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:5-7:16
+33            android:name="com.unity3d.player.UnityPlayerActivity"
+33-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:40-93
+34            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
+34-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:205-386
+35            android:exported="true"
+35-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:458-481
+36            android:hardwareAccelerated="false"
+36-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:422-457
+37            android:launchMode="singleTask"
+37-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:173-204
+38            android:process=":unity"
+38-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:15-39
+39            android:resizeableActivity="false"
+39-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:387-421
+40            android:screenOrientation="fullUser"
+40-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:136-172
+41            android:theme="@style/UnityThemeSelector" >
+41-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:94-135
+42            <meta-data
+42-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:5:7-82
+43                android:name="unityplayer.UnityActivity"
+43-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:5:18-58
+44                android:value="true" />
+44-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:5:59-79
+45            <meta-data
+45-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:6:7-78
+46                android:name="android.notch_support"
+46-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:6:18-54
+47                android:value="true" />
+47-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:6:55-75
+48        </activity>
+49
+50        <meta-data
+50-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:8:5-69
+51            android:name="unity.splash-mode"
+51-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:8:16-48
+52            android:value="0" />
+52-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:8:49-66
+53        <meta-data
+53-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:9:5-74
+54            android:name="unity.splash-enable"
+54-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:9:16-50
+55            android:value="True" />
+55-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:9:51-71
+56        <meta-data
+56-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:10:5-78
+57            android:name="unity.launch-fullscreen"
+57-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:10:16-54
+58            android:value="True" />
+58-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:10:55-75
+59        <meta-data
+59-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:11:5-84
+60            android:name="unity.allow-resizable-window"
+60-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:11:16-59
+61            android:value="False" />
+61-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:11:60-81
+62        <meta-data
+62-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:12:5-81
+63            android:name="notch.config"
+63-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:12:16-43
+64            android:value="portrait|landscape" />
+64-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:12:44-78
+65        <meta-data
+65-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:13:5-84
+66            android:name="unity.auto-report-fully-drawn"
+66-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:13:16-60
+67            android:value="true" />
+67-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:13:61-81
+68        <meta-data
+68-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:14:5-88
+69            android:name="unityplayer.SkipPermissionsDialog"
+69-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:14:16-64
+70            android:value="true" />
+70-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:14:65-85
+71        <meta-data
+71-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:15:5-77
+72            android:name="com.google.ar.core"
+72-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:15:16-49
+73            android:value="required" />
+73-->C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:15:50-74
+74    </application>
+75
+76</manifest>
