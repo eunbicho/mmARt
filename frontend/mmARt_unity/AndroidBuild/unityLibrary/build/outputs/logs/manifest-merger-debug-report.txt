@@ -1,0 +1,153 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:1:1-25:12
+INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:1:1-25:12
+INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:1:1-25:12
+	package
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:1:70-98
+		INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+		INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:1:99-145
+	xmlns:android
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:1:11-69
+application
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:2:3-16:17
+	android:extractNativeLibs
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:2:16-48
+activity#com.unity3d.player.UnityPlayerActivity
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:5-7:16
+	android:screenOrientation
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:136-172
+	android:process
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:15-39
+	android:launchMode
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:173-204
+	android:hardwareAccelerated
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:422-457
+	android:exported
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:458-481
+	android:resizeableActivity
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:387-421
+	android:configChanges
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:205-386
+	android:theme
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:94-135
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:3:40-93
+meta-data#unityplayer.UnityActivity
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:5:7-82
+	android:value
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:5:59-79
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:5:18-58
+meta-data#android.notch_support
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:6:7-78
+	android:value
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:6:55-75
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:6:18-54
+meta-data#unity.splash-mode
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:8:5-69
+	android:value
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:8:49-66
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:8:16-48
+meta-data#unity.splash-enable
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:9:5-74
+	android:value
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:9:51-71
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:9:16-50
+meta-data#unity.launch-fullscreen
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:10:5-78
+	android:value
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:10:55-75
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:10:16-54
+meta-data#unity.allow-resizable-window
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:11:5-84
+	android:value
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:11:60-81
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:11:16-59
+meta-data#notch.config
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:12:5-81
+	android:value
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:12:44-78
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:12:16-43
+meta-data#unity.auto-report-fully-drawn
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:13:5-84
+	android:value
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:13:61-81
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:13:16-60
+meta-data#unityplayer.SkipPermissionsDialog
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:14:5-88
+	android:value
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:14:65-85
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:14:16-64
+meta-data#com.google.ar.core
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:15:5-77
+	android:value
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:15:50-74
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:15:16-49
+uses-feature#0x00030000
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:17:3-52
+	android:glEsVersion
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:17:17-49
+uses-permission#android.permission.INTERNET
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:18:3-65
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:18:20-62
+uses-feature#android.hardware.touchscreen
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:19:3-88
+	android:required
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:19:61-85
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:19:17-60
+uses-feature#android.hardware.touchscreen.multitouch
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:20:3-99
+	android:required
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:20:72-96
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:20:17-71
+uses-feature#android.hardware.touchscreen.multitouch.distinct
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:21:3-108
+	android:required
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:21:81-105
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:21:17-80
+uses-permission#android.permission.CAMERA
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:22:3-63
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:22:20-60
+uses-feature#android.hardware.camera.ar
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:23:3-85
+	android:required
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:23:59-82
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:23:17-58
+uses-feature#com.google.ar.core.depth
+ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:24:3-83
+	android:required
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:24:57-80
+	android:name
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml:24:17-56
+uses-sdk
+INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+		INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+		ADDED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
+		INJECTED from C:\ssafy\mmart\S08P31A405\frontend\mmARt_unity\AndroidBuild\unityLibrary\src\main\AndroidManifest.xml
