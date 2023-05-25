@@ -127,37 +127,38 @@ fun SignUp(navController: NavController){
         Image(painter = painterResource(R.drawable.mmart_logo), contentDescription = "로고", modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 30.dp))
 
         // 아이디 입력
-        OutlinedTextField(
-            value = id,
-            onValueChange = { id = it },
-            shape = CircleShape,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                backgroundColor = Color.White,
-                cursorColor = Vivid_blue,
-                trailingIconColor = Dark_gray,
-                focusedBorderColor = Vivid_blue,
-                placeholderColor = Light_gray
-            ),
-            placeholder = {Text("아이디")},
-            singleLine = true,
-            modifier = Modifier.padding(top=10.dp, bottom = 3.dp),
-            trailingIcon = {
-                OutlinedButton(
-                    onClick = { duplicationCheck() },
-                    shape = CircleShape,
-                    modifier = Modifier.padding(end = 10.dp),
-                ) {
-                    Text("중복확인", fontSize = 12.sp, color = Vivid_blue)
+        Column() {
+            OutlinedTextField(
+                value = id,
+                onValueChange = { id = it },
+                shape = CircleShape,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    backgroundColor = Color.White,
+                    cursorColor = Vivid_blue,
+                    trailingIconColor = Dark_gray,
+                    focusedBorderColor = Vivid_blue,
+                    placeholderColor = Light_gray
+                ),
+                placeholder = {Text("아이디")},
+                singleLine = true,
+                modifier = Modifier.padding(top=10.dp, bottom = 3.dp),
+                trailingIcon = {
+                    OutlinedButton(
+                        onClick = { duplicationCheck() },
+                        shape = CircleShape,
+                        modifier = Modifier.padding(end = 10.dp),
+                    ) {
+                        Text("중복확인", fontSize = 12.sp, color = Vivid_blue)
+                    }
                 }
+            )
+            if(isDuplicate){
+                Text("중복 확인을 해주세요.", color = Color.Red, fontSize = 10.sp, textAlign = TextAlign.Start, modifier = Modifier.padding(start = 10.dp))
+            } else {
+                Text("", fontSize = 10.sp)
             }
-        )
-        if(isDuplicate){
-            Text("중복 확인을 해주세요.", color = Color.Red, fontSize = 10.sp, textAlign = TextAlign.Start, modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 60.dp))
-        } else {
-            Text("", fontSize = 10.sp)
         }
+
 
         // 이름 입력
         OutlinedTextField(
@@ -201,7 +202,10 @@ fun SignUp(navController: NavController){
                 onClick = { signUp() },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_blue),
-                modifier = Modifier.fillMaxWidth(0.5f).aspectRatio(2.5f).padding(10.dp)
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .aspectRatio(2.5f)
+                    .padding(10.dp)
             ) {
                 Text("확인", color = Color.White)
             }
@@ -209,7 +213,10 @@ fun SignUp(navController: NavController){
                 onClick = { navController.popBackStack() },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Vivid_yellow),
-                modifier = Modifier.fillMaxWidth(2f).aspectRatio(2.5f).padding(10.dp)
+                modifier = Modifier
+                    .fillMaxWidth(2f)
+                    .aspectRatio(2.5f)
+                    .padding(10.dp)
             ) {
                 Text("취소", color = Color.White)
             }

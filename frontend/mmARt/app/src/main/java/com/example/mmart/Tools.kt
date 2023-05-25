@@ -166,7 +166,10 @@ fun floatingBtn(
                 coroutineScope.launch {
                     listState.animateScrollToItem(index = 0)
                 }},
-            modifier = Modifier.sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
+            modifier = Modifier
+                .sizeIn(60.dp, 60.dp, 80.dp, 80.dp)
+                .clip(CircleShape),
+            backgroundColor = Color.White,
         ) {
             Image(
                 painter = painterResource(R.drawable.top),
@@ -356,7 +359,7 @@ fun items(navController:NavController, items: List<ItemInfo>, loading: (Boolean)
                             .clickable { navController.navigate("item/${item.itemIdx}") }
                     ){
                         AsyncImage(
-                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail.replace("_thumb", "")}",
+                            model = "https://mmart405.s3.ap-northeast-2.amazonaws.com/${item.thumbnail}",
                             contentDescription = "상품 썸네일",
                             modifier = Modifier
                                 .fillMaxSize()
@@ -374,7 +377,7 @@ fun items(navController:NavController, items: List<ItemInfo>, loading: (Boolean)
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text("${item.couponPrice}원", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(5.dp))
-                                    Text("${item.price}", textDecoration = TextDecoration.LineThrough, color = Color.LightGray, fontWeight = FontWeight.Light, fontSize = 15.sp)
+                                    Text("${item.price}", textDecoration = TextDecoration.LineThrough, color = Color.LightGray, fontSize = 13.sp)
                                 }
                             } else{
                                 Text(text = "${item.price}원", fontSize = 20.sp, fontWeight = FontWeight.Bold)
@@ -491,9 +494,10 @@ fun items(navController:NavController, items: List<ItemInfo>, loading: (Boolean)
                     coroutineScope.launch {
                         listState.animateScrollToItem(index = 0)
                     }},
-                backgroundColor = Light_gray,
+                backgroundColor = Color.White,
                 modifier = Modifier
-                    .sizeIn(60.dp, 60.dp, 80.dp, 80.dp),
+                    .sizeIn(60.dp, 60.dp, 80.dp, 80.dp)
+                    .clip(CircleShape),
             ) {
                 Image(
                     painter = painterResource(R.drawable.top),
