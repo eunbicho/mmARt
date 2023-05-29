@@ -78,7 +78,7 @@ fun Payment(navController: NavController){
                 }
             } else {
                 Box(modifier = Modifier.fillMaxSize()){
-                    LazyColumn(state = listState, contentPadding = PaddingValues(bottom=90.dp), modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)){
+                    LazyColumn(state = listState, contentPadding = PaddingValues(bottom=80.dp), modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)){
                         items(payments!!){
                                 payment ->
                             Column (
