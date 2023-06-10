@@ -109,6 +109,24 @@ fun GotCart(navController: NavController) {
         }
     }
 
+    fun goToPayDetail(){
+        coroutineScope.launch{
+            try {
+                val result = api.getPayments(userId)
+                if(result.resultCode == "SUCCESS"){
+                    val paymentIdx = result.result[0].paymentIdx
+                    navController.navigate("payment/${paymentIdx}"){
+                        popUpTo("main") { inclusive = false }
+                    }
+                }
+            } catch (e: Exception) {
+                println("-----goToPayDetail ERROR-----")
+                e.printStackTrace()
+                println("------------------------------")
+            }
+        }
+    }
+
     Column(
         modifier = Modifier.padding(bottom = 20.dp)
     ) {
@@ -502,8 +520,9 @@ fun GotCart(navController: NavController) {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .clickable {
-                                    reload = !reload
-                                    showQrcode = false
+//                                    reload = !reload
+//                                    showQrcode = false
+                                    goToPayDetail()
                                 }
                         ) {
                             Image(

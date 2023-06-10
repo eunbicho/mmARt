@@ -167,7 +167,7 @@ fun floatingBtn(
                     listState.animateScrollToItem(index = 0)
                 }},
             modifier = Modifier
-                .sizeIn(60.dp, 60.dp, 80.dp, 80.dp)
+                .size(60.dp)
                 .clip(CircleShape),
             backgroundColor = Color.White,
         ) {
@@ -203,7 +203,7 @@ fun floatingBtns(
                     listState.animateScrollToItem(index = 0)
                 }},
             modifier = Modifier
-                .sizeIn(60.dp, 60.dp, 80.dp, 80.dp)
+                .size(60.dp)
                 .clip(CircleShape),
             backgroundColor = Color.White,
         ) {
@@ -216,7 +216,7 @@ fun floatingBtns(
         FloatingActionButton(
             onClick = secondEvent,
             modifier = Modifier
-                .sizeIn(60.dp, 60.dp, 80.dp, 80.dp)
+                .size(60.dp)
                 .clip(CircleShape),
             backgroundColor = Color.White,
         ) {
@@ -297,7 +297,7 @@ fun items(navController:NavController, items: List<ItemInfo>, loading: (Boolean)
 
     Box(modifier = Modifier
         .fillMaxSize()) {
-        LazyVerticalGrid(GridCells.Fixed(2), state=listState, contentPadding = PaddingValues(bottom=90.dp)) {
+        LazyVerticalGrid(GridCells.Fixed(2), state=listState, contentPadding = PaddingValues(bottom=75.dp)) {
             // 정렬
             item(span = { GridItemSpan(2) }){
                 Box(modifier = Modifier
@@ -496,7 +496,7 @@ fun items(navController:NavController, items: List<ItemInfo>, loading: (Boolean)
                     }},
                 backgroundColor = Color.White,
                 modifier = Modifier
-                    .sizeIn(60.dp, 60.dp, 80.dp, 80.dp)
+                    .size(60.dp)
                     .clip(CircleShape),
             ) {
                 Image(

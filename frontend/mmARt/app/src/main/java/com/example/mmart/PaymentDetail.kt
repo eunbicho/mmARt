@@ -60,7 +60,7 @@ fun PaymentDetail(navController: NavController, paymentIdx: Int) {
                  LazyColumn (
                      modifier = Modifier.fillMaxWidth().padding(30.dp),
                      state = listState,
-                     contentPadding = PaddingValues(bottom=80.dp),
+                     contentPadding = PaddingValues(bottom=70.dp),
                  ) {
                      item() {
                          Column(

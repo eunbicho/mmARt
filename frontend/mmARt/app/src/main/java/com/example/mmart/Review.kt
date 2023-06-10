@@ -136,7 +136,7 @@ fun Review(navController: NavController) {
             // 작성한 리뷰가 있을 때
             } else {
                 Box(modifier = Modifier.fillMaxSize()) {
-                    LazyColumn(state = listState, contentPadding = PaddingValues(bottom=100.dp)) {
+                    LazyColumn(state = listState, contentPadding = PaddingValues(bottom=90.dp)) {
                         // 정렬
                         item(){
                             Box(modifier = Modifier
