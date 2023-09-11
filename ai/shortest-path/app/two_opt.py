@@ -19,7 +19,8 @@ def distance_calc(distance_matrix, city_tour):
     distance = 0
     for k in range(0, len(city_tour[0])-1):
         m        = k + 1
-        distance = distance + distance_matrix[city_tour[0][k]-1, city_tour[0][m]-1]            
+        # city는 1로 시작하나, 본 프로젝트에서는 0번 인덱스부터 시작하기때문에, -1 제거.
+        distance = distance + distance_matrix[city_tour[0][k], city_tour[0][m]]            
     return distance
 
 ############################################################################
