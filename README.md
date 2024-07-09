@@ -1,25 +1,18 @@
 # 목차
 
-0. **[apk 다운로드 하기](#apk 다운로드 하기)**
 1. **[서비스 소개](#서비스-소개)**
 2. **[기획 배경](#기획-배경)**
-3. **[디자인 컨셉](#디자인-컨셉)**
-4. **[시연 영상](#시연-영상)**
-5. **[기술 스택](#기술-스택)**
-6. **[프로젝트 일정 및 산출물](#프로젝트-일정-및-산출물)**
-7. **[프로젝트 폴더 구조](#프로젝트-폴더-구조)**
-8. **[개발 멤버](#개발-멤버)**
+3. **[시연 화면](#시연-영상)**
+4. **[기술 스택](#기술-스택)**
+5. **[프로젝트 일정 및 산출물](#프로젝트-일정-및-산출물)**
+6. **[프로젝트 폴더 구조](#프로젝트-폴더-구조)**
+7. **[개발 멤버](#개발-멤버)**
 
 ---
 
-# 🚙 apk 다운로드 하기
-https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
+# 🚙 1. 서비스 소개
 
-
-# 🚙 서비스 소개
-
-[![AdventureEveryday](https://img.youtube.com/vi/woY2z9R8p0Y/0.jpg)](https://www.youtube.com/watch?v=woY2z9R8p0Y)
-
+[![AdventureEveryday](https://img.youtube.com/vi/tXu6pf21o6c/0.jpg)](https://youtu.be/tXu6pf21o6c)
 
 
 
@@ -32,7 +25,7 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
 
 - 오프라인 대형마트에서 효율적인 쇼핑을 원하는 사람들
 
-# 🚙 기획 배경
+# 🚙 2. 기획 배경
 
 ### 🔹 배경
 오프라인 대형마트 쇼핑에서의 불편함 발견
@@ -48,7 +41,6 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
 3. 사용자의 편의를 위해 모든 사용자들이 일반적으로 가지고 있는 핸드폰 카메라를 이용하여 장바구니에 들어간 품목들의 바코드를 인식하여 나갈 때 수동적인 결제없이 자동 결제가 가능하다.
 
 
-
 ### 🔹 의의
 
 - 대형마트에서 물건을 간편하게 찾고, 찾은 물건의 최저가와 리뷰를 편리하게 확인하고 결제할 수 있어 효율적인 쇼핑이 가능하다.
@@ -56,26 +48,25 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
 
 
 
-# 🚙 시연 화면 (추가예정)
+# 🚙 3. 시연 화면 (추가예정)
 
 
 
 
-# 🚙 기술 스택
+# 🚙 4. 기술 스택
 
 
-### [AI]
+### 🔹 [AI]
 
-- 
 
-### [FE]
+### 🔹 [FE]
 
 - Kotlin
 - Unity
 - Android
 - Jetpack Compose
 
-### [BE]
+### 🔹 [BE]
 
 - Java
 - Spring Boot
@@ -83,17 +74,17 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
 - Python
 - Tensorflow
 
-### [DB]
+### 🔹 [DB]
 - MySQL
 - Redis
 - S3
 
-### [Infra]
+### 🔹 [Infra]
 - Docker
 - Jenkins
 - K8s
 
-### [ETC]
+### 🔹 [ETC]
 
 - Jira
 - GitLab
@@ -101,19 +92,16 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
 - Mattermost
 - Webex
 
-# 🚙 프로젝트 일정 및 산출물
+# 🚙 5. 프로젝트 일정 및 산출물
 
-## 프로젝트 일정
+### 🔹 프로젝트 일정
 
 ![일정표](./image/milestone.png)
 
-## 프로젝트 진행
 
-### 1. Git flow
+### 🔹 Git 컨벤션
 
----
-
-### 브랜치 전략
+#### - (1) 브랜치 전략
 
 - master
     - 배포 가능한 상태의 결과물
@@ -127,7 +115,7 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
         - ex. fe/feature/`function`
         - ex. be/feature/`function`
 
-### 커밋 컨벤션
+#### - (2) 커밋 컨벤션
 
 - 구조
     - 태그와 제목으로 구성
@@ -153,17 +141,15 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
     - 한글로 작성하며, 영어로 시작하는 경우 대문자로 시작
     - 마침표 및 특수기호는 사용하지 않음
 
-### 2. Jira
+### 🔹 Jira 컨벤션
 
----
-
-### Epic
+#### - (1) Epic
 
 - 큰 파트 생성
 - 기획 / 화면설계 / DB / 개발 / 배포 / 테스트 / 학습
     - [ ]  개발 세분화 내용 반영
 
-### Story
+#### - (2) Story
 
 - 회원에게 제공되는 서비스/기능 목록
 - 네이밍 규칙
@@ -171,7 +157,7 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
     - ex. 회원가입, 로그인, 게시물 작성
 - Story Point는 0
 
-### Task
+#### - (3) Task
 
 - 해당 스토리에 관련한 상세 구현 사항
 - 네이밍 규칙
@@ -181,27 +167,27 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
 - Story Point는 4 이하로 작성
 - SubTask 작성 대신 확인 가능한 Task로 세분화하여 작성
 
-## 프로젝트 산출물
+### 🔹 프로젝트 산출물
 
-### 1. Figma
+#### - (1) Figma
 
 ![MOCKUP](./image/figma.png)
 
-### 2. ERD
+#### - (2) ERD
 
 ![ERD](./image/erd.png)
 
-### 3. API 문서
+#### - (3) API 문서
 
 [SWAGGER](https://j8a401.p.ssafy.io/swagger-ui/index.html#/)
 
-### 4. API 명세서
+#### - (4) API 명세서
 
 ![API](./image/api.png)
 
-# 🚙 프로젝트 폴더 구조
+# 🚙 6. 프로젝트 폴더 구조
 
-## AI
+### 🔹 AI
 
 ```bash
 +---sentiment_analysis
@@ -218,7 +204,7 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
         \---__pycache__
 ```
 
-## BE
+### 🔹 BE
 
 ```bash
 +---.gradle
@@ -288,7 +274,7 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
                     \---mmart
 ```
 
-## env
+### 🔹 env
 
 - Version Control
     - GitLab
@@ -340,86 +326,86 @@ https://mmart405.s3.ap-northeast-2.amazonaws.com/apk/mmARt_1.0.0.apk
     - Spring Boot Gradle(Kotlin) 2.7.11
         - Spring Data JPA
         - Spring Data Redis
-
-## install backend
-
-1. install Docker 23.0.4
-
-2. install Docker Compose 2.17.2
-
-3. git clone
-    
-    ```bash
-    git clone https://lab.ssafy.com/s08-ai-image-sub2/S08P22A401.git
-    ```
-    
-4. build spring boot project in dir("backend//mmart")
-    
-    ```bash
-    chmod +x gradlew
-    ./gradlew clean build -x test
-    ```
-5. docker-compose up in dir("backend/mmart")
-    
-    ```bash
-    docker-compose up -d --build
-    ```
-    
-## properties
-
-1. Spring Boot properties in dir("backend/mmart/src/main/resources")
-
-    ```bash
-    vim application.properties
-    ```
-    ```
-    spring.datasource.username={MYSQL_USERNAME}
-    spring.datasource.password={MYSQL_PASSWORD}
-    spring.datasource.url=jdbc:mysql://{MYSQL_CONTAINER_NAME}:{MYSQL_PORT}/{MYSQL_DATABASE_NAME}?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
-    spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-    spring.jpa.hibernate.ddl-auto=update
-
-    spring.jpa.generate-ddl=true
-    spring.jpa.show-sql=true
-
-    spring.mvc.pathmatch.matching-strategy=ant_path_matcher
-    spring.thymeleaf.prefix=classpath:static
-    spring.thymeleaf.check-template-location= true
-    spring.thymeleaf.suffix= .html
-    spring.thymeleaf.mode= HTML
-    spring.thymeleaf.cache= false
-
-    cloud.aws.s3.bucket={S3_BUCKET_NAME}
-    cloud.aws.credentials.access-key={S3_ACCESS_KEY}
-    cloud.aws.credentials.secret-key={S3_SECRET_KEY}
-    cloud.aws.region.static={S3_REGION}
-    cloud.aws.region.auto=false
-    cloud.aws.stack.auto=false
-
-    aws-cloud.aws.s3.bucket.url= {S3_BUCKET_URL}
-    spring.servlet.multipart.maxFileSize=10MB
-    spring.servlet.multipart.maxRequestSize=10MB
-
-    logging.level.com.amazonaws.util.EC2MetadataUtils= error
-
-    spring.cache.type=redis
-
-    spring.cache.redis.time-to-live=43200
-    spring.cache.redis.cache-null-values=true
-    spring.redis.host={REDIS_CONTAINER_NAME}
-    spring.redis.port={REDIS_PORT}
-    ```
     
 
-## etc
+### 🔹 etc
 
-### AWS S3
+<details>
+    <summary><b>install backend</b></summary>
+         <div>
+        - (1) Install Docker 23.0.4<br>
+        - (2) Install Docker Compose 2.17.2<br>
+        - (3) Git clone<br>
+            <pre>
+                <code>
+                    git clone https://lab.ssafy.com/s08-ai-image-sub2/S08P22A401.git
+                </code>
+            </pre>
+        - (4) Build Spring Boot project in dir ("backend/mmart")<br>
+              <pre>
+                  <code>
+                      chmod +x gradlew
+                      ./gradlew clean build -x test
+                  </code>
+              </pre>
+        - (5) docker-compose up in dir("backend/mmart")<br>
+             <pre>
+                 <code>
+                     docker-compose up -d --build
+             </pre>
+    </div>
+</details>
+<details>
+    <summary><b>properties</b></summary>
+    <div>
+        - (1) Spring Boot properties in dir("backend/mmart/src/main/resources")<br>
+        <pre><code>
+vim application.properties
+spring.datasource.username={MYSQL_USERNAME}
+spring.datasource.password={MYSQL_PASSWORD}
+spring.datasource.url=jdbc:mysql://{MYSQL_CONTAINER_NAME}:{MYSQL_PORT}/{MYSQL_DATABASE_NAME}?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.hibernate.ddl-auto=update
 
+spring.jpa.generate-ddl=true
+spring.jpa.show-sql=true
+
+spring.mvc.pathmatch.matching-strategy=ant_path_matcher
+spring.thymeleaf.prefix=classpath:static
+spring.thymeleaf.check-template-location=true
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.mode=HTML
+spring.thymeleaf.cache=false
+
+cloud.aws.s3.bucket={S3_BUCKET_NAME}
+cloud.aws.credentials.access-key={S3_ACCESS_KEY}
+cloud.aws.credentials.secret-key={S3_SECRET_KEY}
+cloud.aws.region.static={S3_REGION}
+cloud.aws.region.auto=false
+cloud.aws.stack.auto=false
+
+aws-cloud.aws.s3.bucket.url={S3_BUCKET_URL}
+spring.servlet.multipart.maxFileSize=10MB
+spring.servlet.multipart.maxRequestSize=10MB
+
+logging.level.com.amazonaws.util.EC2MetadataUtils=error
+
+spring.cache.type=redis
+
+spring.cache.redis.time-to-live=43200
+spring.cache.redis.cache-null-values=true
+spring.redis.host={REDIS_CONTAINER_NAME}
+spring.redis.port={REDIS_PORT}
+        </code></pre>
+    </div>
+</details>
+
+
+#### AWS S3
 [클라우드 스토리지 | 웹 스토리지| Amazon Web Services](https://aws.amazon.com/ko/s3/?did=ap_card&trk=ap_card)
 
 
-
-# 🚙 개발 멤버
+# 🚙 7. 개발 멤버
 ![TEAM](./image/team.png)
 ## [AI]
 - 김현호 : AI 모델 학습 및 배포, 데이터전처리
