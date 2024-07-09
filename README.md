@@ -47,8 +47,7 @@
 - 기존 카트에 앱을 설치한 핸드폰을 거치하면, 큰 비용을 들이지 않고 서비스 적용이 가능하다.
 
 
-
-# 🚙 3. 시연 화면 (추가예정)
+# 🚙 3. 시연 화면
 
 
 
@@ -332,92 +331,85 @@
 
 <details>
     <summary><b>install backend</b></summary>
-         <div>
-        - (1) Install Docker 23.0.4<br>
-        - (2) Install Docker Compose 2.17.2<br>
-        - (3) Git clone<br>
-            <pre>
-                <code>
+
+        - (1) Install Docker 23.0.4
+        - (2) Install Docker Compose 2.17.2
+        - (3) Git clone
+        
                     git clone https://lab.ssafy.com/s08-ai-image-sub2/S08P22A401.git
-                </code>
-            </pre>
-        - (4) Build Spring Boot project in dir ("backend/mmart")<br>
-              <pre>
-                  <code>
+      
+        - (4) Build Spring Boot project in dir ("backend/mmart")
+           
                       chmod +x gradlew
                       ./gradlew clean build -x test
-                  </code>
-              </pre>
+            
         - (5) docker-compose up in dir("backend/mmart")<br>
-             <pre>
-                 <code>
+         
                      docker-compose up -d --build
-             </pre>
-    </div>
 </details>
 <details>
     <summary><b>properties</b></summary>
-    <div>
-        - (1) Spring Boot properties in dir("backend/mmart/src/main/resources")<br>
-        <pre><code>
-vim application.properties
-spring.datasource.username={MYSQL_USERNAME}
-spring.datasource.password={MYSQL_PASSWORD}
-spring.datasource.url=jdbc:mysql://{MYSQL_CONTAINER_NAME}:{MYSQL_PORT}/{MYSQL_DATABASE_NAME}?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.jpa.hibernate.ddl-auto=update
+    
+        - (1) Spring Boot properties in dir("backend/mmart/src/main/resources")
+      
+        vim application.properties
+        spring.datasource.username={MYSQL_USERNAME}
+        spring.datasource.password={MYSQL_PASSWORD}
+        spring.datasource.url=jdbc:mysql://{MYSQL_CONTAINER_NAME}:{MYSQL_PORT}/{MYSQL_DATABASE_NAME}?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+        spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+        spring.jpa.hibernate.ddl-auto=update
 
-spring.jpa.generate-ddl=true
-spring.jpa.show-sql=true
+        spring.jpa.generate-ddl=true
+        spring.jpa.show-sql=true
 
-spring.mvc.pathmatch.matching-strategy=ant_path_matcher
-spring.thymeleaf.prefix=classpath:static
-spring.thymeleaf.check-template-location=true
-spring.thymeleaf.suffix=.html
-spring.thymeleaf.mode=HTML
-spring.thymeleaf.cache=false
+        spring.mvc.pathmatch.matching-strategy=ant_path_matcher
+        spring.thymeleaf.prefix=classpath:static
+        spring.thymeleaf.check-template-location=true
+        spring.thymeleaf.suffix=.html
+        spring.thymeleaf.mode=HTML
+        spring.thymeleaf.cache=false
+        
+        cloud.aws.s3.bucket={S3_BUCKET_NAME}
+        cloud.aws.credentials.access-key={S3_ACCESS_KEY}
+        cloud.aws.credentials.secret-key={S3_SECRET_KEY}
+        cloud.aws.region.static={S3_REGION}
+        cloud.aws.region.auto=false
+        cloud.aws.stack.auto=false
+        
+        aws-cloud.aws.s3.bucket.url={S3_BUCKET_URL}
+        spring.servlet.multipart.maxFileSize=10MB
+        spring.servlet.multipart.maxRequestSize=10MB
+        
+        logging.level.com.amazonaws.util.EC2MetadataUtils=error
+        
+        spring.cache.type=redis
+        
+        spring.cache.redis.time-to-live=43200
+        spring.cache.redis.cache-null-values=true
+        spring.redis.host={REDIS_CONTAINER_NAME}
+        spring.redis.port={REDIS_PORT}
 
-cloud.aws.s3.bucket={S3_BUCKET_NAME}
-cloud.aws.credentials.access-key={S3_ACCESS_KEY}
-cloud.aws.credentials.secret-key={S3_SECRET_KEY}
-cloud.aws.region.static={S3_REGION}
-cloud.aws.region.auto=false
-cloud.aws.stack.auto=false
-
-aws-cloud.aws.s3.bucket.url={S3_BUCKET_URL}
-spring.servlet.multipart.maxFileSize=10MB
-spring.servlet.multipart.maxRequestSize=10MB
-
-logging.level.com.amazonaws.util.EC2MetadataUtils=error
-
-spring.cache.type=redis
-
-spring.cache.redis.time-to-live=43200
-spring.cache.redis.cache-null-values=true
-spring.redis.host={REDIS_CONTAINER_NAME}
-spring.redis.port={REDIS_PORT}
-        </code></pre>
-    </div>
 </details>
 
-
-#### AWS S3
-[클라우드 스토리지 | 웹 스토리지| Amazon Web Services](https://aws.amazon.com/ko/s3/?did=ap_card&trk=ap_card)
+<details>
+    <summary><b>AWS S3</b></summary>
+    <ul><li>[클라우드 스토리지 | 웹 스토리지| Amazon Web Services] (https://aws.amazon.com/ko/s3/?did=ap_card&trk=ap_card)</li></div>
+</details>
 
 
 # 🚙 7. 개발 멤버
 ![TEAM](./image/team.png)
-## [AI]
+### [AI]
 - 김현호 : AI 모델 학습 및 배포, 데이터전처리
 
-## [FE]
+### [FE]
 - 유지원 : FE, UI/UX
 - 조은비 : AR, UI/UX
 
-## [Infra]
+### [Infra]
 - 권택윤
 
-## [BE]
+### [BE]
 - 안예나 : BE, REST API, DB, 디자인
 - 김명호 : 팀장, BE, CI/CD, DB, FE(AR)
 
