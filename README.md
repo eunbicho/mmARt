@@ -186,9 +186,11 @@
 [SWAGGER](https://j8a401.p.ssafy.io/swagger-ui/index.html#/)
 
 #### - (5) API 명세서
-
-![API](./image/api1.png)
-![API](./image/api2.png)
+<details>
+    <summary><b>API 문서 이미지</b></summary>
+    <img src="./image/api1.png"/>
+    <img src="./image/api2.png"/>
+</details>
 
 # 프로젝트 폴더 구조
 
