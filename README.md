@@ -61,7 +61,7 @@
 |:------:|:------:|:------:|
 |<img src="./image/gifs/cart-add.gif" width="250" height="530"/>|<img src="./image/gifs/cart-mod.gif" width="250" height="530"/>|<img src="./image/gifs/cart-del.gif" width="250" height="530"/>|
 
-|AR네비게이션|
+|AR네비게이션(2배속)|
 |:------:|
 |<img src="./image/gifs/nav.gif" width="250" height="530"/>|
 
@@ -118,6 +118,24 @@
 ### 🔹 프로젝트 일정
 
 ![일정표](./image/milestone.png)
+
+### 🔹 프로젝트 산출물
+
+#### - (1) Figma
+
+![MOCKUP](./image/figma.png)
+
+#### - (2) ERD
+
+![ERD](./image/erd.png)
+
+#### - (3) API 문서
+
+[SWAGGER](https://j8a401.p.ssafy.io/swagger-ui/index.html#/)
+
+#### - (4) API 명세서
+
+![API](./image/api.png)
 
 
 ### 🔹 Git 컨벤션
@@ -188,23 +206,6 @@
 - Story Point는 4 이하로 작성
 - SubTask 작성 대신 확인 가능한 Task로 세분화하여 작성
 
-### 🔹 프로젝트 산출물
-
-#### - (1) Figma
-
-![MOCKUP](./image/figma.png)
-
-#### - (2) ERD
-
-![ERD](./image/erd.png)
-
-#### - (3) API 문서
-
-[SWAGGER](https://j8a401.p.ssafy.io/swagger-ui/index.html#/)
-
-#### - (4) API 명세서
-
-![API](./image/api.png)
 
 # 🚙 6. 프로젝트 폴더 구조
 
