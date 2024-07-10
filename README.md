@@ -173,18 +173,22 @@
 
 ![MOCKUP](./image/figma.png)
 
-#### - (2) ERD
+#### - (2) 실내 네비게이션 맵 제작(실제 공간 측정)
+
+![MAP](./image/map.png)
+
+#### - (3) ERD
 
 ![ERD](./image/erd.png)
 
-#### - (3) API 문서 (서버 만료)
+#### - (4) API 문서 (서버 만료)
 
 [SWAGGER](https://j8a401.p.ssafy.io/swagger-ui/index.html#/)
 
-#### - (4) API 명세서
+#### - (5) API 명세서
 
-![API](./image/api.png)
-
+![API](./image/api1.png)
+![API](./image/api2.png)
 
 # 프로젝트 폴더 구조
 
