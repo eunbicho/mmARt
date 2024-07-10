@@ -69,7 +69,7 @@
 |:------:|:------:|:------:|:------:|
 |<img src="./image/gifs/list-add.gif" width="250" height="530"/>|<img src="./image/gifs/list-mod.gif" width="250" height="530"/>|<img src="./image/gifs/list-del.gif" width="250" height="530"/>|<img src="./image/gifs/list-pay.gif" width="250" height="530"/>|
 
-|리뷰-작성 및 긍부정분류|리뷰-수정|리뷰-삭제|
+|리뷰-작성 및 긍/부정분류|리뷰-수정|리뷰-삭제|
 |:------:|:------:|:------:|
 |<img src="./image/gifs/review-add.gif" width="250" height="530"/>|<img src="./image/gifs/review-mod.gif" width="250" height="530"/>|<img src="./image/gifs/review-del.gif" width="250" height="530"/>|
 
