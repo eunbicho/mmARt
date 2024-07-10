@@ -105,13 +105,58 @@
 - Jenkins
 - K8s
 
-### 🔹 [ETC]
+### 🔹 [개발환경 및 협업툴]
 
-- Jira
-- GitLab
-- Notion
-- Mattermost
-- Webex
+- Version Control
+    - GitLab
+- Agile Tool
+    - Jira
+- Communication
+    - Mattermost
+    - Webex
+    - Notion
+- API Documentation
+    - Swagger UI
+- OS
+    - Windows 10
+- UI/UX
+    - Figma
+- IDE
+    - Visual Studio Code 1.75
+    - Android Studio 2022.1.1
+    - Intellij IDEA 2022.3.1
+    - Google Colab
+- DB
+    - MySQL 8
+    - Redis 7
+    - Elasticsearch 7.16.1
+    - AWS S3
+- Server
+    - AWS EC2
+        - Ubuntu 20.04 LTS
+        - Docker 23.0.4
+        - Docker Compose 2.17.2
+        - Jenkins 2.387.1
+    - GCP GKE
+        - client 1.27.1
+        - server 1.24.10-gke.2300
+        - helm 3.9.3
+- WAS
+    - Apache Tomcat 9.0.71
+- AI
+    - Python 3.9
+    - TensorFlow 2.12.0
+    - FastAPI 0.95.0
+- FE
+    - Unity 2021.3.22f1
+    - Kotlin 1.8.20
+    - Jetpack Compose 1.2.0
+- BE
+    - OpenJDK 11
+    - Kotlin 1.8.20
+    - Spring Boot Gradle(Kotlin) 2.7.11
+        - Spring Data JPA
+        - Spring Data Redis
 
 # 프로젝트 일정 및 산출물
 
@@ -226,59 +271,6 @@
                 \---ssafy
                     \---mmart
 ```
-
-### 🔹 env
-
-- Version Control
-    - GitLab
-- Agile Tool
-    - Jira
-- Communication
-    - Mattermost
-    - Webex
-    - Notion
-- API Documentation
-    - Swagger UI
-- OS
-    - Windows 10
-- UI/UX
-    - Figma
-- IDE
-    - Visual Studio Code 1.75
-    - Android Studio 2022.1.1
-    - Intellij IDEA 2022.3.1
-    - Google Colab
-- DB
-    - MySQL 8
-    - Redis 7
-    - Elasticsearch 7.16.1
-    - AWS S3
-- Server
-    - AWS EC2
-        - Ubuntu 20.04 LTS
-        - Docker 23.0.4
-        - Docker Compose 2.17.2
-        - Jenkins 2.387.1
-    - GCP GKE
-        - client 1.27.1
-        - server 1.24.10-gke.2300
-        - helm 3.9.3
-- WAS
-    - Apache Tomcat 9.0.71
-- AI
-    - Python 3.9
-    - TensorFlow 2.12.0
-    - FastAPI 0.95.0
-- FE
-    - Unity 2021.3.22f1
-    - Kotlin 1.8.20
-    - Jetpack Compose 1.2.0
-- BE
-    - OpenJDK 11
-    - Kotlin 1.8.20
-    - Spring Boot Gradle(Kotlin) 2.7.11
-        - Spring Data JPA
-        - Spring Data Redis
     
 
 ### 🔹 etc
