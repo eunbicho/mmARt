@@ -55,15 +55,11 @@
 
 |상품 검색|상품 상세조회|바코드 조회|
 |:------:|:------:|:------:|
-|<img src="./image/gifs/search.gif" width="250" height="530" />|
-<img src="./image/gifs/detail.gif" width="250" height="530"/>|
-<img src="./image/gifs/barcode.gif" width="250" height="530"/>|
+|<img src="./image/gifs/search.gif" width="250" height="530" />|<img src="./image/gifs/detail.gif" width="250" height="530"/>|<img src="./image/gifs/barcode.gif" width="250" height="530"/>|
 
 |장볼구니-추가|장볼구니-수정|장볼구니-삭제|
 |:------:|:------:|:------:|
-|<img src="./image/gifs/cart-add.gif" width="250" height="530"/>|
-<img src="./image/gifs/cart-mod.gif" width="250" height="530"/>|
-<img src="./image/gifs/cart-del.gif" width="250" height="530"/>|
+|<img src="./image/gifs/cart-add.gif" width="250" height="530"/>|<img src="./image/gifs/cart-mod.gif" width="250" height="530"/>|<img src="./image/gifs/cart-del.gif" width="250" height="530"/>|
 
 |AR네비게이션|
 |:------:|
@@ -71,16 +67,11 @@
 
 |장봤구니-추가|장봤구니-수정|장봤구니-삭제|장봤구니-결제|
 |:------:|:------:|:------:|:------:|
-|<img src="./image/gifs/list-add.gif" width="250" height="530"/>|
-<img src="./image/gifs/list-mod.gif" width="250" height="530"/>|
-<img src="./image/gifs/list-del.gif" width="250" height="530"/>|
-<img src="./image/gifs/list-pay.gif" width="250" height="530"/>|
+|<img src="./image/gifs/list-add.gif" width="250" height="530"/>|<img src="./image/gifs/list-mod.gif" width="250" height="530"/>|<img src="./image/gifs/list-del.gif" width="250" height="530"/>|<img src="./image/gifs/list-pay.gif" width="250" height="530"/>|
 
 |리뷰-작성 및 긍부정분류|리뷰-수정|리뷰-삭제|
 |:------:|:------:|:------:|
-|<img src="./image/gifs/review-add.gif" width="250" height="530"/>|
-<img src="./image/gifs/review-mod.gif" width="250" height="530"/>|
-<img src="./image/gifs/review-del.gif" width="250" height="530"/>|
+|<img src="./image/gifs/review-add.gif" width="250" height="530"/>|<img src="./image/gifs/review-mod.gif" width="250" height="530"/>|<img src="./image/gifs/review-del.gif" width="250" height="530"/>|
 
 
 # 🚙 4. 기술 스택
