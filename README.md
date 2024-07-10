@@ -61,9 +61,9 @@
 |:------:|:------:|:------:|
 |<img src="./image/gifs/cart-add.gif" width="250" height="530"/>|<img src="./image/gifs/cart-mod.gif" width="250" height="530"/>|<img src="./image/gifs/cart-del.gif" width="250" height="530"/>|
 
-|AR네비게이션(2배속)|
-|:------:|
-|<img src="./image/gifs/nav.gif" width="250" height="530"/>|
+|AR네비게이션-쇼핑 시작|최적의 경로 안내|AR네비게이션-쇼핑 마무리|
+|:------:|:------:|:------:|
+|<img src="./image/gifs/nav.gif" width="250" height="530"/>|<img src="./image/gifs/nav2.gif" width="250" height="530"/>|<img src="./image/gifs/nav3.gif" width="250" height="530"/>|
 
 |장봤구니-추가|장봤구니-수정|장봤구니-삭제|장봤구니-결제|
 |:------:|:------:|:------:|:------:|
