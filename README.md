@@ -53,7 +53,7 @@
 |<img src="./image/gifs/register.gif" width="250" height="530"/>|<img src="./image/gifs/login.gif" width="250" height="530"/>|<img src="./image/gifs/logout.gif" width="250" height="530"/>|
 
 
-|상품 검색|상품 상세조회|바코드 조회|
+|상품 검색|상품 상세조회|바코드로 상품 조회|
 |:------:|:------:|:------:|
 |<img src="./image/gifs/search.gif" width="250" height="530" />|<img src="./image/gifs/detail.gif" width="250" height="530"/>|<img src="./image/gifs/barcode.gif" width="250" height="530"/>|
 
