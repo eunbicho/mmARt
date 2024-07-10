@@ -174,7 +174,7 @@
 
 ![ERD](./image/erd.png)
 
-#### - (3) API 문서
+#### - (3) API 문서 (서버 만료)
 
 [SWAGGER](https://j8a401.p.ssafy.io/swagger-ui/index.html#/)
 
@@ -349,8 +349,8 @@
 - 김현호 : AI 모델 학습 및 배포, 데이터전처리
 
 ### [FE]
-- 유지원 : FE, UI/UX
-- 조은비 : AR, UI/UX
+- 유지원 : Android 앱 개발, UI/UX
+- 조은비 : Unity 앱 개발 (AR 실내 네비게이션), UI/UX
 
 ### [Infra]
 - 권택윤
