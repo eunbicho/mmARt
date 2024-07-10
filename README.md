@@ -78,7 +78,10 @@
 
 
 ### 🔹 [AI]
-
+- BERT
+- TensorFlow
+- Python
+- FastAPI
 
 ### 🔹 [FE]
 
